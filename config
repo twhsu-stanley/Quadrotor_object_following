@@ -1,0 +1,9 @@
+[core]
+	repositoryformatversion = 0
+	filemode = false
+	bare = true
+	symlinks = false
+	ignorecase = true
+[remote "origin"]
+	url = git@gitlab.eecs.umich.edu:euas/rc_pilot_w22.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
