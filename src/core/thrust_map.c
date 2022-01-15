@@ -68,7 +68,15 @@ static double air2213_3s_map[][2] = {{0.000, 0.0}, {0.127, 0.022556517697878},
 
 
 //ToDo - Add code for your thrust_map
-
+/*
+ * Custom map for quadlab
+ */
+static const int quadlab_points = 12;
+static double quadlab_map[][2] = {{0.0, 0.00000000000000}, {0.05, 17.8844719758775},
+    {0.145, 44.8761484808831}, {0.24, 80.0271164157384}, {0.335, 122.556484678150},
+    {0.43, 168.358712108506}, {0.525, 220.433636910433}, {0.62, 277.201919870206},
+    {0.715, 339.008615108196}, {0.81, 418.819295994349}, {0.905, 505.430124336786},
+    {1.0, 566.758535098236}};
 
 int thrust_map_init(thrust_map_t map)
 {
@@ -100,6 +108,11 @@ int thrust_map_init(thrust_map_t map)
             break;
 
         //ToDo - Add code for your thrust_map
+        case QUADLAB_MAP:
+            points = quadlab_points;
+            data = quadlab_map;
+            break;
+
 
         default:
             fprintf(stderr, "ERROR: unknown thrust map\n");
