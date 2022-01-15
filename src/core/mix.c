@@ -19,12 +19,13 @@
  */
 
 //ToDo - Add code for mix_4x - reference code for other configurations listed here.
-//mixing matrix still needs updated****
+//should be correct now
 static double mix_4x[][6] = {
-    {0.0, 0.0, -1.0, 0.0, 0.5, 0.5}, 
-    {0.0, 0.0, -1.0, -0.5, 0.0, -0.5},
-    {0.0, 0.0, -1.0, 0.0, -0.5, 0.5}, 
-    {0.0, 0.0, -1.0, 0.5, 0.0, -0.5}};
+{0.0,   0.0,  -1.0,  -0.5,   0.5,   0.5},\
+{0.0,   0.0,  -1.0,  -0.5,  -0.5,  -0.5},\
+{0.0,   0.0,  -1.0,   0.5,  -0.5,   0.5},\
+{0.0,   0.0,  -1.0,   0.5,   0.5,  -0.5}};
+
 
 /**
  * Matt's coop-payload quadrotor motor configuration:
