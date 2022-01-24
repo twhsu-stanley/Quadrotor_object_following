@@ -71,7 +71,7 @@ static double air2213_3s_map[][2] = {{0.000, 0.0}, {0.127, 0.022556517697878},
 /*
  * Custom map for quadlab
  */
-static const int quadlab_points = 12;
+static const int quadlab_points = 17;
 static double quadlab_map[][2] = {{0.0, 0.000000000},
                                   {0.063, 0.222598766},
                                   {0.127, 0.56983284},
