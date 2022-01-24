@@ -3,7 +3,7 @@
 
 	"warnings_en": true,
 
-	"layout": "LAYOUT_4x",
+	"layout": "LAYOUT_4X",
 	"thrust_map": "QUADLAB_MAP",
 	"orientation": "ORIENTATION_X_FORWARD",
 	"v_nominal": 16.8,
