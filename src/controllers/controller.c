@@ -376,13 +376,18 @@ static void __run_XY_controller()
                    + setpoint.X_dot_ff;
     rc_saturate_double(&setpoint.X_dot, -MAX_XY_VELOCITY, MAX_XY_VELOCITY);
     // ToDo - Code for setpoint.Y_dot
-
+    setpoint.Y_dot = rc_filter_march(&D_Y, setpoint.Y - state_estimate.Y)
+                   + setpoint.Y_dot_ff;
+    rc_saturate_double(&setpoint.Y_dot, -MAX_XY_VELOCITY, MAX_XY_VELOCITY);
 
     // 2) Velocity -> Acceleration
     setpoint.X_ddot = rc_filter_march(&D_Xdot_pd, setpoint.X_dot - state_estimate.X_dot)
                     + rc_filter_march(&D_Xdot_i,  setpoint.X_dot - state_estimate.X_dot);
     rc_saturate_double(&setpoint.X_ddot, -MAX_XY_ACCELERATION, MAX_XY_ACCELERATION);
     //ToDo - Code for setpoint.Y_ddot
+    setpoint.Y_ddot = rc_filter_march(&D_Ydot_pd, setpoint.Y_dot - state_estimate.Y_dot)
+                    + rc_filter_march(&D_Ydot_i,  setpoint.Y_dot - state_estimate.Y_dot);
+    rc_saturate_double(&setpoint.Y_ddot, -MAX_XY_ACCELERATION, MAX_XY_ACCELERATION);
 
     // 3) Acceleration -> Lean Angles
     setpoint.roll = ((-sin(state_estimate.continuous_yaw) * setpoint.X_ddot 
@@ -390,8 +395,12 @@ static void __run_XY_controller()
                       / GRAVITY)
                     + setpoint.roll_ff;              
     rc_saturate_double(&setpoint.roll, -MAX_ROLL_SETPOINT, MAX_ROLL_SETPOINT);
-    // ToDo - Code for setpoint.pitch
-
+    // ToDo - Code for setpoint.pitch // NEED TO CHECK
+    setpoint.pitch = ((cos(state_estimate.continuous_yaw) * setpoint.X_ddot 
+                      +sin(state_estimate.continuous_yaw) * setpoint.Y_ddot)
+                      / GRAVITY)
+                    + setpoint.pitch_ff;              
+    rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
 }
 
 
