@@ -396,8 +396,8 @@ static void __run_XY_controller()
                     + setpoint.roll_ff;              
     rc_saturate_double(&setpoint.roll, -MAX_ROLL_SETPOINT, MAX_ROLL_SETPOINT);
     // ToDo - Code for setpoint.pitch // NEED TO CHECK
-    setpoint.pitch = ((cos(state_estimate.continuous_yaw) * setpoint.X_ddot 
-                      +sin(state_estimate.continuous_yaw) * setpoint.Y_ddot)
+    setpoint.pitch = ((-cos(state_estimate.continuous_yaw) * setpoint.X_ddot 
+                      -sin(state_estimate.continuous_yaw) * setpoint.Y_ddot)
                       / GRAVITY)
                     + setpoint.pitch_ff;              
     rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
