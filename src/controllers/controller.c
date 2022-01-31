@@ -413,6 +413,16 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.roll_dot, -MAX_ROLL_RATE, MAX_ROLL_RATE);
 
     // ToDo - code for setpoint.pitch_dot and setpoint.yaw_dot
+    // 2) Pitch -> Pitch Rate
+    setpoint.pitch_dot  = rc_filter_march(&D_pitch,  setpoint.pitch  - state_estimate.pitch)
+                       + setpoint.pitch_dot_ff;
+    rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
+
+    // 3) Yaw -> Yaw Rate
+    setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.yaw)
+                       + setpoint.yaw_dot_ff;
+    rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
+
 }
 
 static void __run_attitude_rate_controller()
@@ -422,6 +432,15 @@ static void __run_attitude_rate_controller()
                             + rc_filter_march(&D_roll_rate_i,   setpoint.roll_dot  - state_estimate.roll_dot);
                             
     // ToDo - Code for setpoint.pitch_throttle and setpoint.yaw_throttle
+    // 2) Pitch Rate -> Pitch Torques
+    setpoint.pitch_throttle  = rc_filter_march(&D_pitch_rate_pd,  setpoint.pitch_dot  - state_estimate.pitch_dot)
+                             + rc_filter_march(&D_pitch_rate_i,   setpoint.pitch_dot  - state_estimate.pitch_dot);
+    
+    // 3) Yaw Rate -> Yaw Torques
+    setpoint.yaw_throttle  = rc_filter_march(&D_yaw_rate_pd,  setpoint.yaw_dot  - state_estimate.yaw_dot)
+                           + rc_filter_march(&D_yaw_rate_i,   setpoint.yaw_dot  - state_estimate.yaw_dot);
+
+
 }
 
 static void __add_throttles_to_mixing_matrix(double* u, double* mot)
