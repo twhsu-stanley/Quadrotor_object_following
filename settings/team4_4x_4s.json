@@ -94,7 +94,7 @@
 	},
     "roll_rate_controller_i": {
 		"TF_or_PID": "I",
-		"ki":0.02,
+		"ki":0.0,
         "imax": 0.05
 	},
 
