@@ -12,19 +12,19 @@
 
 	"enable_mocap_dropout_emergency_land": true,
 	"mocap_dropout_timeout_ms": 300.0,
-	"dropout_z_throttle": -0.42,
+	"dropout_z_throttle": -0.0,
 
-    "hover_throttle": -0.50,
+    "hover_throttle": 0.0,
 
-	"num_dsm_modes": 2,
-	"flight_mode_1": "MANUAL",
-	"flight_mode_2": "LOITER",
+	"num_dsm_modes": 3,	
+	"flight_mode_1": "TEST_BENCH_4DOF",
+	"flight_mode_2": "TEST_BENCH_4DOF",
 	"flight_mode_3": "MANUAL",
 
 	"dsm_thr_ch": 1,
 	"dsm_thr_pol": 1,
 	"dsm_roll_ch": 2,
-	"dsm_roll_pol": 1,
+	"dsm_roll_pol": -1,
 	"dsm_pitch_ch": 3,
 	"dsm_pitch_pol": 1,
 	"dsm_yaw_ch": 4,
@@ -32,20 +32,20 @@
 	"dsm_mode_ch": 5,
 	"dsm_mode_pol": 1,
 	"dsm_kill_mode": "DSM_KILL_DEDICATED_SWITCH",
-	"dsm_kill_ch": 6,
+	"dsm_kill_ch": 7,
 	"dsm_kill_pol": 1,
 
 	"printf_arm": true,
 	"printf_altitude": false,
 	"printf_battery": true,
 	"printf_position": true,
-	"printf_rpy": false,
-	"printf_sticks": false,
+	"printf_rpy": true,
+	"printf_sticks": true,
 	"printf_setpoint": true,
-	"printf_u": false,
-	"printf_motors": false,
+	"printf_u": true,
+	"printf_motors": true,
 	"printf_mode": true,
-	"printf_xbee": true, 
+	"printf_xbee": false, 
 	"printf_tracking": true, 
 	"printf_gps": false, 
 	"printf_magnetom": false,
@@ -89,12 +89,12 @@
     "roll_rate_controller_pd": {
 		"TF_or_PID": "PD",
 		"kp":0.1,
-		"kd":0.01,
+		"kd":0.0,
 		"crossover_freq_rad_per_sec": 62.83
 	},
     "roll_rate_controller_i": {
 		"TF_or_PID": "I",
-		"ki":0.02,
+		"ki":0.0,
         "imax": 0.05
 	},
 
@@ -102,12 +102,12 @@
     "pitch_rate_controller_pd": {
 		"TF_or_PID": "PD",
 		"kp":0.1,
-		"kd":0.01,
+		"kd":0.0,
 		"crossover_freq_rad_per_sec": 62.83
 	},
     "pitch_rate_controller_i": {
 		"TF_or_PID": "I",
-		"ki":0.02,
+		"ki":0.0,
         "imax": 0.05
 	},
 
@@ -115,25 +115,25 @@
     "yaw_rate_controller_pd": {
 		"TF_or_PID": "PD",
 		"kp":0.2,
-		"kd":0.01,
+		"kd":0.0,
 		"crossover_freq_rad_per_sec": 62.83
 	},
     "yaw_rate_controller_i": {
 		"TF_or_PID": "I",
-		"ki":0.02,
+		"ki":0.0,
         "imax": 0.05
 	},
 
 
 	"roll_controller": {
 		"TF_or_PID": "P",
-		"kp": 8.0
+		"kp": 5.0
 	},
 
     
 	"pitch_controller": {
 		"TF_or_PID": "P",
-		"kp": 8.0
+		"kp": 5.0
 	},
 
 

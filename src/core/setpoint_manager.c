@@ -60,7 +60,7 @@ void setpoint_update_yaw(void)
     // keep the yaw setpoint at current yaw so it takes off straight
     //
     // TODO: doesnt work well with alt hold mode
-    if (user_input.thr_stick < 0.2 && user_input.flight_mode != ALT_HOLD)
+    if (user_input.thr_stick < -0.1 && user_input.flight_mode != ALT_HOLD)
     {
         setpoint.yaw = state_estimate.continuous_yaw;
         setpoint.yaw_dot_ff = 0.0;

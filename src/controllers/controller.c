@@ -395,7 +395,7 @@ static void __run_XY_controller()
                       / GRAVITY)
                     + setpoint.roll_ff;              
     rc_saturate_double(&setpoint.roll, -MAX_ROLL_SETPOINT, MAX_ROLL_SETPOINT);
-    // ToDo - Code for setpoint.pitch // NEED TO CHECK
+    // ToDo - Code for setpoint.pitch
     setpoint.pitch = ((-cos(state_estimate.continuous_yaw) * setpoint.X_ddot 
                       -sin(state_estimate.continuous_yaw) * setpoint.Y_ddot)
                       / GRAVITY)
@@ -421,6 +421,10 @@ static void __run_attitude_controller()
     setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.yaw)
                        + setpoint.yaw_dot_ff;
     rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
+<<<<<<< HEAD
+=======
+
+>>>>>>> fix_CRLF_linux
 }
 
 static void __run_attitude_rate_controller()
@@ -437,6 +441,8 @@ static void __run_attitude_rate_controller()
     // 3) Yaw Rate -> Yaw Torques
     setpoint.yaw_throttle  = rc_filter_march(&D_yaw_rate_pd,  setpoint.yaw_dot  - state_estimate.yaw_dot)
                            + rc_filter_march(&D_yaw_rate_i,   setpoint.yaw_dot  - state_estimate.yaw_dot);
+
+
 }
 
 static void __add_throttles_to_mixing_matrix(double* u, double* mot)
