@@ -421,10 +421,6 @@ static void __run_attitude_controller()
     setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.yaw)
                        + setpoint.yaw_dot_ff;
     rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
-<<<<<<< HEAD
-=======
-
->>>>>>> fix_CRLF_linux
 }
 
 static void __run_attitude_rate_controller()
