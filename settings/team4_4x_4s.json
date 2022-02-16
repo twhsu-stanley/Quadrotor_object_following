@@ -14,7 +14,7 @@
 	"mocap_dropout_timeout_ms": 300.0,
 	"dropout_z_throttle": -0.3,
 
-    "hover_throttle": -0.3,
+    "hover_throttle": -0.33,
 
 	"num_dsm_modes": 3,	
 	"flight_mode_1": "OPEN_LOOP_DESCENT",
