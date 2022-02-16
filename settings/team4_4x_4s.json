@@ -12,13 +12,13 @@
 
 	"enable_mocap_dropout_emergency_land": true,
 	"mocap_dropout_timeout_ms": 300.0,
-	"dropout_z_throttle": -0.0,
+	"dropout_z_throttle": -0.3,
 
-    "hover_throttle": 0.0,
+    "hover_throttle": -0.3,
 
 	"num_dsm_modes": 3,	
-	"flight_mode_1": "TEST_BENCH_4DOF",
-	"flight_mode_2": "TEST_BENCH_4DOF",
+	"flight_mode_1": "OPEN_LOOP_DESCENT",
+	"flight_mode_2": "OPEN_LOOP_DESCENT",
 	"flight_mode_3": "MANUAL",
 
 	"dsm_thr_ch": 1,
@@ -75,7 +75,7 @@
 
 	"dsm_timeout_ms": 200,
 
-	"wp_folder": "/home/debian/waypoints/",
+	"wp_folder": "/home/debian/Quadlab_team4/Waypoints/square_1m",
 	"wp_takeoff_filename": "takeoff_waypoints.cfg",
 	"wp_guided_filename": "guided_waypoints.cfg",
 	"wp_landing_filename": "landing_waypoints.cfg",
