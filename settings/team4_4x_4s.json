@@ -12,13 +12,13 @@
 
 	"enable_mocap_dropout_emergency_land": true,
 	"mocap_dropout_timeout_ms": 300.0,
-	"dropout_z_throttle": -0.0,
+	"dropout_z_throttle": -0.3,
 
-    "hover_throttle": 0.0,
+    "hover_throttle": -0.33,
 
 	"num_dsm_modes": 3,	
-	"flight_mode_1": "TEST_BENCH_4DOF",
-	"flight_mode_2": "TEST_BENCH_4DOF",
+	"flight_mode_1": "OPEN_LOOP_DESCENT",
+	"flight_mode_2": "OPEN_LOOP_DESCENT",
 	"flight_mode_3": "MANUAL",
 
 	"dsm_thr_ch": 1,
@@ -114,7 +114,7 @@
 
     "yaw_rate_controller_pd": {
 		"TF_or_PID": "PD",
-		"kp":0.2,
+		"kp":1,
 		"kd":0.0,
 		"crossover_freq_rad_per_sec": 62.83
 	},
@@ -139,7 +139,7 @@
 
 	"yaw_controller": {
 		"TF_or_PID": "P",
-		"kp": 4.0
+		"kp": 0.55
 	},
 
 
