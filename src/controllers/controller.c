@@ -399,7 +399,7 @@ static void __run_XY_controller()
     setpoint.pitch = ((-cos(state_estimate.continuous_yaw) * setpoint.X_ddot 
                       -sin(state_estimate.continuous_yaw) * setpoint.Y_ddot)
                       / GRAVITY)
-                    + setpoint.pitch_ff;              
+                    + setpoint.pitch_ff;             
     rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
 }
 
@@ -418,7 +418,7 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
 
     // 3) Yaw -> Yaw Rate
-    setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.yaw)
+    setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.continuous_yaw)
                        + setpoint.yaw_dot_ff;
     rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
 }
