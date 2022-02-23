@@ -42,6 +42,9 @@
 #include <ntp_read.h>
 #include <realsense_payload_receive.h>
 
+
+#define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
+
 /**
  *  @brief      Standard exit for initialization failures
  */
@@ -182,6 +185,8 @@ static void __imu_isr(void)
     if(settings.log_benchmark) benchmark_timers.tIMU_END = rc_nanos_since_epoch();
 }
 
+void* lcm_subscribe_loop(void* ptr);
+
 /**
  * @brief       Initialize the IMU, start all the threads, and wait until something triggers
  * a shut down by setting the RC state to EXITING.
@@ -320,6 +325,13 @@ int main(int argc, char* argv[])
     {
         FAIL("ERROR: failed to initialize input_manager\n")
     }
+
+	// start lcm handle thread
+	printf("starting lcm thread... \n");
+	lcm = lcm_create(LCM_ADDRESS);
+	pthread_t lcm_subscribe_thread;
+    rc_pthread_create(&lcm_subscribe_thread, lcm_subscribe_loop, (void*) NULL, SCHED_FIFO, LCM_PRIORITY);
+
 
     // initialize buttons and Assign functions to be called when button
     // events occur
@@ -496,6 +508,7 @@ int main(int argc, char* argv[])
     // functions that can be called even if not being used. So just call all
     // cleanup functions here.
     printf("cleaning up\n");
+    rc_pthread_timed_join(lcm_subscribe_thread, NULL, 1.5);
     rc_mpu_power_off();
     feedback_cleanup();
     input_manager_cleanup();
@@ -507,5 +520,43 @@ int main(int argc, char* argv[])
     // turn off red LED and blink green to say shut down was safe
     rc_led_set(RC_LED_RED, 0);
     rc_led_blink(RC_LED_GREEN, 8.0, 2.0);
+    return 0;
+}
+
+
+
+/*******************************************************************************
+* lcm_subscribe_loop()
+*
+* thread subscribes to lcm channels and sets handler functions
+* then handles lcm messages in a non-blocking fashion
+*
+* TODO: Add other subscriptions as needed
+*******************************************************************************/
+void *lcm_subscribe_loop(void *data){
+    // pass in lcm object instance, channel from which to read from
+    // function to call when data receiver over the channel,
+    // and the lcm instance again?
+    mbot_motor_command_t_subscribe(lcm,
+    							   MBOT_MOTOR_COMMAND_CHANNEL,
+    							   motor_command_handler,
+    							   NULL);
+
+	timestamp_t_subscribe(lcm,
+						  MBOT_TIMESYNC_CHANNEL,
+						  timesync_handler,
+						  NULL);
+
+    reset_odometry_t_subscribe(lcm,
+                          RESET_ODOMETRY_CHANNEL,
+                          reset_odometry_handler,
+                          NULL);
+
+    while(1){
+        // define a timeout (for erroring out) and the delay time
+        lcm_handle_timeout(lcm, 1);
+        rc_nanosleep(1E9 / LCM_HZ);
+    }
+    lcm_destroy(lcm);
     return 0;
 }
