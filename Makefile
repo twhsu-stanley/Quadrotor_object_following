@@ -28,6 +28,8 @@ TESTSOURCES	:= $(shell find $(TESTDIR) -type f -name *.cpp)
 TESTOBJECTS	:= $(TESTSOURCES:%.cpp=$(BUILDDIR)/%.o) $(filter-out $(BUILDDIR)/core/main.o,$(OBJECTS)) 
 INCLUDES	:= $(shell find $(INCLUDEDIR) -name '*.h')
 DOCSOURCES	:= $(shell find $(DOCDIR)/src/*) $(DOXYFILE)
+LCMTYPES    := $(shell find ../lcmtypes/ -name '*.lcm')                        
+LCMOBJS     := $(LCMTYPES:$%.lcm=$%.o) 
 
 # Compilers, linkers and options
 CC			:= gcc
@@ -39,7 +41,7 @@ INCLUDEFLAG	:= $(INCLUDESUBD:%=-I%)
 CFLAGS		:= $(INCLUDEFLAG) 
 CXXFLAGS	:= $(INCLUDEFLAG) -I/usr/local/include
 OPT_FLAGS	:= -O3
-LDFLAGS		:= -lm -lrt -pthread -ljson-c -lrobotcontrol
+LDFLAGS		:= -lm -lrt -pthread -ljson-c -lrobotcontrol  -L `pkg-config --libs lcm`
 
 # Test linking and defines
 TESTLINK 	:= -L/usr/local/lib/ -lboost_unit_test_framework $(LDFLAGS)
