@@ -155,6 +155,11 @@ int set_new_path(const char* path_file);
  */
 void setpoint_update_yaw(void);
 
+
+/**
+ * @brief   Update yaw value based on computer vision object detection
+ */
+void setpoint_followme_yaw(void);
 /**
  * @brief   Update Z value based on z_dot and user stick
  */

@@ -2,7 +2,7 @@ from cmath import pi
 from zeroconf import ServiceBrowser, Zeroconf
 import socket
 import sys
-sys.path.append("/opt/homebrew/opt/lcm/lib")
+sys.path.append("/usr/local/lib")
 from lcmtypes import pose_xyt_t
 import lcm
 

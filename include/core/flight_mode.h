@@ -51,6 +51,14 @@ typedef enum flight_mode_t
      * Can be used to tune Z controller.
      */
     ALT_HOLD,
+
+    /**
+     * holds constant altitude (may need to incorporate range finder to determine height)
+     * processes lcm_message describing location of object of interest in the iphone camera frame
+     * will attempt to center object of interest in the center of the image (x = 0.5)
+     * by applying close loop control to yaw
+     */
+    FOLLOW_ME,
     /**
      * Reads waypoint file and controls to location at time
      */
