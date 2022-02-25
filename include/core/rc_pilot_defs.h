@@ -39,7 +39,8 @@ typedef enum fail_state_t
 #define I2C_BUS 2
 #define GPIO_INT_PIN_CHIP 3
 #define GPIO_INT_PIN_PIN 21
-
+#define LCM_HZ                  100    // rate of LCM subscribe
+#define LCM_PRIORITY            60    // priority of LCM thread (lower is less critical)
 // top safety
 #define ARM_TIP_THRESHOLD 0.2  ///< radians from level to allow arming sequence
 #define TIP_ANGLE 1.5          ///< radiands of roll or pitch to consider tipped over

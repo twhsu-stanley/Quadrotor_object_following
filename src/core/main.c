@@ -24,6 +24,7 @@
 #include <rc/servo.h>
 #include <rc/start_stop.h>
 #include <rc/time.h>
+#include <rc/pthread.h>
 
 #include <input_manager.h>
 #include <log_manager.h>
@@ -41,10 +42,42 @@
 #include <benchmark.h>
 #include <ntp_read.h>
 #include <realsense_payload_receive.h>
+#include <lcm/lcm.h>
+#include "../../lcmtypes/pose_xyt_t.h"
+#include "../../lcmtypes/mbot_encoder_t.h"
+#include "../../lcmtypes/mbot_imu_t.h"
+#include "../../lcmtypes/mbot_motor_command_t.h"
+#include "../../lcmtypes/odometry_t.h"
+#include "../../lcmtypes/oled_message_t.h"
+#include "../../lcmtypes/timestamp_t.h"
+#include "../../lcmtypes/reset_odometry_t.h"
+// LCM Channel Names - should not be changed
+#define TRUE_POSE_CHANNEL           "TRUE_POSE"
+#define ODOMETRY_CHANNEL            "ODOMETRY"
+#define RESET_ODOMETRY_CHANNEL      "RESET_ODOMETRY"
+#define CONTROLLER_PATH_CHANNEL     "CONTROLLER_PATH"
+#define MBOT_IMU_CHANNEL            "MBOT_IMU"
+#define MBOT_ENCODER_CHANNEL        "MBOT_ENCODERS"
+#define MBOT_MOTOR_COMMAND_CHANNEL  "MBOT_MOTOR_COMMAND"
+#define MBOT_TIMESYNC_CHANNEL       "MBOT_TIMESYNC"
+// #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
+
+
+
+//LCM handler functions
+void motor_command_handler(const lcm_recv_buf_t *rbuf, 
+                                  const char *channel,
+                                  const mbot_motor_command_t *msg, 
+                                  void *user);
+
+void timesync_handler(const lcm_recv_buf_t * rbuf, 
+                             const char *channel,
+                             const timestamp_t *timestamp, 
+                             void *_user);
 
 
 #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
-
+lcm_t * lcm;
 /**
  *  @brief      Standard exit for initialization failures
  */
@@ -199,7 +232,7 @@ int main(int argc, char* argv[])
 
     int c;
     char* settings_file_path = "../settings/quad_settings.json";
-
+    lcm_t* lcm;
     // parse arguments
     opterr = 0;
     while ((c = getopt(argc, argv, "s:w:h")) != -1)
@@ -537,20 +570,20 @@ void *lcm_subscribe_loop(void *data){
     // pass in lcm object instance, channel from which to read from
     // function to call when data receiver over the channel,
     // and the lcm instance again?
-    mbot_motor_command_t_subscribe(lcm,
-    							   MBOT_MOTOR_COMMAND_CHANNEL,
-    							   motor_command_handler,
-    							   NULL);
+    // mbot_motor_command_t_subscribe(lcm,
+    // 							   MBOT_MOTOR_COMMAND_CHANNEL,
+    // 							   motor_command_handler,
+    // 							   NULL);
 
-	timestamp_t_subscribe(lcm,
-						  MBOT_TIMESYNC_CHANNEL,
-						  timesync_handler,
-						  NULL);
+	// timestamp_t_subscribe(lcm,
+	// 					  MBOT_TIMESYNC_CHANNEL,
+	// 					  timesync_handler,
+	// 					  NULL);
 
-    reset_odometry_t_subscribe(lcm,
-                          RESET_ODOMETRY_CHANNEL,
-                          reset_odometry_handler,
-                          NULL);
+    // reset_odometry_t_subscribe(lcm,
+    //                       RESET_ODOMETRY_CHANNEL,
+    //                       reset_odometry_handler,
+    //                       NULL);
 
     while(1){
         // define a timeout (for erroring out) and the delay time
