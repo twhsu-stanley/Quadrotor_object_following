@@ -73,6 +73,30 @@ void setpoint_update_yaw(void)
     return;
 }
 
+
+// NEEDS UPDATED so that if no object is detected, a constant slow rotation
+// will be applied so that the object detection will search 360 degrees
+// if an object is detect, then a PID shall be applied to yaw to center
+// on the object
+void setpoint_followme_yaw(void)
+{
+    // if throttle stick is down all the way, probably landed, so
+    // keep the yaw setpoint at current yaw so it takes off straight
+    //
+    // TODO: doesnt work well with alt hold mode
+    if (user_input.thr_stick < -0.1 && user_input.flight_mode != ALT_HOLD)
+    {
+        setpoint.yaw = state_estimate.continuous_yaw;
+        setpoint.yaw_dot_ff = 0.0;
+        return;
+    }
+    // otherwise, scale yaw_rate by max yaw rate in rad/s
+    // and move yaw setpoint
+    setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
+    setpoint.yaw += setpoint.yaw_dot_ff * DT;
+    return;
+}
+
 void setpoint_update_Z(void)
 {
     // Set Z-dot based on user input
