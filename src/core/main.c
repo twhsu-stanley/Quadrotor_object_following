@@ -60,6 +60,7 @@
 #define MBOT_ENCODER_CHANNEL        "MBOT_ENCODERS"
 #define MBOT_MOTOR_COMMAND_CHANNEL  "MBOT_MOTOR_COMMAND"
 #define MBOT_TIMESYNC_CHANNEL       "MBOT_TIMESYNC"
+#define OBJ_POSITION_VISION_CHANNEL                "OBJ_POS_VISION"
 // #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
 
 
@@ -73,6 +74,11 @@ void motor_command_handler(const lcm_recv_buf_t *rbuf,
 void timesync_handler(const lcm_recv_buf_t * rbuf, 
                              const char *channel,
                              const timestamp_t *timestamp, 
+                             void *_user);
+
+void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf, 
+                             const char *channel,
+                             const pose_xyt_t *msg, 
                              void *_user);
 
 
@@ -570,6 +576,13 @@ void *lcm_subscribe_loop(void *data){
     // pass in lcm object instance, channel from which to read from
     // function to call when data receiver over the channel,
     // and the lcm instance again?
+
+    pose_xyt_t_subscribe(lcm,
+						  OBJ_POSITION_VISION_CHANNEL,
+						  obj_loc_in_vision_handler,
+						  NULL);
+
+
     // mbot_motor_command_t_subscribe(lcm,
     // 							   MBOT_MOTOR_COMMAND_CHANNEL,
     // 							   motor_command_handler,
@@ -593,3 +606,24 @@ void *lcm_subscribe_loop(void *data){
     lcm_destroy(lcm);
     return 0;
 }
+
+/*******************************************************************************
+*  motor_pwm_handler()
+*
+*  sets motor PWMS from incoming lcm message
+*
+*******************************************************************************/
+void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf, 
+                             const char *channel,
+                             const pose_xyt_t *msg, 
+                             void *_user){
+
+    printf("Object Location on iphone: %f | %f ", msg->x, msg->y);
+    // rc_motor_set(1,mot_l_pol * msg->left_motor_pwm);
+    // rc_motor_set(2,mot_r_pol * msg->right_motor_pwm);
+    // publish_encoder_msg();
+    // watchdog_timer = 0.0;
+    }
+
+
+    
