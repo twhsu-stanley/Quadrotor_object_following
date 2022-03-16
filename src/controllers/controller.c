@@ -438,7 +438,6 @@ static void __run_attitude_rate_controller()
     setpoint.yaw_throttle  = rc_filter_march(&D_yaw_rate_pd,  setpoint.yaw_dot  - state_estimate.yaw_dot)
                            + rc_filter_march(&D_yaw_rate_i,   setpoint.yaw_dot  - state_estimate.yaw_dot);
 
-
 }
 
 static void __add_throttles_to_mixing_matrix(double* u, double* mot)
