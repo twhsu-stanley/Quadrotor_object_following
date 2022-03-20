@@ -20,10 +20,11 @@ static rc_filter_t D_roll_rate_i =   RC_FILTER_INITIALIZER;
 static rc_filter_t D_pitch_rate_pd = RC_FILTER_INITIALIZER;
 static rc_filter_t D_pitch_rate_i =  RC_FILTER_INITIALIZER;
 static rc_filter_t D_yaw_rate_pd =   RC_FILTER_INITIALIZER;
-static rc_filter_t D_yaw_rate_i =    RC_FILTER_INITIALIZER;
+static rc_filter_t D_yaw_rate_i =    RC_FILTER_INITIALIZER; 
 static rc_filter_t D_roll =          RC_FILTER_INITIALIZER;
 static rc_filter_t D_pitch =         RC_FILTER_INITIALIZER;
 static rc_filter_t D_yaw =           RC_FILTER_INITIALIZER;
+static rc_filter_t D_yaw_delta =     RC_FILTER_INITIALIZER; // for the follow-me feature
 static rc_filter_t D_Xdot_pd =       RC_FILTER_INITIALIZER;
 static rc_filter_t D_Xdot_i =        RC_FILTER_INITIALIZER;
 static rc_filter_t D_Ydot_pd =       RC_FILTER_INITIALIZER;
@@ -50,6 +51,7 @@ static void __rpy_init(void)
     rc_filter_duplicate(&D_roll,  settings.roll_controller);
     rc_filter_duplicate(&D_pitch, settings.pitch_controller);
     rc_filter_duplicate(&D_yaw,   settings.yaw_controller);
+    rc_filter_duplicate(&D_yaw_delta, settings.yaw_controller_delta); // for the follow-me feature
 
 #ifdef DEBUG
     printf("ROLL CONTROLLER:\n");
@@ -201,7 +203,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint_update_yaw();
             break;
 
-
+        // for the follow-me feature
         case FOLLOW_ME:
             //mostly follows ALT_HOLD as template
             // 1) Enable PID Loops based on flight mode
@@ -442,7 +444,7 @@ static void __run_XY_controller()
 
 }
 
-
+// Warning: this function will not be used in the FOLLOWME mode
 static void __run_attitude_controller()
 {
     // 1) Attitude -> Attitude Rate
@@ -463,6 +465,13 @@ static void __run_attitude_controller()
 
 }
 
+// Yaw controller for the follow-me feature
+static void __run_followme_yaw_controller()
+{
+    setpoint.yaw_dot  = rc_filter_march(&D_yaw_delta, state_estimate.yaw_delta); // let yaw_delta be computed in state_estimator
+    rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE); // the saturation bounds for this one might need to be changed
+}
+
 static void __run_attitude_rate_controller()
 {
     // 1) Attitude Rate -> Torques
@@ -477,8 +486,6 @@ static void __run_attitude_rate_controller()
     // 3) Yaw Rate -> Yaw Torques
     setpoint.yaw_throttle  = rc_filter_march(&D_yaw_rate_pd,  setpoint.yaw_dot  - state_estimate.yaw_dot)
                            + rc_filter_march(&D_yaw_rate_i,   setpoint.yaw_dot  - state_estimate.yaw_dot);
-
-
 }
 
 static void __add_throttles_to_mixing_matrix(double* u, double* mot)

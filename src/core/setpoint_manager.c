@@ -92,8 +92,21 @@ void setpoint_followme_yaw(void)
     }
     // otherwise, scale yaw_rate by max yaw rate in rad/s
     // and move yaw setpoint
-    setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
-    setpoint.yaw += setpoint.yaw_dot_ff * DT;
+    //setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
+    //setpoint.yaw += setpoint.yaw_dot_ff * DT;
+ 
+    switch (followme_state)
+    {
+        case object_searching:
+            setpoint.yaw_dot = 0.5 // rad/s
+            setpoint.yaw_delta = state_estimate.continuous_yaw + 0.3; // either way should work
+        case object_detected:
+            setpoint.yaw_delta = ;
+            setpoint.yaw = 0 
+        case object_timeout:
+            setpoint.yaw_delta = state_estimate.continuous_yaw;
+    }
+
     return;
 }
 
