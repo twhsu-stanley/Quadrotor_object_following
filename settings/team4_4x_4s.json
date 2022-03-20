@@ -142,7 +142,7 @@
 		"kp": 4.0
 	},
 
-	"yaw_delta_controller": {
+	"yaw_visual_controller": {
 		"TF_or_PID": "P",
 		"kp": 4.0
 	},

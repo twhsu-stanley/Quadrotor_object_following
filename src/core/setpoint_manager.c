@@ -68,13 +68,21 @@ void setpoint_update_yaw(void)
     }
     // otherwise, scale yaw_rate by max yaw rate in rad/s
     // and move yaw setpoint
-    setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
-    setpoint.yaw += setpoint.yaw_dot_ff * DT;
+    if (user_input.flight_mode == SENTRY) {
+        setpoint.yaw += 0.5 * DT // keep turning to find the obejct
+    } 
+    else if (user_input.flight_mode == FOLLOW_ME) {
+        setpoint.yaw = 0;
+    } 
+    else {
+        setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
+        setpoint.yaw += setpoint.yaw_dot_ff * DT;
+    }
     return;
 }
 
 
-// NEEDS UPDATED so that if no object is detected, a constant slow rotation
+/* NEEDS UPDATED so that if no object is detected, a constant slow rotation
 // will be applied so that the object detection will search 360 degrees
 // if an object is detect, then a PID shall be applied to yaw to center
 // on the object
@@ -90,25 +98,20 @@ void setpoint_followme_yaw(void)
         setpoint.yaw_dot_ff = 0.0;
         return;
     }
-    // otherwise, scale yaw_rate by max yaw rate in rad/s
-    // and move yaw setpoint
-    //setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
-    //setpoint.yaw += setpoint.yaw_dot_ff * DT;
- 
-    switch (followme_state)
+    
+    switch (user_input.flight_mode)
     {
-        case object_searching:
-            setpoint.yaw_dot = 0.5 // rad/s
-            setpoint.yaw_delta = state_estimate.continuous_yaw + 0.3; // either way should work
-        case object_detected:
-            setpoint.yaw_delta = ;
-            setpoint.yaw = 0 
-        case object_timeout:
-            setpoint.yaw_delta = state_estimate.continuous_yaw;
+        case SENTRY:
+            setpoint.yaw += 0.5 * DT // keep turning to find the obejct
+            break;
+
+        case FOLLOW_ME:
+            setpoint.yaw = 0;
+            break;
     }
 
     return;
-}
+} */
 
 void setpoint_update_Z(void)
 {

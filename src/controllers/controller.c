@@ -24,7 +24,7 @@ static rc_filter_t D_yaw_rate_i =    RC_FILTER_INITIALIZER;
 static rc_filter_t D_roll =          RC_FILTER_INITIALIZER;
 static rc_filter_t D_pitch =         RC_FILTER_INITIALIZER;
 static rc_filter_t D_yaw =           RC_FILTER_INITIALIZER;
-static rc_filter_t D_yaw_delta =     RC_FILTER_INITIALIZER; // for the follow-me feature
+static rc_filter_t D_yaw_visual =     RC_FILTER_INITIALIZER; // for the follow-me feature
 static rc_filter_t D_Xdot_pd =       RC_FILTER_INITIALIZER;
 static rc_filter_t D_Xdot_i =        RC_FILTER_INITIALIZER;
 static rc_filter_t D_Ydot_pd =       RC_FILTER_INITIALIZER;
@@ -51,7 +51,7 @@ static void __rpy_init(void)
     rc_filter_duplicate(&D_roll,  settings.roll_controller);
     rc_filter_duplicate(&D_pitch, settings.pitch_controller);
     rc_filter_duplicate(&D_yaw,   settings.yaw_controller);
-    rc_filter_duplicate(&D_yaw_delta, settings.yaw_controller_delta); // for the follow-me feature
+    rc_filter_duplicate(&D_yaw_visual, settings.yaw_visual_controller); // for the follow-me feature
 
 #ifdef DEBUG
     printf("ROLL CONTROLLER:\n");
@@ -203,7 +203,42 @@ static void __assign_setpoints_and_enable_loops()
             setpoint_update_yaw();
             break;
 
-        // for the follow-me feature
+        // for the follow-me feature: searching for the object
+        case SENTRY:
+            // 1) Enable PID Loops based on flight mode
+            setpoint.en_6dof = 0; //(settings.dof == 6);
+            setpoint.en_rpy_rate_ctrl = 1;
+            setpoint.en_rpy_ctrl = 1;
+            setpoint.en_Z_ctrl = 1;
+            setpoint.en_XY_ctrl = 0;
+
+            // 2) Assign Setpoints
+
+            // Trigger "startup" delay if we just transitioned
+            if (just_transitioned_flight_mode())
+            {
+                fm_starting_up = true;
+                time_fm_started_ns = rc_nanos_since_epoch();
+                setpoint_update_XYZ_bumpless();
+            }
+
+            // If we've been in fm for long enough we don't need to "startup" anymore
+            if (rc_nanos_since_epoch() - time_fm_started_ns >= time_fm_needs_to_startup_ns)
+            {
+                fm_starting_up = false;
+            }
+            
+            setpoint.roll = 0;
+            setpoint.pitch = 0;
+
+            //initially we will allow user to control the height using stick,
+            //however may want to switch to autonomous takeoff and hold
+            if (!fm_starting_up) setpoint_update_Z();
+            //setpoint_followme_yaw();
+            setpoint_update_yaw();
+            break;
+
+        // for the follow-me feature: tracking the object
         case FOLLOW_ME:
             //mostly follows ALT_HOLD as template
             // 1) Enable PID Loops based on flight mode
@@ -229,16 +264,14 @@ static void __assign_setpoints_and_enable_loops()
                 fm_starting_up = false;
             }
             
-            // setpoint.roll = user_input.roll_stick;
             setpoint.roll = 0;
-
-            // setpoint.pitch = user_input.pitch_stick;
             setpoint.pitch = 0;
 
             //initially we will allow user to control the height using stick,
             //however may want to switch to autonomous takeoff and hold
             if (!fm_starting_up) setpoint_update_Z();
-            setpoint_followme_yaw();
+            //setpoint_followme_yaw();
+            setpoint_update_yaw();
             break;
 
         case AUTONOMOUS:
@@ -444,7 +477,6 @@ static void __run_XY_controller()
 
 }
 
-// Warning: this function will not be used in the FOLLOWME mode
 static void __run_attitude_controller()
 {
     // 1) Attitude -> Attitude Rate
@@ -459,18 +491,24 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
 
     // 3) Yaw -> Yaw Rate
-    setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.continuous_yaw)
+    if (user_input.flight_mode == SENTRY || user_input.flight_mode == FOLLOW_ME)
+    {
+        setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.visual_yaw)
+                       + setpoint.yaw_dot_ff; // sould use a different D_yaw
+    } else {
+        setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.continuous_yaw)
                        + setpoint.yaw_dot_ff;
+    }
     rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
-
 }
 
 // Yaw controller for the follow-me feature
-static void __run_followme_yaw_controller()
+/*static void __run_followme_yaw_controller()
 {
-    setpoint.yaw_dot  = rc_filter_march(&D_yaw_delta, state_estimate.yaw_delta); // let yaw_delta be computed in state_estimator
+    setpoint.yaw_dot  = rc_filter_march(&D_yaw_visual, state_estimate.yaw_delta); // let yaw_delta be computed in state_estimator
     rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE); // the saturation bounds for this one might need to be changed
 }
+*/
 
 static void __run_attitude_rate_controller()
 {
