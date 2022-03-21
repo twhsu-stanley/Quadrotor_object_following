@@ -23,6 +23,7 @@
 #include <settings.h>
 #include <state_estimator.h>
 #include <xbee_receive.h>
+#include <image_receive.h>
 
 #define TWO_PI (M_PI * 2.0)
 
@@ -396,9 +397,10 @@ static void __feedback_select(void)
             state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = xbee_z_dot;
 
-            state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
-            state_estimate.v = Image_data.v;
-            state_estimate.visual_yaw = state_estimate.u; // TODO: transformation from u to visual_yaw
+            //state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
+            //state_estimate.v = Image_data.v;
+            state_estimate.visual_range = Image_data.range;
+            state_estimate.visual_yaw = Image_data.bearing;
             break;
 
         default:
