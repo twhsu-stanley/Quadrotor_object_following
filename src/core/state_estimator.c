@@ -23,9 +23,13 @@
 #include <settings.h>
 #include <state_estimator.h>
 #include <xbee_receive.h>
+#include <vl53l1x.h>
 
 #define TWO_PI (M_PI * 2.0)
-
+VL53L1_Dev_t Device;
+uint16_t distance;
+uint8_t tmp = 0;
+int16_t status = 0;
 state_estimate_t state_estimate;  // extern variable in state_estimator.h
 
 // sensor data structs
@@ -105,6 +109,35 @@ static void __gyro_cleanup(void)
     rc_filter_free(&gyro_pitch_lpf);
     rc_filter_free(&gyro_roll_lpf);
     rc_filter_free(&gyro_yaw_lpf);
+    return;
+}
+
+static void __alti_init(void)
+{
+    printf("Initializing the alitimeter... \n");
+	uint8_t addr = VL53L1X_DEFAULT_DEVICE_ADDRESS;
+	uint8_t i2cbus = 1;
+	uint16_t rtn;
+
+    status = VL53L1X_InitDriver(&Device, i2cbus, addr);
+	if(status!=0){
+		printf("ERROR: VL53LX Not Responding\n");
+	}
+
+    VL53L1X_SensorInit(&Device);
+
+    VL53L1X_GetDistanceMode(&Device,&rtn);
+
+    printf("Altimeter Distance Mode: %d\n", rtn);
+
+    VL53L1X_GetInterMeasurementInMs(&Device,&rtn);
+	printf("Measurement Period: %dms\n", rtn);
+	uint16_t rate = rtn;
+
+	VL53L1X_GetTimingBudgetInMs(&Device,&rtn);
+	printf("Timing Budget: %dms\n", rtn);
+
+    VL53L1X_StartRanging(&Device); 
     return;
 }
 
@@ -285,6 +318,9 @@ static int __altitude_init(void)
     Pi.d[2][1] = -2.5191;
     Pi.d[2][2] = 0.3174;
 
+    //
+    distance = 0;
+
     // initialize the kalman filter
     if (rc_kalman_alloc_lin(&alt_kf, F, G, H, Q, R, Pi) == -1) return -1;
     rc_matrix_free(&F);
@@ -385,7 +421,17 @@ static void __feedback_select(void)
             state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
             state_estimate.X = xbeeMsg.x;
             state_estimate.Y = xbeeMsg.y;
-            state_estimate.Z = xbeeMsg.z;
+            //state_estimate.Z = xbeeMsg.z;
+
+			status = VL53L1X_CheckForDataReady(&Device, &tmp);
+			// rc_usleep(1E2);
+            if(tmp != 0){
+	
+                VL53L1X_ClearInterrupt(&Device);
+                VL53L1X_GetDistance(&Device, &distance);
+                state_estimate.Z = (double)distance;
+            }
+            tmp = 0;
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = xbee_z_dot;
@@ -422,6 +468,7 @@ int state_estimator_init(void)
 {
     __batt_init();
     __gyro_init();
+    __alti_init();
     __z_init();
     if (__altitude_init() == -1) return -1;
     if (rc_vector_zeros(&accel_in, 3) == -1) return -1;
@@ -473,5 +520,6 @@ int state_estimator_cleanup(void)
     __altitude_cleanup();
     __gyro_cleanup();
     __z_cleanup();
+    VL53L1X_StopRanging(&Device);
     return 0;
 }

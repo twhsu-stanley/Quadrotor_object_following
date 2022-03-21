@@ -26,6 +26,7 @@
 #include <rc/time.h>
 #include <rc/pthread.h>
 
+// #include <vl53l1x.h>
 #include <input_manager.h>
 #include <log_manager.h>
 #include <mix.h>
@@ -42,48 +43,48 @@
 #include <benchmark.h>
 #include <ntp_read.h>
 #include <realsense_payload_receive.h>
-#include <lcm/lcm.h>
-#include "../../lcmtypes/pose_xyt_t.h"
-#include "../../lcmtypes/mbot_encoder_t.h"
-#include "../../lcmtypes/mbot_imu_t.h"
-#include "../../lcmtypes/mbot_motor_command_t.h"
-#include "../../lcmtypes/odometry_t.h"
-#include "../../lcmtypes/oled_message_t.h"
-#include "../../lcmtypes/timestamp_t.h"
-#include "../../lcmtypes/reset_odometry_t.h"
-// LCM Channel Names - should not be changed
-#define TRUE_POSE_CHANNEL           "TRUE_POSE"
-#define ODOMETRY_CHANNEL            "ODOMETRY"
-#define RESET_ODOMETRY_CHANNEL      "RESET_ODOMETRY"
-#define CONTROLLER_PATH_CHANNEL     "CONTROLLER_PATH"
-#define MBOT_IMU_CHANNEL            "MBOT_IMU"
-#define MBOT_ENCODER_CHANNEL        "MBOT_ENCODERS"
-#define MBOT_MOTOR_COMMAND_CHANNEL  "MBOT_MOTOR_COMMAND"
-#define MBOT_TIMESYNC_CHANNEL       "MBOT_TIMESYNC"
-#define OBJ_POSITION_VISION_CHANNEL                "OBJ_POS_VISION"
+// #include <lcm/lcm.h>
+// #include "../lcmtypes/pose_xyt_t.h"
+// #include "../lcmtypes/mbot_encoder_t.h"
+// #include "../lcmtypes/mbot_imu_t.h"
+// #include "../lcmtypes/mbot_motor_command_t.h"
+// #include "../lcmtypes/odometry_t.h"
+// #include "../lcmtypes/oled_message_t.h"
+// #include "../lcmtypes/timestamp_t.h"
+// #include "../lcmtypes/reset_odometry_t.h"
+// // LCM Channel Names - should not be changed
+// #define TRUE_POSE_CHANNEL           "TRUE_POSE"
+// #define ODOMETRY_CHANNEL            "ODOMETRY"
+// #define RESET_ODOMETRY_CHANNEL      "RESET_ODOMETRY"
+// #define CONTROLLER_PATH_CHANNEL     "CONTROLLER_PATH"
+// #define MBOT_IMU_CHANNEL            "MBOT_IMU"
+// #define MBOT_ENCODER_CHANNEL        "MBOT_ENCODERS"
+// #define MBOT_MOTOR_COMMAND_CHANNEL  "MBOT_MOTOR_COMMAND"
+// #define MBOT_TIMESYNC_CHANNEL       "MBOT_TIMESYNC"
+// #define OBJ_POSITION_VISION_CHANNEL                "OBJ_POS_VISION"
+// // #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
+
+
+
+// //LCM handler functions
+// void motor_command_handler(const lcm_recv_buf_t *rbuf, 
+//                                   const char *channel,
+//                                   const mbot_motor_command_t *msg, 
+//                                   void *user);
+
+// void timesync_handler(const lcm_recv_buf_t * rbuf, 
+//                              const char *channel,
+//                              const timestamp_t *timestamp, 
+//                              void *_user);
+
+// void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf, 
+//                              const char *channel,
+//                              const pose_xyt_t *msg, 
+//                              void *_user);
+
+
 // #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
-
-
-
-//LCM handler functions
-void motor_command_handler(const lcm_recv_buf_t *rbuf, 
-                                  const char *channel,
-                                  const mbot_motor_command_t *msg, 
-                                  void *user);
-
-void timesync_handler(const lcm_recv_buf_t * rbuf, 
-                             const char *channel,
-                             const timestamp_t *timestamp, 
-                             void *_user);
-
-void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf, 
-                             const char *channel,
-                             const pose_xyt_t *msg, 
-                             void *_user);
-
-
-#define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
-lcm_t * lcm;
+// lcm_t * lcm;
 /**
  *  @brief      Standard exit for initialization failures
  */
@@ -238,7 +239,7 @@ int main(int argc, char* argv[])
 
     int c;
     char* settings_file_path = "../settings/quad_settings.json";
-    lcm_t* lcm;
+    // lcm_t* lcm;
     // parse arguments
     opterr = 0;
     while ((c = getopt(argc, argv, "s:w:h")) != -1)
@@ -366,11 +367,37 @@ int main(int argc, char* argv[])
     }
 
 	// start lcm handle thread
-	printf("starting lcm thread... \n");
-	lcm = lcm_create(LCM_ADDRESS);
-	pthread_t lcm_subscribe_thread;
-    rc_pthread_create(&lcm_subscribe_thread, lcm_subscribe_loop, (void*) NULL, SCHED_FIFO, LCM_PRIORITY);
+	// printf("starting lcm thread... \n");
+	// lcm = lcm_create(LCM_ADDRESS);
+	// pthread_t lcm_subscribe_thread;
+    // rc_pthread_create(&lcm_subscribe_thread, lcm_subscribe_loop, (void*) NULL, SCHED_FIFO, LCM_PRIORITY);
 
+    // Initialize alimeter
+    // printf("Initializing the alitimeter... \n");
+	// uint8_t addr = VL53L1X_DEFAULT_DEVICE_ADDRESS;
+	// uint8_t i2cbus = 1;
+	// int16_t status = 0;
+	// uint16_t rtn;
+
+    // status = VL53L1X_InitDriver(&Device, i2cbus, addr);
+	// if(status!=0){
+	// 	printf("ERROR: VL53LX Not Responding\n");
+	// 	return -1;;
+	// }
+
+    // VL53L1X_SensorInit(&Device);
+
+    // VL53L1X_GetDistanceMode(&Device,&rtn);
+
+    // printf("Altimeter Distance Mode: %d\n", rtn);
+
+    // VL53L1X_GetInterMeasurementInMs(&Device,&rtn);
+	// printf("Measurement Period: %dms\n", rtn);
+	// uint16_t rate = rtn;
+
+	// VL53L1X_GetTimingBudgetInMs(&Device,&rtn);
+	// printf("Timing Budget: %dms\n", rtn);
+    // VL53L1X_StartRanging(&Device); 
 
     // initialize buttons and Assign functions to be called when button
     // events occur
@@ -547,7 +574,7 @@ int main(int argc, char* argv[])
     // functions that can be called even if not being used. So just call all
     // cleanup functions here.
     printf("cleaning up\n");
-    rc_pthread_timed_join(lcm_subscribe_thread, NULL, 1.5);
+    // rc_pthread_timed_join(lcm_subscribe_thread, NULL, 1.5);
     rc_mpu_power_off();
     feedback_cleanup();
     input_manager_cleanup();
@@ -555,6 +582,7 @@ int main(int argc, char* argv[])
     printf_cleanup();
     log_manager_cleanup();
     path_cleanup();
+    // VL53L1X_StopRanging(&Device);
     
     // turn off red LED and blink green to say shut down was safe
     rc_led_set(RC_LED_RED, 0);
@@ -572,58 +600,58 @@ int main(int argc, char* argv[])
 *
 * TODO: Add other subscriptions as needed
 *******************************************************************************/
-void *lcm_subscribe_loop(void *data){
-    // pass in lcm object instance, channel from which to read from
-    // function to call when data receiver over the channel,
-    // and the lcm instance again?
+// void *lcm_subscribe_loop(void *data){
+//     // pass in lcm object instance, channel from which to read from
+//     // function to call when data receiver over the channel,
+//     // and the lcm instance again?
 
-    pose_xyt_t_subscribe(lcm,
-						  OBJ_POSITION_VISION_CHANNEL,
-						  obj_loc_in_vision_handler,
-						  NULL);
+//     pose_xyt_t_subscribe(lcm,
+// 						  OBJ_POSITION_VISION_CHANNEL,
+// 						  obj_loc_in_vision_handler,
+// 						  NULL);
 
 
-    // mbot_motor_command_t_subscribe(lcm,
-    // 							   MBOT_MOTOR_COMMAND_CHANNEL,
-    // 							   motor_command_handler,
-    // 							   NULL);
+//     // mbot_motor_command_t_subscribe(lcm,
+//     // 							   MBOT_MOTOR_COMMAND_CHANNEL,
+//     // 							   motor_command_handler,
+//     // 							   NULL);
 
-	// timestamp_t_subscribe(lcm,
-	// 					  MBOT_TIMESYNC_CHANNEL,
-	// 					  timesync_handler,
-	// 					  NULL);
+// 	// timestamp_t_subscribe(lcm,
+// 	// 					  MBOT_TIMESYNC_CHANNEL,
+// 	// 					  timesync_handler,
+// 	// 					  NULL);
 
-    // reset_odometry_t_subscribe(lcm,
-    //                       RESET_ODOMETRY_CHANNEL,
-    //                       reset_odometry_handler,
-    //                       NULL);
+//     // reset_odometry_t_subscribe(lcm,
+//     //                       RESET_ODOMETRY_CHANNEL,
+//     //                       reset_odometry_handler,
+//     //                       NULL);
 
-    while(1){
-        // define a timeout (for erroring out) and the delay time
-        lcm_handle_timeout(lcm, 1);
-        rc_nanosleep(1E9 / LCM_HZ);
-    }
-    lcm_destroy(lcm);
-    return 0;
-}
+//     while(1){
+//         // define a timeout (for erroring out) and the delay time
+//         lcm_handle_timeout(lcm, 1);
+//         rc_nanosleep(1E9 / LCM_HZ);
+//     }
+//     lcm_destroy(lcm);
+//     return 0;
+// }
 
-/*******************************************************************************
-*  motor_pwm_handler()
-*
-*  sets motor PWMS from incoming lcm message
-*
-*******************************************************************************/
-void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf, 
-                             const char *channel,
-                             const pose_xyt_t *msg, 
-                             void *_user){
+// /*******************************************************************************
+// *  motor_pwm_handler()
+// *
+// *  sets motor PWMS from incoming lcm message
+// *
+// *******************************************************************************/
+// void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf, 
+//                              const char *channel,
+//                              const pose_xyt_t *msg, 
+//                              void *_user){
 
-    printf("Object Location on iphone: %f | %f ", msg->x, msg->y);
-    // rc_motor_set(1,mot_l_pol * msg->left_motor_pwm);
-    // rc_motor_set(2,mot_r_pol * msg->right_motor_pwm);
-    // publish_encoder_msg();
-    // watchdog_timer = 0.0;
-    }
+//     printf("Object Location on iphone: %f | %f ", msg->x, msg->y);
+//     // rc_motor_set(1,mot_l_pol * msg->left_motor_pwm);
+//     // rc_motor_set(2,mot_r_pol * msg->right_motor_pwm);
+//     // publish_encoder_msg();
+//     // watchdog_timer = 0.0;
+//     }
 
 
     

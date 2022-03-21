@@ -28,8 +28,6 @@ TESTSOURCES	:= $(shell find $(TESTDIR) -type f -name *.cpp)
 TESTOBJECTS	:= $(TESTSOURCES:%.cpp=$(BUILDDIR)/%.o) $(filter-out $(BUILDDIR)/core/main.o,$(OBJECTS)) 
 INCLUDES	:= $(shell find $(INCLUDEDIR) -name '*.h')
 DOCSOURCES	:= $(shell find $(DOCDIR)/src/*) $(DOXYFILE)
-LCMTYPES    := $(shell find lcmtypes/ -name '*.lcm')                        
-LCMOBJS     := $(LCMTYPES:$%.lcm=$%.o) 
 
 # Compilers, linkers and options
 CC			:= gcc
@@ -38,10 +36,10 @@ CLINKER		:= gcc
 CXXLINKER	:= g++
 WFLAGS		:= -Wall -Wextra # -Werror
 INCLUDEFLAG	:= $(INCLUDESUBD:%=-I%)
-CFLAGS		:= $(INCLUDEFLAG) `pkg-config --cflags lcm`
+CFLAGS		:= $(INCLUDEFLAG) 
 CXXFLAGS	:= $(INCLUDEFLAG) -I/usr/local/include
 OPT_FLAGS	:= -O3
-LDFLAGS		:= -lm -lrt -pthread -ljson-c -lrobotcontrol  -L `pkg-config --libs lcm`
+LDFLAGS		:= -lm -lrt -pthread -ljson-c -lrobotcontrol
 
 # Test linking and defines
 TESTLINK 	:= -L/usr/local/lib/ -lboost_unit_test_framework $(LDFLAGS)
@@ -50,7 +48,7 @@ TESTDEF 	:= -DBOOST_TEST_DYN_LINK -DOFFBOARD_TEST
 # Linking objects to build rc_pilot
 $(TARGET): $(OBJECTS)
 	@mkdir -p $(BINDIR)
-	@$(CLINKER) -o $(@) $(OBJECTS) $(LCMOBJS) $(LDFLAGS) 
+	@$(CLINKER) -o $(@) $(OBJECTS) $(LDFLAGS)
 	@echo "made: $(@)"
 
 # Linking objects to build unit test executable
@@ -86,7 +84,6 @@ docs:
 clean:
 	@rm -rvf $(BINDIR)
 	@rm -rvf $(BUILDDIR)
-	@$(RM) $(LCMOBJS)
 	@touch * $(SRCDIR)/* $(INCLUDEDIR)/*
 	@echo "Library Clean Complete"
 
