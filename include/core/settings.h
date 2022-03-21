@@ -139,6 +139,7 @@ typedef struct settings_t
     rc_filter_t roll_controller;
     rc_filter_t pitch_controller;
     rc_filter_t yaw_controller;
+    rc_filter_t yaw_visual_controller;
     rc_filter_t altitude_rate_controller_pd;
     rc_filter_t altitude_rate_controller_i;
     rc_filter_t altitude_controller_pd;

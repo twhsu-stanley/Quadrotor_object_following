@@ -150,6 +150,7 @@ typedef struct state_estimate_t
     double u;
     double v;
     double visual_yaw;
+    double visual_range;
     ///@}
 
 } state_estimate_t;

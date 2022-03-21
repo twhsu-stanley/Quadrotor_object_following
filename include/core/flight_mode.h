@@ -115,6 +115,7 @@ typedef enum flight_mode_t
  */
 bool mode_needs_mocap(flight_mode_t mode);
 
+bool mode_needs_lcm(flight_mode_t mode);
 #endif /* __FLIGHT_MODE__ */
 
 /**@}end group Flight Modes */

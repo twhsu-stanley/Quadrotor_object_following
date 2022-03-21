@@ -69,7 +69,7 @@ void setpoint_update_yaw(void)
     // otherwise, scale yaw_rate by max yaw rate in rad/s
     // and move yaw setpoint
     if (user_input.flight_mode == SENTRY) {
-        setpoint.yaw += 0.5 * DT // keep turning to find the obejct
+        setpoint.yaw += 0.5 * DT; // keep turning to find the obejct
     } 
     else if (user_input.flight_mode == FOLLOW_ME) {
         setpoint.yaw = 0;
