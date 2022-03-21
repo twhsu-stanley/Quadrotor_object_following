@@ -44,14 +44,14 @@
 #include <ntp_read.h>
 #include <realsense_payload_receive.h>
 #include <lcm/lcm.h>
-#include "../../lcmtypes/pose_xyt_t.h"
-#include "../../lcmtypes/mbot_encoder_t.h"
-#include "../../lcmtypes/mbot_imu_t.h"
-#include "../../lcmtypes/mbot_motor_command_t.h"
-#include "../../lcmtypes/odometry_t.h"
-#include "../../lcmtypes/oled_message_t.h"
-#include "../../lcmtypes/timestamp_t.h"
-#include "../../lcmtypes/reset_odometry_t.h"
+#include "./../../lcmtypes/pose_xyt_t.h"
+#include "./../../lcmtypes/mbot_encoder_t.h"
+#include "./../../lcmtypes/mbot_imu_t.h"
+#include "./../../lcmtypes/mbot_motor_command_t.h"
+#include "./../../lcmtypes/odometry_t.h"
+#include "./../../lcmtypes/oled_message_t.h"
+#include "./../../lcmtypes/timestamp_t.h"
+#include "./../../lcmtypes/reset_odometry_t.h"
 // LCM Channel Names - should not be changed
 #define TRUE_POSE_CHANNEL           "TRUE_POSE"
 #define ODOMETRY_CHANNEL            "ODOMETRY"
