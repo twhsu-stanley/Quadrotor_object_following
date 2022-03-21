@@ -81,6 +81,7 @@ void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf,
                              const pose_xyt_t *msg, 
                              void *_user);
 
+extern pose_xyt_t Image_data;
 
 #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
 lcm_t * lcm;
@@ -619,6 +620,9 @@ void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf,
                              void *_user){
 
     printf("Object Location on iphone: %f | %f ", msg->x, msg->y);
+    
+    Image_data.x = msg->x;
+    Image_data.y = msg->y;
     // rc_motor_set(1,mot_l_pol * msg->left_motor_pwm);
     // rc_motor_set(2,mot_r_pol * msg->right_motor_pwm);
     // publish_encoder_msg();

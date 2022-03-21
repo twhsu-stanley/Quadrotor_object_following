@@ -491,7 +491,7 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
 
     // 3) Yaw -> Yaw Rate
-    if (user_input.flight_mode == SENTRY || user_input.flight_mode == FOLLOW_ME)
+    if ( mode_needs_lcm(flight_mode_t mode) )
     {
         setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.visual_yaw)
                        + setpoint.yaw_dot_ff; // sould use a different D_yaw
@@ -501,14 +501,6 @@ static void __run_attitude_controller()
     }
     rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
 }
-
-// Yaw controller for the follow-me feature
-/*static void __run_followme_yaw_controller()
-{
-    setpoint.yaw_dot  = rc_filter_march(&D_yaw_visual, state_estimate.yaw_delta); // let yaw_delta be computed in state_estimator
-    rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE); // the saturation bounds for this one might need to be changed
-}
-*/
 
 static void __run_attitude_rate_controller()
 {

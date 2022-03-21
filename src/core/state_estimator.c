@@ -378,6 +378,29 @@ static void __feedback_select(void)
             state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = xbee_z_dot;
             break;
+            
+        case SENTRY:
+        case FOLLOW_ME:
+            state_estimate.roll = state_estimate.tb_imu[0];
+            state_estimate.pitch = state_estimate.tb_imu[1];
+            state_estimate.yaw = state_estimate.tb_imu[2];
+            
+            
+            state_estimate.continuous_yaw =
+                atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
+                    1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
+            state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
+            state_estimate.Y = xbeeMsg.y;
+            state_estimate.Z = xbeeMsg.z;
+            state_estimate.X_dot = xbee_x_dot;
+            state_estimate.Y_dot = xbee_y_dot;
+            state_estimate.Z_dot = xbee_z_dot;
+
+            state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
+            state_estimate.v = Image_data.v;
+            state_estimate.visual_yaw = state_estimate.u; // TODO: transformation from u to visual_yaw
+            break;
+
         default:
             state_estimate.roll = state_estimate.tb_imu[0];
             state_estimate.pitch = state_estimate.tb_imu[1];
@@ -417,6 +440,9 @@ static void __mocap_check_timeout(void)
     }
     return;
 }
+
+// object tracking check timeout
+
 
 int state_estimator_init(void)
 {

@@ -26,7 +26,7 @@ static pthread_t input_manager_thread;
 static arm_state_t kill_switch = DISARMED;  // raw kill switch on the radio
 
 static bool enabled_emergency_land = false;
-
+static bool obj_tracking = false;
 
 double deadzone(double in, double zone)
 {
@@ -224,6 +224,30 @@ void new_dsm_data_callback()
 
         //Turn off emergency landing if we enter a mode that does NOT need MOCAP
         enabled_emergency_land = false;
+    }
+
+    // If we lose tracking of the object, set to SENTRY mode; 
+    // boolean obj_tracking: lcm timeout?
+    if ( mode_needs_lcm(flight_mode_t mode) ) {
+        // conditions for object_tracking to be true: timeout??
+        if (obj_tracking == true && timeout_1 && user_input.requested_arm_mode == ARMED)
+        { 
+            obj_tracking = false;
+        } 
+        else if (obj_tracking == false && timeout_2 && user_input.requested_arm_mode == ARMED) 
+        { 
+            obj_tracking = true;
+        }
+
+        
+        if (obj_tracking) 
+        {
+            user_input.flight_mode = FOLLOW_ME;
+        } 
+        else
+        {
+            user_input.flight_mode = SENTRY;
+        }
     }
     
     // fill in sticks
