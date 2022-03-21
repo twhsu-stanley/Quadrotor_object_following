@@ -38,6 +38,7 @@
 #include <state_machine.h>
 #include <thrust_map.h>
 #include <xbee_receive.h>
+#include <image_receive.h> // for lcm (image data)
 #include <pni_rm3100.h>
 #include <benchmark.h>
 #include <ntp_read.h>
@@ -80,7 +81,6 @@ void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf,
                              const char *channel,
                              const pose_xyt_t *msg, 
                              void *_user);
-
 
 #define LCM_ADDRESS                 "udpm://239.255.76.67:7667?ttl=1"
 lcm_t * lcm;
@@ -619,6 +619,12 @@ void obj_loc_in_vision_handler(const lcm_recv_buf_t * rbuf,
                              void *_user){
 
     printf("Object Location on iphone: %f | %f ", msg->x, msg->y);
+    
+    Image_data.u = msg->x;
+    Image_data.v = msg->y;
+    // Image_data.range;
+    // Image_data.bearing;
+
     // rc_motor_set(1,mot_l_pol * msg->left_motor_pwm);
     // rc_motor_set(2,mot_r_pol * msg->right_motor_pwm);
     // publish_encoder_msg();

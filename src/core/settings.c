@@ -294,6 +294,14 @@ static int __parse_flight_mode(json_object* jobj_str, flight_mode_t* mode)
     {
         *mode = ALT_HOLD;
     }
+    else if (strcmp(tmp_str, "SENTRY") == 0)
+    {
+        *mode = SENTRY;
+    }
+    else if (strcmp(tmp_str, "FOLLOW_ME") == 0)
+    {
+        *mode = FOLLOW_ME;
+    }
     else if (strcmp(tmp_str, "AUTONOMOUS") == 0)
     {
         *mode = AUTONOMOUS;

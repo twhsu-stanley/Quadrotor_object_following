@@ -145,6 +145,13 @@ typedef struct state_estimate_t
     double bmp_temp;    ///< temperature of barometer
     ///@}
 
+    /** @name Image data in the image frame*/
+    ///@{
+    double u;
+    double v;
+    double visual_yaw;
+    ///@}
+
 } state_estimate_t;
 
 extern state_estimate_t state_estimate;

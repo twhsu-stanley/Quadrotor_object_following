@@ -142,6 +142,10 @@
 		"kp": 4.0
 	},
 
+	"yaw_visual_controller": {
+		"TF_or_PID": "P",
+		"kp": 4.0
+	},
 
     "altitude_rate_controller_pd": {
 		"TF_or_PID": "PD",
