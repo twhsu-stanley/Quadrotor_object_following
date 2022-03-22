@@ -44,6 +44,7 @@ typedef enum fail_state_t
 // top safety
 #define ARM_TIP_THRESHOLD 0.2  ///< radians from level to allow arming sequence
 #define TIP_ANGLE 1.5          ///< radiands of roll or pitch to consider tipped over
+#define OBJECT_DETECTION_HZ 20
 
 // math constants
 #define GRAVITY 9.80665  ///< one G m/s^2
