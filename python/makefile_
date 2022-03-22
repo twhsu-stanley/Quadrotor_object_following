@@ -1,0 +1,14 @@
+CFLAGS = -ggdb3 -std=c11 -lm -Wall -Wunused-parameter -Wstrict-prototypes -Wextra -Wshadow -g
+CFLAGS += -fsanitize=signed-integer-overflow -Wfloat-conversion
+CFLAGS += -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable
+# CFLAGS += -fsanitize=address -fsanitize=undefined -g
+CFLAGS += -fsanitize=undefined -g
+
+# hashcomp: hashcomp.c
+# 	gcc -o $@ $^ $(CFLAGS) -lm -O3
+
+#helloworlds: helloworlds.c
+#	gcc -o $@ $^ $(CFLAGS) -lm -lpthread
+
+server: server.c
+	gcc -o $@ $^ $(CFLAGS) -lm -O3 -lpthread
