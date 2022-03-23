@@ -51,7 +51,7 @@ host = socket.inet_ntoa(listener.info.addresses[0])
 
 
 
-beaglehost = "127.0.0.0"
+beaglehost = "127.0.0.1"
 beaglebonesocket.connect((beaglehost,BBPORT))
 
 mysocket.connect((host,port))
