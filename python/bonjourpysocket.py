@@ -4,6 +4,7 @@ import socket
 import sys
 sys.path.append("/usr/local/lib")
 from lcmtypes import pose_xyt_t
+from lcmtypes import image_data_t
 import lcm
 
 HEADERSIZE = 8
@@ -38,6 +39,7 @@ finally:
 
 lc = lcm.LCM()
 dogpose = pose_xyt_t()
+image_data = image_data_t()
 mysocket = socket.socket()
 mysocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # host = socket.gethostbyname(listener.info.name)
@@ -99,6 +101,9 @@ while True:
                 dogpose.theta = pi
                 lc.publish("POSE",dogpose.encode())
             # if data == "Quit": break
+
+            if "ball" in inputStr:
+
     except:
         print('exception from receive attempt')
 

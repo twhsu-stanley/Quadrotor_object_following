@@ -1,0 +1,9 @@
+struct image_data_t
+{
+    int64_t utime;
+    
+    float u;
+    float v;
+    float range;
+    float bearing;
+}
