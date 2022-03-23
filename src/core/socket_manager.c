@@ -43,7 +43,7 @@ typedef struct pose_xyt_t
 typedef struct thread_info
 {
     int num;
-    pthread_t socket_manager_thread;
+    pthread_t* socket_manager_thread;
     pose_xyt_t* tempbuf;
     int new_socket;
     int valread;
@@ -56,12 +56,12 @@ int socketserver_init()
 {
     printf("entered socketsetup\n");
     fflush(stdout);
-    int server_fd, new_socket, valread;
     struct sockaddr_in address;
+    int server_fd;
     int opt = 1;
     int addrlen = sizeof(address);
     //	char buffer[1024] = {0};
-    char *hello = "Hello from server";
+    // char *hello = "Hello from server";
 
     // thread_info_t server_threadinfo;
     server_threadinfo.num = 1;
@@ -105,7 +105,7 @@ int socketserver_init()
     printf("about to make the thread\n");
     fflush(stdout);
     initialized = true;
-    if (rc_pthread_create(&server_threadinfo.socket_manager_thread, __socket_manager_func, NULL,
+    if (rc_pthread_create(server_threadinfo.socket_manager_thread, __socket_manager_func, NULL,
             SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)
     {
         fprintf(stderr, "ERROR in start_socket_manager, failed to start thread\n");
@@ -121,7 +121,7 @@ int socketserver_cleanup()
     if (initialized)
     {
         // wait for the thread to exit
-        ret = rc_pthread_timed_join(&server_threadinfo.socket_manager_thread, NULL, PRINTF_MANAGER_TOUT);
+        ret = rc_pthread_timed_join(*server_threadinfo.socket_manager_thread, NULL, PRINTF_MANAGER_TOUT);
         if (ret == 1)
             fprintf(stderr, "WARNING: printf_manager_thread exit timeout\n");
         else if (ret == -1)
@@ -157,4 +157,5 @@ void *__socket_manager_func(void *user)
             fflush(stdout);
             send(info->new_socket, "hello from server", 17, 0);
         }
+        return NULL;
 }
