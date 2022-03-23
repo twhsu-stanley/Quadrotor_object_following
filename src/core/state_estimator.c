@@ -454,7 +454,7 @@ static void __feedback_select(void)
 	
                 VL53L1X_ClearInterrupt(&Device);
                 VL53L1X_GetDistance(&Device, &distance);
-                state_estimate.Z = (double)distance;
+                state_estimate.Z = (double)distance /1000; // converted to meter
             }
             tmp = 0;
             state_estimate.X_dot = xbee_x_dot;
