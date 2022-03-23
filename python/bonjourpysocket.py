@@ -40,8 +40,7 @@ finally:
 
 
 
-lc = lcm.LCM()
-dogpose = pose_xyt_t()
+
 mysocket = socket.socket()
 mysocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 beaglebonesocket = socket.socket()
@@ -52,7 +51,7 @@ host = socket.inet_ntoa(listener.info.addresses[0])
 
 
 
-beaglehost = "192.168.1.42"
+beaglehost = "127.0.0.0"
 beaglebonesocket.connect((beaglehost,BBPORT))
 
 mysocket.connect((host,port))
