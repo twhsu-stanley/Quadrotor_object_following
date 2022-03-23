@@ -26,6 +26,7 @@
 #include <rc/time.h>
 #include <rc/pthread.h>
 
+// #include <vl53l1x.h>
 #include <input_manager.h>
 #include <log_manager.h>
 #include <mix.h>
@@ -378,6 +379,32 @@ int main(int argc, char* argv[])
 	// pthread_t lcm_subscribe_thread;
     // rc_pthread_create(&lcm_subscribe_thread, lcm_subscribe_loop, (void*) NULL, SCHED_FIFO, LCM_PRIORITY);
 
+    // Initialize alimeter
+    // printf("Initializing the alitimeter... \n");
+	// uint8_t addr = VL53L1X_DEFAULT_DEVICE_ADDRESS;
+	// uint8_t i2cbus = 1;
+	// int16_t status = 0;
+	// uint16_t rtn;
+
+    // status = VL53L1X_InitDriver(&Device, i2cbus, addr);
+	// if(status!=0){
+	// 	printf("ERROR: VL53LX Not Responding\n");
+	// 	return -1;;
+	// }
+
+    // VL53L1X_SensorInit(&Device);
+
+    // VL53L1X_GetDistanceMode(&Device,&rtn);
+
+    // printf("Altimeter Distance Mode: %d\n", rtn);
+
+    // VL53L1X_GetInterMeasurementInMs(&Device,&rtn);
+	// printf("Measurement Period: %dms\n", rtn);
+	// uint16_t rate = rtn;
+
+	// VL53L1X_GetTimingBudgetInMs(&Device,&rtn);
+	// printf("Timing Budget: %dms\n", rtn);
+    // VL53L1X_StartRanging(&Device); 
 
     // initialize buttons and Assign functions to be called when button
     // events occur
@@ -563,6 +590,7 @@ int main(int argc, char* argv[])
     log_manager_cleanup();
     socketserver_cleanup();
     path_cleanup();
+    // VL53L1X_StopRanging(&Device);
     
     // turn off red LED and blink green to say shut down was safe
     rc_led_set(RC_LED_RED, 0);

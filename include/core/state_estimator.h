@@ -17,6 +17,7 @@
 #include <rc/mpu.h>
 #include <rc_pilot_defs.h>
 #include <stdint.h>  // for uint64_t
+#include <vl53l1x.h>
 
 /**
  * This is the output from the state estimator. It contains raw sensor values
@@ -157,6 +158,8 @@ typedef struct state_estimate_t
 
 extern state_estimate_t state_estimate;
 extern rc_mpu_data_t mpu_data;
+// extern VL53L1_Dev_t Device;
+// extern uint16_t distance;
 
 /**
  * @brief      Initial setup of the state estimator

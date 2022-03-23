@@ -165,7 +165,7 @@ static void* __printf_manager_func(__attribute__((unused)) void* ptr)
         }
         if (settings.printf_altitude)
         {
-            printf("%s%+5.2f |%+5.2f |", __next_colour(), state_estimate.alt_bmp,
+            printf("%s%+5.2f |%+5.2f |", __next_colour(), state_estimate.Z,
                 state_estimate.alt_bmp_vel);
         }
         if (settings.printf_battery)
