@@ -24,6 +24,7 @@
 #include <time.h>
 #include <socket_manager.h>
 #include <rc_pilot_defs.h>
+#include <image_receive.h>
 
 #define PORT 8080
 
@@ -156,6 +157,11 @@ void *__socket_manager_func(void *user)
             printf("X: %f\tY: %f\tDepth: %f\n", info->tempbuf->x, info->tempbuf->y, info->tempbuf->theta);
             fflush(stdout);
             send(info->new_socket, "hello from server", 17, 0);
+
+            Image_data.bearing = info->tempbuf->theta;
+            Image_data.u = info->tempbuf->x; 
+            Image_data.v = info->tempbuf->y;
+            Image_data.range = info->tempbuf->theta;
         }
         return NULL;
 }
