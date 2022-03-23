@@ -56,8 +56,8 @@ typedef struct thread_info
 thread_info_t server_threadinfo;
 int socketserver_init()
 {
-    if ( mode_needs_socket(user_input.flight_mode) )
-    // if ( true)
+//    if ( mode_needs_socket(user_input.flight_mode) )
+    if ( true)
     {
         printf("entered socketsetup\n");
         fflush(stdout);
@@ -70,7 +70,7 @@ int socketserver_init()
 
         // thread_info_t server_threadinfo;
         server_threadinfo.num = 1;
-
+//	server_threadinfo.buffer = {0};
         // Creating socket file descriptor
         if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
         {
@@ -107,12 +107,15 @@ int socketserver_init()
         }
         //  server_threadinfo.buffer = (char **)buffer;
         // server_threadinfo.thread
+printf("Thread info new socket %d\n",server_threadinfo.new_socket);
         printf("about to make the thread\n");
         fflush(stdout);
         initialized = true;
-        if (rc_pthread_create(&server_threadinfo.socket_manager_thread, &__socket_manager_func, NULL,
-                SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)
-        {
+//        if (rc_pthread_create(&server_threadinfo.socket_manager_thread, &__socket_manager_func, NULL,
+  //              SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)
+        if (rc_pthread_create(&server_threadinfo.socket_manager_thread, &__socket_manager_func, (void*) &server_threadinfo ,
+                SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)    
+    {
             fprintf(stderr, "ERROR in start_socket_manager, failed to start thread\n");
             return -1;
         }
@@ -123,8 +126,8 @@ int socketserver_init()
 
 int socketserver_cleanup()
 {
-    if ( mode_needs_socket(user_input.flight_mode) )
-    // if(true)
+    // if ( mode_needs_socket(user_input.flight_mode) )
+    if(true)
     {
         int ret = 0;
         if (initialized)
@@ -150,14 +153,17 @@ void *__socket_manager_func(void *user)
     // buffer[1024] = {0};
     printf("entered the thread\n");
     fflush(stdout);
-    thread_info_t *info = user;
+    thread_info_t *info = (thread_info_t *)user;
 
     //	info->buffer = {0};
     while (rc_get_state() != EXITING)
         {
             printf("enter the while loop\n");
             fflush(stdout);
-            info->valread = read(info->new_socket, &info->buffer, 1024);
+//	printf("%d\t%x",info->new_socket,&info->new_socket);
+    printf("Thread info new socket %d\n",info->new_socket);
+fflush(stdout);
+            info->valread = read(info->new_socket,(void *) &info->buffer, 1024);
             printf("assigning the read valuez\n");
             fflush(stdout);
             // printf("%s\n",info->buffer);
