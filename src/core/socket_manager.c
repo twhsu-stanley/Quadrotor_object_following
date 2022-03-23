@@ -56,8 +56,8 @@ typedef struct thread_info
 thread_info_t server_threadinfo;
 int socketserver_init()
 {
-    // if ( mode_needs_socket(user_input.flight_mode) )
-    if ( true)
+    if ( mode_needs_socket(user_input.flight_mode) )
+    // if ( true)
     {
         printf("entered socketsetup\n");
         fflush(stdout);
@@ -123,8 +123,8 @@ int socketserver_init()
 
 int socketserver_cleanup()
 {
-    // if ( mode_needs_socket(user_input.flight_mode) )
-    if(true)
+    if ( mode_needs_socket(user_input.flight_mode) )
+    // if(true)
     {
         int ret = 0;
         if (initialized)
