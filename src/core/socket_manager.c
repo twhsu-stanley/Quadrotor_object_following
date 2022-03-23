@@ -46,6 +46,7 @@ typedef struct thread_info
     int num;
     pthread_t* socket_manager_thread;
     pose_xyt_t* tempbuf;
+    Image_data_t* image_data_buff; // Image data type
     int new_socket;
     int valread;
     char buffer[1024];
@@ -161,6 +162,12 @@ void *__socket_manager_func(void *user)
             // fflush(stdout);
             info->tempbuf = (pose_xyt_t *)&info->buffer;
             printf("X: %f\tY: %f\tDepth: %f\n", info->tempbuf->x, info->tempbuf->y, info->tempbuf->theta);
+            
+            // Image data type ///////////////////////////////////////////////////////////////////////////
+            info->image_data_buff = (Image_data_t *)&info->buffer;
+            printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", info->image_data_buff->u, info->image_data_buff->v, info->image_data_buff->range, info->image_data_buff->bearing);
+            //////////////////////////////////////////////////////////////////////////////////////////////
+
             fflush(stdout);
             send(info->new_socket, "hello from server", 17, 0);
 
@@ -168,6 +175,14 @@ void *__socket_manager_func(void *user)
             Image_data.u = info->tempbuf->x; 
             Image_data.v = info->tempbuf->y;
             Image_data.range = info->tempbuf->theta;
+
+            // Image data type ///////////////////////////////////////////////////////////////////////
+            Image_data.u = info->image_data_buff->u; 
+            Image_data.v = info->image_data_buff->v;
+            Image_data.bearing = info->image_data_buff->bearing;
+            Image_data.range = info->image_data_buff->range;
+            /////////////////////////////////////////////////////////////////////////////////////////
+
         }
         return NULL;
 }

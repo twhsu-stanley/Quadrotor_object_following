@@ -491,11 +491,17 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
 
     // 3) Yaw -> Yaw Rate
-    if ( mode_needs_socket(user_input.flight_mode) )
+    if ( user_input.flight_mode == FOLLOW_ME )
     {
         setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.visual_yaw)
-                       + setpoint.yaw_dot_ff; // sould use a different D_yaw
-    } else {
+                       + setpoint.yaw_dot_ff; // should use a different D_yaw
+    } 
+    else if ( user_input.flight_mode == SENTRY ) 
+    {
+        setpoint.yaw_dot = 0.2; 
+    } 
+    else 
+    {
         setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.continuous_yaw)
                        + setpoint.yaw_dot_ff;
     }
