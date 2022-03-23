@@ -18,7 +18,7 @@
 
 	"num_dsm_modes": 3,	
 	"flight_mode_1": "OPEN_LOOP_DESCENT",
-	"flight_mode_2": "OPEN_LOOP_DESCENT",
+	"flight_mode_2": "SENTRY",
 	"flight_mode_3": "MANUAL",
 
 	"dsm_thr_ch": 1,

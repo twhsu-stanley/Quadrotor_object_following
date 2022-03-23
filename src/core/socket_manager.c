@@ -56,8 +56,8 @@ typedef struct thread_info
 thread_info_t server_threadinfo;
 int socketserver_init()
 {
-    if ( mode_needs_socket(user_input.flight_mode) )
-    // if ( true)
+    // if ( mode_needs_socket(user_input.flight_mode) )
+    if ( true)
     {
         printf("entered socketsetup\n");
         fflush(stdout);
@@ -123,8 +123,8 @@ int socketserver_init()
 
 int socketserver_cleanup()
 {
-    if ( mode_needs_socket(user_input.flight_mode) )
-    // if(true)
+    // if ( mode_needs_socket(user_input.flight_mode) )
+    if(true)
     {
         int ret = 0;
         if (initialized)
@@ -148,17 +148,17 @@ void *__socket_manager_func(void *user)
     // }
     // do stuff
     // buffer[1024] = {0};
-    printf("entered the thread");
+    printf("entered the thread\n");
     fflush(stdout);
     thread_info_t *info = user;
 
     //	info->buffer = {0};
     while (rc_get_state() != EXITING)
         {
-            printf("casted the pointer");
+            printf("enter the while loop\n");
             fflush(stdout);
-            info->valread = read(info->new_socket, info->buffer, 1024);
-            printf("assigning the read valuez");
+            info->valread = read(info->new_socket, &info->buffer, 1024);
+            printf("assigning the read valuez\n");
             fflush(stdout);
             // printf("%s\n",info->buffer);
             // fflush(stdout);
@@ -186,7 +186,7 @@ void *__socket_manager_func(void *user)
             Image_data.bearing = info->image_data_buff->bearing;
             Image_data.range = info->image_data_buff->range;
             /////////////////////////////////////////////////////////////////////////////////////////
-
+            }
         }
         return NULL;
 }
