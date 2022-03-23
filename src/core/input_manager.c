@@ -228,7 +228,7 @@ void new_dsm_data_callback()
 
     // If we lose tracking of the object, set to SENTRY mode; 
     // boolean obj_tracking: lcm timeout?
-    if ( mode_needs_lcm(user_input.flight_mode) ) {
+    if ( mode_needs_socket(user_input.flight_mode) ) {
         // conditions for object_tracking to be true: timeout??
         // if (obj_tracking == true && timeout_1 && user_input.requested_arm_mode == ARMED)
         // { 

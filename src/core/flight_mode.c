@@ -9,7 +9,7 @@ bool mode_needs_mocap(flight_mode_t mode){
     return false;
 }
 
-bool mode_needs_lcm(flight_mode_t mode) {
+bool mode_needs_socket(flight_mode_t mode) {
     if (mode == SENTRY || mode == FOLLOW_ME)
     {
         return true;
