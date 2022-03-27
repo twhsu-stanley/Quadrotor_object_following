@@ -10,7 +10,7 @@ bool mode_needs_mocap(flight_mode_t mode){
 }
 
 bool mode_needs_socket(flight_mode_t mode) {
-    if (mode == SENTRY || mode == FOLLOW_ME)
+    if (mode == FOLLOW_ME)
     {
         return true;
     }

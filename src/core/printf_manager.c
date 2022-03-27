@@ -300,8 +300,11 @@ int print_flight_mode(flight_mode_t mode)
         case ALT_HOLD:
             printf("%sALT_HOLD       %s", KBLU, KNRM);
             return 0;
-        case SENTRY:
-            printf("%sSENTRY         %s", KBLU, KNRM);
+        case TAKE_OFF:
+            printf("%sTAKE_OFF         %s", KBLU, KNRM);
+            return 0;
+        case LAND:
+            printf("%sLAND         %s", KBLU, KNRM);
             return 0;
         case FOLLOW_ME:
             printf("%sFOLLOW_ME      %s", KBLU, KNRM);

@@ -226,7 +226,7 @@ void new_dsm_data_callback()
         enabled_emergency_land = false;
     }
 
-    // If we lose tracking of the object, set to SENTRY mode; 
+    /* If we lose tracking of the object, set to SENTRY mode; 
     // boolean obj_tracking: lcm timeout?
     if ( mode_needs_socket(user_input.flight_mode) ) {
         // conditions for object_tracking to be true: timeout??
@@ -249,6 +249,7 @@ void new_dsm_data_callback()
             user_input.flight_mode = SENTRY;
         }
     }
+    */
     
     // fill in sticks
     if (user_input.requested_arm_mode == ARMED)
