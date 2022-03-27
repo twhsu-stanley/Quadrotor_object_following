@@ -28,9 +28,9 @@
 
 #define TWO_PI (M_PI * 2.0)
 VL53L1_Dev_t Device;
-uint16_t distance;
-uint8_t tmp = 0;
-int16_t status = 0;
+uint16_t distance = 0;
+uint8_t tmp_alti = 0; // used to check if a new altimeter data is ready
+int16_t status = 0; // altimeter status
 state_estimate_t state_estimate;  // extern variable in state_estimator.h
 
 // sensor data structs
@@ -309,6 +309,7 @@ static int __altitude_init(void)
     R.d[0][0] = 1000000.0;
 
     // initial P, cloned from converged P while running
+    // need to tune the initial P
     Pi.d[0][0] = 1258.69;
     Pi.d[0][1] = 158.6114;
     Pi.d[0][2] = -9.9937;
@@ -318,9 +319,6 @@ static int __altitude_init(void)
     Pi.d[2][0] = -9.9937;
     Pi.d[2][1] = -2.5191;
     Pi.d[2][2] = 0.3174;
-
-    //
-    distance = 0;
 
     // initialize the kalman filter
     if (rc_kalman_alloc_lin(&alt_kf, F, G, H, Q, R, Pi) == -1) return -1;
@@ -340,6 +338,19 @@ static int __altitude_init(void)
     return 0;
 }
 
+static void __alitimeter_march(void)
+{
+    status = VL53L1X_CheckForDataReady(&Device, &tmp_alti);
+			// rc_usleep(1E2);
+    if(tmp_alti != 0){
+        VL53L1X_ClearInterrupt(&Device);
+        VL53L1X_GetDistance(&Device, &distance);
+        state_estimate.alt_altimeter = -(double)distance /1000; // converted to meter
+        tmp_alti = 0;
+    }
+
+}
+
 static void __altitude_march(void)
 {
     int i;
@@ -348,13 +359,13 @@ static void __altitude_march(void)
     static rc_vector_t y = RC_VECTOR_INITIALIZER;
     static double global_update;
 
-    // grab raw data (not used if other global update used)
-    state_estimate.bmp_pressure_raw = bmp_data.pressure_pa;
-    state_estimate.alt_bmp_raw = bmp_data.alt_m;
-    state_estimate.bmp_temp = bmp_data.temp_c;
+    // // grab raw data (not used if other global update used)
+    // state_estimate.bmp_pressure_raw = bmp_data.pressure_pa;
+    // state_estimate.alt_bmp_raw = bmp_data.alt_m;
+    // state_estimate.bmp_temp = bmp_data.temp_c;
 
-    // Set Global update variable
-    global_update = gps_data.lla.alt;
+    // // Set Global update variable
+    // global_update = gps_data.lla.alt;
 
     // make copy of acceleration reading before rotating
     for (i = 0; i < 3; i++) accel_vec[i] = state_estimate.accel[i];
@@ -367,7 +378,7 @@ static void __altitude_march(void)
     {
         rc_vector_zeros(&u, 1);
         rc_vector_zeros(&y, 1);
-        alt_kf.x_est.d[0] = -global_update;
+        alt_kf.x_est.d[0] = state_estimate.alt_altimeter;
         rc_filter_prefill_inputs(&acc_lp, accel_vec[2] + GRAVITY);
         rc_filter_prefill_outputs(&acc_lp, accel_vec[2] + GRAVITY);
     }
@@ -379,15 +390,18 @@ static void __altitude_march(void)
     u.d[0] = acc_lp.newest_output;
 
     // Use gps for kalman update
-    y.d[0] = -global_update;
+    if (tmp_alti == 1)
+        y.d[0] = state_estimate.alt_altimeter;
+    else // no altimeter reading
+        y.d[0] = alt_kf.x_pre.d[0] + DT * alt_kf.x_pre.d[1] + 0.5 * DT*DT *acc_lp.newest_output;
 
     rc_kalman_update_lin(&alt_kf, u, y);
 
     // altitude estimate
     // TODO: rename to something more general (altitude kf from other source than bmp)
-    state_estimate.alt_bmp = alt_kf.x_est.d[0];
-    state_estimate.alt_bmp_vel = alt_kf.x_est.d[1];
-    state_estimate.alt_bmp_accel = alt_kf.x_est.d[2];
+    state_estimate.alt_estimate = alt_kf.x_est.d[0];
+    // state_estimate.alt_bmp_vel = alt_kf.x_est.d[1];
+    // state_estimate.alt_bmp_accel = alt_kf.x_est.d[2];
 
     return;
 }
@@ -428,7 +442,20 @@ static void __feedback_select(void)
                     1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
             state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
             state_estimate.Y = xbeeMsg.y;
-            state_estimate.Z = xbeeMsg.z;
+            state_estimate.Z = state_estimate.alt_estimate;
+            // old codes
+            // status = VL53L1X_CheckForDataReady(&Device, &tmp);
+			// // rc_usleep(1E2);
+            // if(tmp != 0){
+	
+            //     VL53L1X_ClearInterrupt(&Device);
+            //     VL53L1X_GetDistance(&Device, &distance);
+                
+            //     //state_estimate.Z = -(double)distance /1000; // converted to meter
+            //     state_estimate.Z =state_estimate.alt_bmp;
+            // }
+            // tmp = 0;
+
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = xbee_z_dot;
@@ -437,6 +464,9 @@ static void __feedback_select(void)
             //state_estimate.v = Image_data.v;
             state_estimate.visual_range = Image_data.range;
             state_estimate.visual_yaw = Image_data.bearing;
+            
+            
+            
             break;
 
         default:
@@ -446,17 +476,7 @@ static void __feedback_select(void)
             state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
             state_estimate.X = xbeeMsg.x;
             state_estimate.Y = xbeeMsg.y;
-            //state_estimate.Z = xbeeMsg.z;
-
-			status = VL53L1X_CheckForDataReady(&Device, &tmp);
-			// rc_usleep(1E2);
-            if(tmp != 0){
-	
-                VL53L1X_ClearInterrupt(&Device);
-                VL53L1X_GetDistance(&Device, &distance);
-                state_estimate.Z = (double)distance /1000; // converted to meter
-            }
-            tmp = 0;
+            state_estimate.Z = xbeeMsg.z;
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = xbee_z_dot;
@@ -518,6 +538,7 @@ int state_estimator_march(void)
     __batt_march();
     __imu_march();
     __mag_march();
+    __alitimeter_march();
     __altitude_march();
     __gyro_march();
     __z_march();
