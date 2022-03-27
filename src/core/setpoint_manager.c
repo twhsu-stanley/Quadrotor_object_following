@@ -38,6 +38,11 @@
 #define MAX_Z_SETPOINT  0   ///< meters.
 #define MIN_Z_SETPOINT -2.0 ///< meters.
 
+#define FOLLOWME_HOVER_Z -0.5 ///< meters.
+#define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.
+#define DESCEND_SPEED 0.1 ///< POSITIVE; meters/sec.
+#define ALLOW_HOVER_Z_ERROR 0.05 ///< meters.
+
 setpoint_t setpoint;  // extern variable in setpoint_manager.h
 
 /**
@@ -68,49 +73,31 @@ void setpoint_update_yaw(void)
     }
     // otherwise, scale yaw_rate by max yaw rate in rad/s
     // and move yaw setpoint
-    if (user_input.flight_mode == FOLLOW_ME) 
-    {
-        setpoint.yaw = 0;
-    }
     else 
-    {
+    {   
         setpoint.yaw_dot_ff = user_input.yaw_stick * MAX_YAW_RATE;
         setpoint.yaw += setpoint.yaw_dot_ff * DT;
     }
     return;
 }
 
-
-/* NEEDS UPDATED so that if no object is detected, a constant slow rotation
-// will be applied so that the object detection will search 360 degrees
-// if an object is detect, then a PID shall be applied to yaw to center
-// on the object
-void setpoint_followme_yaw(void)
+void setpoint_update_yaw_followme(void)
 {
-    // if throttle stick is down all the way, probably landed, so
-    // keep the yaw setpoint at current yaw so it takes off straight
-    //
-    // TODO: doesnt work well with alt hold mode
-    if (user_input.thr_stick < -0.1 && user_input.flight_mode != ALT_HOLD)
+    if (state_estimate.Z < (FOLLOWME_HOVER_Z + ALLOW_HOVER_Z_ERROR))
     {
-        setpoint.yaw = state_estimate.continuous_yaw;
-        setpoint.yaw_dot_ff = 0.0;
-        return;
-    }
-    
-    switch (user_input.flight_mode)
-    {
-        case SENTRY:
-            setpoint.yaw += 0.5 * DT // keep turning to find the obejct
-            break;
+        // The drone has reached its hovering altitude;
 
-        case FOLLOW_ME:
-            setpoint.yaw = 0;
-            break;
+        // if no object is detected, a constant slow rotation
+        // will be applied so that the object detection will search 360 degrees
+        // if an object is detect, then a PID shall be applied to yaw to center
+        // on the object
     }
-
-    return;
-} */
+    else {
+        // The drone has not yet reached the hovering altitude;
+        // do nothing
+        setpoint.yaw = 0;
+    }
+}
 
 void setpoint_update_Z(void)
 {
@@ -130,10 +117,52 @@ void setpoint_update_Z(void)
         setpoint.Z_dot_ff = fmax(0.0, setpoint.Z_dot_ff);
     }
     setpoint.Z += setpoint.Z_dot_ff * DT;
-
     // Constrain Z setpoint
     rc_saturate_double(&setpoint.Z, MIN_Z_SETPOINT, MAX_Z_SETPOINT);
 
+    return;
+}
+
+void setpoint_update_Z_takeoff(void)
+{   
+    if (user_input.thr_stick < -0.5) 
+    {
+        setpoint.Z = 0;
+    }
+    else 
+    {
+        // command a ramp input of Z to achive closed-loop takeoff
+        setpoint.Z += ASCEND_SPEED * DT;
+    }
+
+    // Constrain Z setpoint
+    rc_saturate_double(&setpoint.Z, FOLLOWME_HOVER_Z, MAX_Z_SETPOINT);
+
+    return;
+}
+
+void setpoint_update_Z_followme(void)
+{
+    if (state_estimate.Z < (FOLLOWME_HOVER_Z + ALLOW_HOVER_Z_ERROR)) {
+        // command a constant input of Z to achive closed-loop altitide hold
+        setpoint.Z = FOLLOWME_HOVER_Z;
+        setpoint.Z_dot_ff = 0;
+    }
+    else {
+        // do nothing?
+        setpoint.Z = state_estimate.Z;
+    }
+    
+    return;
+}
+
+void setpoint_update_Z_landing(void)
+{
+    // command a ramp input of Z to achive closed-loop landing
+    setpoint.Z += DESCEND_SPEED * DT;
+    
+    // Constrain Z setpoint
+    rc_saturate_double(&setpoint.Z, FOLLOWME_HOVER_Z, MAX_Z_SETPOINT);
     return;
 }
 

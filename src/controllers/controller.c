@@ -169,7 +169,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.roll = user_input.roll_stick;
             setpoint.pitch = user_input.pitch_stick;
             
-            setpoint.Z_throttle = -user_input.thr_stick / (cos(state_estimate.roll) * cos(state_estimate.pitch));
+            setpoint.Z_throttle = -user_input.thr_stick / (cos(state_estimate.roll) * cos(state_estimate.pitch)); // negative sign!
             setpoint_update_yaw();
             break;
 
@@ -203,8 +203,8 @@ static void __assign_setpoints_and_enable_loops()
             setpoint_update_yaw();
             break;
 
-        // for the follow-me feature: searching for the object
-        case SENTRY:
+        // Follow-me feature: closed-loop takeoff 
+        case TAKE_OFF:
             // 1) Enable PID Loops based on flight mode
             setpoint.en_6dof = 0; //(settings.dof == 6);
             setpoint.en_rpy_rate_ctrl = 1;
@@ -212,33 +212,33 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 0;
 
-            // 2) Assign Setpoints
-
-            // Trigger "startup" delay if we just transitioned
-            if (just_transitioned_flight_mode())
-            {
-                fm_starting_up = true;
-                time_fm_started_ns = rc_nanos_since_epoch();
-                setpoint_update_XYZ_bumpless();
-            }
-
-            // If we've been in fm for long enough we don't need to "startup" anymore
-            if (rc_nanos_since_epoch() - time_fm_started_ns >= time_fm_needs_to_startup_ns)
-            {
-                fm_starting_up = false;
-            }
-            
+            // 2) Assign Setpoints            
             setpoint.roll = 0;
             setpoint.pitch = 0;
-
-            //initially we will allow user to control the height using stick,
-            //however may want to switch to autonomous takeoff and hold
-            if (!fm_starting_up) setpoint_update_Z();
-            //setpoint_followme_yaw();
-            setpoint_update_yaw();
+            setpoint.yaw = 0; // or = state_estimate.continuous_yaw;
+            
+            setpoint_update_Z_takeoff();
             break;
 
-        // for the follow-me feature: tracking the object
+        // Follow-me feature: closed-loop landing 
+        case LAND:
+            // 1) Enable PID Loops based on flight mode
+            setpoint.en_6dof = 0; //(settings.dof == 6);
+            setpoint.en_rpy_rate_ctrl = 1;
+            setpoint.en_rpy_ctrl = 1;
+            setpoint.en_Z_ctrl = 1;
+            setpoint.en_XY_ctrl = 0;
+
+            // 2) Assign Setpoints            
+            setpoint.roll = 0;
+            setpoint.pitch = 0;
+            setpoint.yaw = 0; // or = state_estimate.continuous_yaw;
+            
+            setpoint_update_Z_landing();
+
+            break;
+
+        // Follow-me feature: hovering & searching/tracking the object
         case FOLLOW_ME:
             //mostly follows ALT_HOLD as template
             // 1) Enable PID Loops based on flight mode
@@ -248,30 +248,13 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 0;
 
-            // 2) Assign Setpoints
-
-            // Trigger "startup" delay if we just transitioned
-            if (just_transitioned_flight_mode())
-            {
-                fm_starting_up = true;
-                time_fm_started_ns = rc_nanos_since_epoch();
-                setpoint_update_XYZ_bumpless();
-            }
-
-            // If we've been in fm for long enough we don't need to "startup" anymore
-            if (rc_nanos_since_epoch() - time_fm_started_ns >= time_fm_needs_to_startup_ns)
-            {
-                fm_starting_up = false;
-            }
-            
+            // 2) Assign Setpoints            
             setpoint.roll = 0;
             setpoint.pitch = 0;
+            
+            setpoint_update_Z_followme();
+            setpoint_update_yaw_followme();
 
-            //initially we will allow user to control the height using stick,
-            //however may want to switch to autonomous takeoff and hold
-            if (!fm_starting_up) setpoint_update_Z();
-            //setpoint_followme_yaw();
-            setpoint_update_yaw();
             break;
 
         case AUTONOMOUS:

@@ -299,6 +299,7 @@ static int __altitude_init(void)
     G.d[0][2] = 0.0;
 
     H.d[0][0] = 1.0;
+    
     H.d[0][1] = 0.0;
     H.d[0][2] = 0.0;
 
@@ -416,7 +417,6 @@ static void __feedback_select(void)
             state_estimate.Z_dot = xbee_z_dot;
             break;
             
-        case SENTRY:
         case FOLLOW_ME:
             state_estimate.roll = state_estimate.tb_imu[0];
             state_estimate.pitch = state_estimate.tb_imu[1];
@@ -503,6 +503,7 @@ int state_estimator_init(void)
     if (rc_vector_zeros(&accel_out, 3) == -1) return -1;
     if (rc_matrix_zeros(&rot_matrix, 3, 3) == -1) return -1;
     state_estimate.initialized = 1;
+    state_estimate.flight_state = 'G'; // initialized with the "grounded" state
     return 0;
 }
 

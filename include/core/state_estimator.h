@@ -154,6 +154,11 @@ typedef struct state_estimate_t
     double visual_range;
     ///@}
 
+    /** @name Flight states for the state machine*/
+    ///@{
+    char flight_state; // 'G': grounded, 'H': hovering, 'A': ascending, 'D': descending
+    ///@}
+     
 } state_estimate_t;
 
 extern state_estimate_t state_estimate;
