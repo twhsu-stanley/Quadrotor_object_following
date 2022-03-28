@@ -131,6 +131,7 @@ void setpoint_update_Z(void)
 {
     // Set Z-dot based on user input
     // setpoint.Z_dot = -user_input.thr_stick * settings.max_Z_velocity;
+    
     double thr_stick_full_range = 2*user_input.thr_stick - 1;
     setpoint.Z_dot_ff = -1 * deadzone(thr_stick_full_range, 2*LOITER_DEADZONE) * MAX_Z_VELOCITY;
     // setpoint.Z_dot = -1 * (2*user_input.thr_stick - 1) * settings.max_Z_velocity;

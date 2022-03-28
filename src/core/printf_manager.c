@@ -69,7 +69,7 @@ static int __print_header()
     }
     if (settings.printf_altitude)
     {
-        printf("%s alt(m) |altdot|", __next_colour());
+        printf("%s alt(m) |alti|", __next_colour());
     }
     if (settings.printf_battery)
     {
@@ -166,7 +166,7 @@ static void* __printf_manager_func(__attribute__((unused)) void* ptr)
         if (settings.printf_altitude)
         {
             printf("%s%+5.2f |%+5.2f |", __next_colour(), state_estimate.Z,
-                state_estimate.alt_bmp_vel);
+                state_estimate.alt_altimeter);
         }
         if (settings.printf_battery)
         {

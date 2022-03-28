@@ -125,8 +125,8 @@ printf("Thread info new socket %d\n",server_threadinfo.new_socket);
 
 int socketserver_cleanup()
 {
-    // if ( mode_needs_socket(user_input.flight_mode) )
-    if(true)
+    if ( mode_needs_socket(user_input.flight_mode) )
+    // if(true)
     {
         int ret = 0;
         if (initialized)
@@ -161,7 +161,7 @@ void *__socket_manager_func(void *user)
             fflush(stdout);
 //	printf("%d\t%x",info->new_socket,&info->new_socket);
     printf("Thread info new socket %d\n",info->new_socket);
-fflush(stdout);
+    fflush(stdout);
             info->valread = read(info->new_socket,(void *) &info->buffer, 1024);
             printf("assigning the read valuez\n");
             fflush(stdout);
