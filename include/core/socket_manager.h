@@ -13,6 +13,8 @@
 
 #include <flight_mode.h>
 
+thread_info_t server_threadinfo;
+
 /**
  * @brief   Start the printf_manager thread which should be the only thing
  * printing to the screen besides error messages from other threads.

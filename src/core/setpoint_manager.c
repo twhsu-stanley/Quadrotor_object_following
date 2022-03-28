@@ -60,6 +60,24 @@ static void __reset_waypoint_counter();
 
 /***********************************/
 
+void socket_object_tracking(void)
+{
+    bool obj_tracking;
+    double ms_since_socket = ((double)rc_nanos_since_epoch() - (double)server_threadinfo.socket_last_received_time_ns) / 1e6;
+    if (settings.enable_socket && ms_since_socket >= settings.socket_dropout_timeout_ms)
+    {
+        obj_tracking = false;
+    }
+    else
+    {
+        //obj_tracking = true;
+        obj_tracking = false;
+    }
+    // set yaw references to zero
+
+    return obj_tracking;
+}
+
 void setpoint_update_yaw(void)
 {
     // if throttle stick is down all the way, probably landed, so
@@ -87,12 +105,12 @@ void setpoint_update_yaw_followme(void)
     if (state_estimate.Z < (FOLLOWME_HOVER_Z + ALLOW_HOVER_Z_ERROR))
     {
         // The drone has reached its hovering altitude;
-
-        // TODO: define bool object_tracking 
-        if (object_tracking) {
+        if (socket_object_tracking()) {
             // Tracking sub-mode: if an object is detect, then a PID shall be applied to yaw to center
             // on the object
-            setpoint.delta_yaw = state_estimate.visual_bearing; 
+
+            //setpoint.delta_yaw = state_estimate.visual_bearing;
+            setpoint.yaw += SENTRY_ROTATION_RATE * DT;
         }
         else
         {
@@ -164,9 +182,12 @@ void setpoint_update_Z_followme(void)
     else {
         printf("The drone has entered the FOLLOW_ME mode BUT has NOT reacehd the hovering altitude!\n");
         
-        // do nothing?
-        setpoint.Z = state_estimate.Z;
+        // keep ascending
+        setpoint.Z += ASCEND_SPEED * DT;
     }
+
+    // Constrain Z setpoint
+    rc_saturate_double(&setpoint.Z, FOLLOWME_HOVER_Z, MAX_Z_SETPOINT);
     
     return;
 }

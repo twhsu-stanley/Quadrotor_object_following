@@ -8,6 +8,7 @@
 #include <settings.h>
 #include <state_machine.h>
 #include <flight_mode.h>
+#include <socket_manager.h>
 
 // Flight Mode Startup Delay variables
 static uint64_t time_fm_started_ns;
@@ -474,12 +475,12 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
 
     // 3) Yaw -> Yaw Rate
-    if (user_input.flight_mode == FOLLOW_ME && object_tracking == true)
+    if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
     {
         // Apply a P controller to center the object
         setpoint.yaw_throttle = rc_filter_march(&D_yaw_visual,  setpoint.delta_yaw  - state_estimate.delta_yaw);
     }
-    else 
+    else
     {
         setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.continuous_yaw)
                             + setpoint.yaw_dot_ff;
@@ -500,7 +501,7 @@ static void __run_attitude_rate_controller()
                              + rc_filter_march(&D_pitch_rate_i,   setpoint.pitch_dot  - state_estimate.pitch_dot);
     
     // 3) Yaw Rate -> Yaw Torques
-    if (user_input.flight_mode == FOLLOW_ME && object_tracking == true)
+    if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
     {
         // do nothing? 
     }

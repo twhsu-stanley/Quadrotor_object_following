@@ -50,14 +50,12 @@ typedef struct thread_info
     int new_socket;
     int valread;
     char buffer[1024];
+    uint64_t socket_last_received_time_ns;
 } thread_info_t;
 
-
-thread_info_t server_threadinfo;
 int socketserver_init()
 {
-//    if ( mode_needs_socket(user_input.flight_mode) )
-    if ( true)
+    if (settings.enable_socket)
     {
         printf("entered socketsetup\n");
         fflush(stdout);
@@ -122,6 +120,7 @@ printf("Thread info new socket %d\n",server_threadinfo.new_socket);
         rc_usleep(50000);
         return 0;
     }
+    return 0;
 }
 
 int socketserver_cleanup()
@@ -192,6 +191,8 @@ fflush(stdout);
             Image_data.bearing = info->image_data_buff->bearing;
             Image_data.range = info->image_data_buff->range;
             /////////////////////////////////////////////////////////////////////////////////////////
+
+            info->socket_last_received_time_ns = rc_nanos_since_epoch();
             }
         }
         return NULL;

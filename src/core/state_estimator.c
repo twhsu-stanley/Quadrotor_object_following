@@ -422,10 +422,10 @@ static void __feedback_select(void)
             state_estimate.pitch = state_estimate.tb_imu[1];
             state_estimate.yaw = state_estimate.tb_imu[2];
 
-            if (object_tracking) {
+            if (socket_object_tracking()) {
                 // TODO: reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket
-                // otherwise, integrate the gyro data over time
-                state_estimate.delta_yaw += state_estimate.gyro[2] * DT; 
+                // otherwise, integrate the gyro data over time   
+                state_estimate.delta_yaw += state_estimate.yaw_dot * DT; 
             }
 
             state_estimate.continuous_yaw =
