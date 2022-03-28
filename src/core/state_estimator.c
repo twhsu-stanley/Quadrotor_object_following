@@ -306,7 +306,7 @@ static int __altitude_init(void)
     Q.d[0][0] = 0.000000001;
     Q.d[1][1] = 0.000000001;
     Q.d[2][2] = 0.0001;  // don't want bias to change too quickly
-    R.d[0][0] = 0.5;
+    R.d[0][0] = 0.25;
 
     // initial P, cloned from converged P while running
     // need to tune the initial P
@@ -356,7 +356,7 @@ static void __altitude_march(void)
     double accel_vec[3];
     static rc_vector_t u = RC_VECTOR_INITIALIZER;
     static rc_vector_t y = RC_VECTOR_INITIALIZER;
-    static double global_update;
+    // static double global_update;
 
     // // grab raw data (not used if other global update used)
     // state_estimate.bmp_pressure_raw = bmp_data.pressure_pa;
@@ -389,17 +389,20 @@ static void __altitude_march(void)
     u.d[0] = acc_lp.newest_output;
 
     // Use altimeter for kalman update
-    if (tmp_alti != 0)
-    {
-        y.d[0] = state_estimate.alt_altimeter;
-        rc_kalman_update_lin(&alt_kf, u, y);
-        tmp_alti = 0;
-    }
-    else // no altimeter reading
-    {
-        y.d[0] = alt_kf.x_pre.d[0] + DT * alt_kf.x_pre.d[1] + 0.5 * DT*DT *acc_lp.newest_output;
-        rc_kalman_update_lin(&alt_kf, u, y);
-    }
+    // if (tmp_alti != 0)
+    // {
+    //     y.d[0] = state_estimate.alt_altimeter;
+    //     tmp_alti = 0;
+    //     printf("using altimeter reading\n");
+    //     fflush(stdout);
+    // }
+    // else // no altimeter reading
+    // {
+    //     y.d[0] = alt_kf.x_est.d[0] + DT * alt_kf.x_est.d[1] + 0.5 * DT*DT *acc_lp.newest_output;
+    // }
+    y.d[0] = state_estimate.alt_altimeter;
+
+    rc_kalman_update_lin(&alt_kf, u, y);
 
     // altitude estimate
     // TODO: rename to something more general (altitude kf from other source than bmp)
