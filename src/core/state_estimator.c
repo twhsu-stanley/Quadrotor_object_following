@@ -439,6 +439,8 @@ static void __feedback_select(void)
             state_estimate.Z_dot = xbee_z_dot;
             break;
             
+        case TAKE_OFF:
+        case LAND:
         case FOLLOW_ME:
             state_estimate.roll = state_estimate.tb_imu[0];
             state_estimate.pitch = state_estimate.tb_imu[1];
