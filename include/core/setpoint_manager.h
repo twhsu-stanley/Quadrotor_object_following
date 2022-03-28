@@ -85,6 +85,7 @@ typedef struct setpoint_t
     double yaw;               ///< glabal yaw angle, positive left
     double roll_ff;           ///< feedforward roll angle (rad)
     double pitch_ff;          ///< feedforward pitch angle (rad)
+    double delta_yaw;
     ///< @}
 
     /** @name acceleration setpoint */

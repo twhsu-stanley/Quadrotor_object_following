@@ -82,6 +82,7 @@ typedef struct state_estimate_t
     double pitch_dot;
     double yaw_dot;
     double continuous_yaw;  ///<  keeps increasing/decreasing aboce +-2pi
+    double delta_yaw;
     double X;
     double Y;
     double Z;
@@ -150,13 +151,8 @@ typedef struct state_estimate_t
     ///@{
     double u;
     double v;
-    double visual_yaw;
+    double visual_bearing;
     double visual_range;
-    ///@}
-
-    /** @name Flight states for the state machine*/
-    ///@{
-    char flight_state; // 'G': grounded, 'H': hovering, 'A': ascending, 'D': descending
     ///@}
      
 } state_estimate_t;

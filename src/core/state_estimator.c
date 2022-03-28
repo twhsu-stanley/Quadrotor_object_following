@@ -421,22 +421,29 @@ static void __feedback_select(void)
             state_estimate.roll = state_estimate.tb_imu[0];
             state_estimate.pitch = state_estimate.tb_imu[1];
             state_estimate.yaw = state_estimate.tb_imu[2];
-            
-            
+
+            if (object_tracking) {
+                // TODO: reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket
+                // otherwise, integrate the gyro data over time
+                state_estimate.delta_yaw += state_estimate.gyro[2] * DT; 
+            }
+
             state_estimate.continuous_yaw =
                 atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
                     1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
             state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
             state_estimate.Y = xbeeMsg.y;
-            state_estimate.Z = xbeeMsg.z;
+            state_estimate.Z = xbeeMsg.z; // TODO: use the laser altimiter
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;
-            state_estimate.Z_dot = xbee_z_dot;
+            state_estimate.Z_dot = xbee_z_dot; // TODO: use the laser altimiter
+
+
 
             //state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
             //state_estimate.v = Image_data.v;
             state_estimate.visual_range = Image_data.range;
-            state_estimate.visual_yaw = Image_data.bearing;
+            state_estimate.visual_bearing = Image_data.bearing;
             break;
 
         default:
@@ -503,7 +510,6 @@ int state_estimator_init(void)
     if (rc_vector_zeros(&accel_out, 3) == -1) return -1;
     if (rc_matrix_zeros(&rot_matrix, 3, 3) == -1) return -1;
     state_estimate.initialized = 1;
-    state_estimate.flight_state = 'G'; // initialized with the "grounded" state
     return 0;
 }
 

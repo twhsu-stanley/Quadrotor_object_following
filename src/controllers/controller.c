@@ -24,7 +24,7 @@ static rc_filter_t D_yaw_rate_i =    RC_FILTER_INITIALIZER;
 static rc_filter_t D_roll =          RC_FILTER_INITIALIZER;
 static rc_filter_t D_pitch =         RC_FILTER_INITIALIZER;
 static rc_filter_t D_yaw =           RC_FILTER_INITIALIZER;
-static rc_filter_t D_yaw_visual =     RC_FILTER_INITIALIZER; // for the follow-me feature
+static rc_filter_t D_yaw_visual =    RC_FILTER_INITIALIZER; // for the follow-me feature
 static rc_filter_t D_Xdot_pd =       RC_FILTER_INITIALIZER;
 static rc_filter_t D_Xdot_i =        RC_FILTER_INITIALIZER;
 static rc_filter_t D_Ydot_pd =       RC_FILTER_INITIALIZER;
@@ -474,21 +474,18 @@ static void __run_attitude_controller()
     rc_saturate_double(&setpoint.pitch_dot, -MAX_PITCH_RATE, MAX_PITCH_RATE);
 
     // 3) Yaw -> Yaw Rate
-    if ( user_input.flight_mode == FOLLOW_ME )
+    if (user_input.flight_mode == FOLLOW_ME && object_tracking == true)
     {
-        setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.visual_yaw)
-                       + setpoint.yaw_dot_ff; // should use a different D_yaw
-    } 
-    else if ( user_input.flight_mode == SENTRY ) 
-    {
-        setpoint.yaw_dot = 0.2; 
-    } 
+        // Apply a P controller to center the object
+        setpoint.yaw_throttle = rc_filter_march(&D_yaw_visual,  setpoint.delta_yaw  - state_estimate.delta_yaw);
+    }
     else 
     {
         setpoint.yaw_dot  = rc_filter_march(&D_yaw,  setpoint.yaw  - state_estimate.continuous_yaw)
-                       + setpoint.yaw_dot_ff;
+                            + setpoint.yaw_dot_ff;
+        rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
     }
-    rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
+
 }
 
 static void __run_attitude_rate_controller()
@@ -503,8 +500,16 @@ static void __run_attitude_rate_controller()
                              + rc_filter_march(&D_pitch_rate_i,   setpoint.pitch_dot  - state_estimate.pitch_dot);
     
     // 3) Yaw Rate -> Yaw Torques
-    setpoint.yaw_throttle  = rc_filter_march(&D_yaw_rate_pd,  setpoint.yaw_dot  - state_estimate.yaw_dot)
-                           + rc_filter_march(&D_yaw_rate_i,   setpoint.yaw_dot  - state_estimate.yaw_dot);
+    if (user_input.flight_mode == FOLLOW_ME && object_tracking == true)
+    {
+        // do nothing? 
+    }
+    else 
+    {
+        setpoint.yaw_throttle  = rc_filter_march(&D_yaw_rate_pd,  setpoint.yaw_dot  - state_estimate.yaw_dot)
+                                + rc_filter_march(&D_yaw_rate_i,   setpoint.yaw_dot  - state_estimate.yaw_dot);
+    }
+    
 }
 
 static void __add_throttles_to_mixing_matrix(double* u, double* mot)

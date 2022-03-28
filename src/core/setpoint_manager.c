@@ -42,6 +42,7 @@
 #define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.
 #define DESCEND_SPEED 0.1 ///< POSITIVE; meters/sec.
 #define ALLOW_HOVER_Z_ERROR 0.05 ///< meters.
+#define SENTRY_ROTATION_RATE 0.4 ///< rad/s.
 
 setpoint_t setpoint;  // extern variable in setpoint_manager.h
 
@@ -87,15 +88,24 @@ void setpoint_update_yaw_followme(void)
     {
         // The drone has reached its hovering altitude;
 
-        // if no object is detected, a constant slow rotation
-        // will be applied so that the object detection will search 360 degrees
-        // if an object is detect, then a PID shall be applied to yaw to center
-        // on the object
+        // TODO: define bool object_tracking 
+        if (object_tracking) {
+            // Tracking sub-mode: if an object is detect, then a PID shall be applied to yaw to center
+            // on the object
+            setpoint.delta_yaw = state_estimate.visual_bearing; 
+        }
+        else
+        {
+            // Sentry sub-mode: if no object is detected, a constant slow rotation will be applied
+            // so that the object detection will search 360 degrees
+            setpoint.yaw += SENTRY_ROTATION_RATE * DT;
+        }
     }
     else {
         // The drone has not yet reached the hovering altitude;
         // do nothing
-        setpoint.yaw = 0;
+        setpoint.yaw = state_estimate.continuous_yaw;
+        setpoint.yaw_dot_ff = 0.0;
     }
 }
 
@@ -127,7 +137,8 @@ void setpoint_update_Z_takeoff(void)
 {   
     if (user_input.thr_stick < -0.5) 
     {
-        setpoint.Z = 0;
+        // do nothing
+        setpoint.Z = state_estimate.Z; // or = 0? 
     }
     else 
     {
@@ -144,11 +155,15 @@ void setpoint_update_Z_takeoff(void)
 void setpoint_update_Z_followme(void)
 {
     if (state_estimate.Z < (FOLLOWME_HOVER_Z + ALLOW_HOVER_Z_ERROR)) {
+        printf("The drone has reacehd the hovering altitude!\n");
+        
         // command a constant input of Z to achive closed-loop altitide hold
         setpoint.Z = FOLLOWME_HOVER_Z;
         setpoint.Z_dot_ff = 0;
     }
     else {
+        printf("The drone has entered the FOLLOW_ME mode BUT has NOT reacehd the hovering altitude!\n");
+        
         // do nothing?
         setpoint.Z = state_estimate.Z;
     }
