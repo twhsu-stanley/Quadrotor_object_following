@@ -306,7 +306,7 @@ static int __altitude_init(void)
     Q.d[0][0] = 0.000000001;
     Q.d[1][1] = 0.000000001;
     Q.d[2][2] = 0.0001;  // don't want bias to change too quickly
-    R.d[0][0] = 1000000.0;
+    R.d[0][0] = 0.5;
 
     // initial P, cloned from converged P while running
     // need to tune the initial P
@@ -346,7 +346,6 @@ static void __alitimeter_march(void)
         VL53L1X_ClearInterrupt(&Device);
         VL53L1X_GetDistance(&Device, &distance);
         state_estimate.alt_altimeter = -(double)distance /1000; // converted to meter
-        tmp_alti = 0;
     }
 
 }
@@ -389,13 +388,18 @@ static void __altitude_march(void)
     rc_filter_march(&acc_lp, accel_vec[2] + GRAVITY);
     u.d[0] = acc_lp.newest_output;
 
-    // Use gps for kalman update
-    if (tmp_alti == 1)
+    // Use altimeter for kalman update
+    if (tmp_alti != 0)
+    {
         y.d[0] = state_estimate.alt_altimeter;
+        rc_kalman_update_lin(&alt_kf, u, y);
+        tmp_alti = 0;
+    }
     else // no altimeter reading
+    {
         y.d[0] = alt_kf.x_pre.d[0] + DT * alt_kf.x_pre.d[1] + 0.5 * DT*DT *acc_lp.newest_output;
-
-    rc_kalman_update_lin(&alt_kf, u, y);
+        rc_kalman_update_lin(&alt_kf, u, y);
+    }
 
     // altitude estimate
     // TODO: rename to something more general (altitude kf from other source than bmp)
@@ -443,6 +447,7 @@ static void __feedback_select(void)
             state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
             state_estimate.Y = xbeeMsg.y;
             state_estimate.Z = state_estimate.alt_estimate;
+            // state_estimate.Z = state_estimate.alt_altimeter;
             // old codes
             // status = VL53L1X_CheckForDataReady(&Device, &tmp);
 			// // rc_usleep(1E2);
