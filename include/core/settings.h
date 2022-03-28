@@ -51,6 +51,9 @@ typedef struct settings_t
     int enable_mocap_dropout_emergency_land;
     double mocap_dropout_timeout_ms;
 
+    int enable_socket;
+    double socket_dropout_timeout_ms; 
+
     //-0.6 is close to hovering. Make the value closer to zero (less negative) if you want to descend faster. 
     //This parameter will also depend on the weight of the vehicle.
     double dropout_z_throttle;

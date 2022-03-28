@@ -60,7 +60,7 @@ static void __reset_waypoint_counter();
 
 /***********************************/
 
-void socket_object_tracking(void)
+bool socket_object_tracking(void)
 {
     bool obj_tracking;
     double ms_since_socket = ((double)rc_nanos_since_epoch() - (double)server_threadinfo.socket_last_received_time_ns) / 1e6;

@@ -20,9 +20,9 @@
     "hover_throttle": -0.33,
 
 	"num_dsm_modes": 3,	
-	"flight_mode_1": "OPEN_LOOP_DESCENT",
-	"flight_mode_2": "SENTRY",
-	"flight_mode_3": "MANUAL",
+	"flight_mode_1": "TAKE_OFF",
+	"flight_mode_2": "FOLLOW_ME",
+	"flight_mode_3": "LAND",
 
 	"dsm_thr_ch": 1,
 	"dsm_thr_pol": 1,

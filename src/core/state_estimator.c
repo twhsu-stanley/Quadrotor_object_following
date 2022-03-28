@@ -409,7 +409,7 @@ static void __altitude_march(void)
     // altitude estimate
     // TODO: rename to something more general (altitude kf from other source than bmp)
     state_estimate.alt_estimate = alt_kf.x_est.d[0];
-    // state_estimate.alt_bmp_vel = alt_kf.x_est.d[1];
+    state_estimate.alt_velocity = alt_kf.x_est.d[1];
     // state_estimate.alt_bmp_accel = alt_kf.x_est.d[2];
 
     return;
@@ -474,7 +474,7 @@ static void __feedback_select(void)
 
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;
-            state_estimate.Z_dot = xbee_z_dot; // TODO: use the laser altimiter
+            state_estimate.Z_dot = state_estimate.alt_velocity; 
 
 
 
