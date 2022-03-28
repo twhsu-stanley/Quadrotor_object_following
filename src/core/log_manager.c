@@ -52,7 +52,7 @@ static int __write_header(FILE* log_fd)
     {
         fprintf(log_fd,
             ",v_batt,alt_bmp_raw,bmp_temp,gyro_roll,gyro_pitch,gyro_yaw,accel_X,accel_Y,accel_Z,mag_X, "
-            "mag_Y, mag_Z,alti_laser,alti_acc");
+            "mag_Y, mag_Z,alti_laser,alti_acc, visual_range, visual_bearing, socket_last_received_time_ns");
     }
 
     if (settings.log_state)
@@ -149,7 +149,7 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
     {
         fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F", e.v_batt,
             e.alt_bmp_raw,e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, e.accel_X, e.accel_Y, e.accel_Z,
-            e.mag_X, e.mag_Y, e.mag_Z,e.alti_laser,e.alti_accelerometer);
+            e.mag_X, e.mag_Y, e.mag_Z,e.alti_laser,e.alti_accelerometer, e.visual_range, e.visual_bearing, e.socket_last_received_time_ns);
     }
 
     if (settings.log_state)
@@ -329,6 +329,9 @@ static log_entry_t __construct_new_entry()
     e.mag_Z = state_estimate.mag[2];
     e.alti_laser = state_estimate.alt_altimeter;
     e.alti_accelerometer = state_estimate.alt_accelometer;
+    e.visual_range = state_estimate.visual_range;
+    e.visual_bearing = state_estimate.visual_bearing;
+    e.socket_last_received_time_ns = server_threadinfo.socket_last_received_time_ns;
 
     e.roll = state_estimate.roll;
     e.pitch = state_estimate.pitch;

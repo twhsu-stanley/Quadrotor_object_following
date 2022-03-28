@@ -122,7 +122,7 @@ typedef struct setpoint_t
 
 extern setpoint_t setpoint;
 
-extern bool object_tracking;
+bool socket_object_tracking(void);
 
 /**
  * @brief   Initializes the setpoint manager.

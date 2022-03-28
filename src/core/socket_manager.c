@@ -33,10 +33,6 @@ static bool initialized = false;
 void *__socket_manager_func(void *user);
 
 
-
-
-
-
 int socketserver_init()
 {
     if (settings.enable_socket)
@@ -168,13 +164,6 @@ void *__socket_manager_func(void *user)
             Image_data.u = info->tempbuf->x; 
             Image_data.v = info->tempbuf->y;
             Image_data.range = info->tempbuf->theta;
-
-            // Image data type ///////////////////////////////////////////////////////////////////////
-            Image_data.u = info->image_data_buff->u; 
-            Image_data.v = info->image_data_buff->v;
-            Image_data.bearing = info->image_data_buff->bearing;
-            Image_data.range = info->image_data_buff->range;
-            /////////////////////////////////////////////////////////////////////////////////////////
 
             info->socket_last_received_time_ns = rc_nanos_since_epoch();
             }

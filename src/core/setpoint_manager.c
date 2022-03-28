@@ -38,7 +38,7 @@
 #define MAX_Z_SETPOINT  0   ///< meters.
 #define MIN_Z_SETPOINT -2.0 ///< meters.
 
-#define FOLLOWME_HOVER_Z -0.5 ///< meters.
+//#define FOLLOWME_HOVER_Z -1 ///< meters.
 #define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.
 #define DESCEND_SPEED 0.1 ///< POSITIVE; meters/sec.
 #define ALLOW_HOVER_Z_ERROR 0.05 ///< meters.
@@ -64,13 +64,12 @@ bool socket_object_tracking(void)
 {
     bool obj_tracking;
     double ms_since_socket = ((double)rc_nanos_since_epoch() - (double)server_threadinfo.socket_last_received_time_ns) / 1e6;
-    if (settings.enable_socket && ms_since_socket >= settings.socket_dropout_timeout_ms)
+    if (settings.enable_socket && ms_since_socket < settings.socket_dropout_timeout_ms)
     {
-        obj_tracking = false;
+        obj_tracking = true;
     }
     else
     {
-        //obj_tracking = true;
         obj_tracking = false;
     }
     // set yaw references to zero
@@ -102,7 +101,7 @@ void setpoint_update_yaw(void)
 
 void setpoint_update_yaw_followme(void)
 {
-    if (state_estimate.Z < (FOLLOWME_HOVER_Z + ALLOW_HOVER_Z_ERROR))
+    if (state_estimate.Z < (settings.follow_me_hover_Z + ALLOW_HOVER_Z_ERROR))
     {
         // The drone has reached its hovering altitude;
         if (socket_object_tracking()) {
@@ -166,18 +165,18 @@ void setpoint_update_Z_takeoff(void)
     }
 
     // Constrain Z setpoint
-    rc_saturate_double(&setpoint.Z, FOLLOWME_HOVER_Z, MAX_Z_SETPOINT);
+    rc_saturate_double(&setpoint.Z, settings.follow_me_hover_Z, MAX_Z_SETPOINT);
 
     return;
 }
 
 void setpoint_update_Z_followme(void)
 {
-    if (state_estimate.Z < (FOLLOWME_HOVER_Z + ALLOW_HOVER_Z_ERROR)) {
+    if (state_estimate.Z < (settings.follow_me_hover_Z + ALLOW_HOVER_Z_ERROR)) {
         printf("The drone has reacehd the hovering altitude!\n");
         
         // command a constant input of Z to achive closed-loop altitide hold
-        setpoint.Z = FOLLOWME_HOVER_Z;
+        setpoint.Z = settings.follow_me_hover_Z;
         setpoint.Z_dot_ff = 0;
     }
     else {
@@ -188,7 +187,7 @@ void setpoint_update_Z_followme(void)
     }
 
     // Constrain Z setpoint
-    rc_saturate_double(&setpoint.Z, FOLLOWME_HOVER_Z, MAX_Z_SETPOINT);
+    rc_saturate_double(&setpoint.Z, settings.follow_me_hover_Z, MAX_Z_SETPOINT);
     
     return;
 }
@@ -199,7 +198,7 @@ void setpoint_update_Z_landing(void)
     setpoint.Z += DESCEND_SPEED * DT;
     
     // Constrain Z setpoint
-    rc_saturate_double(&setpoint.Z, FOLLOWME_HOVER_Z, MAX_Z_SETPOINT);
+    rc_saturate_double(&setpoint.Z, settings.follow_me_hover_Z, MAX_Z_SETPOINT);
     return;
 }
 

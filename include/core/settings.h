@@ -51,6 +51,7 @@ typedef struct settings_t
     int enable_mocap_dropout_emergency_land;
     double mocap_dropout_timeout_ms;
 
+    double follow_me_hover_Z;
     int enable_socket;
     double socket_dropout_timeout_ms; 
 

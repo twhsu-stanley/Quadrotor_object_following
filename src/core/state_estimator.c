@@ -478,10 +478,11 @@ static void __feedback_select(void)
 
 
 
-            //state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
-            //state_estimate.v = Image_data.v;
+            state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
+            state_estimate.v = Image_data.v;
             state_estimate.visual_range = Image_data.range;
             state_estimate.visual_bearing = Image_data.bearing;
+            
             break;
 
         default:
