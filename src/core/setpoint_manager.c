@@ -21,6 +21,7 @@
 #include <setpoint_manager.h>
 #include <settings.h>
 #include <state_estimator.h>
+#include <socket_manager.h>
 
 
 #include <controller.h>

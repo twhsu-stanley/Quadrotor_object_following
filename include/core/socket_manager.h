@@ -12,6 +12,8 @@
 #define __SOCKET_MANAGER__
 
 #include <flight_mode.h>
+#include <stdint.h>
+#include <image_receive.h>
 
 typedef struct pose_xyt_t
 {    
