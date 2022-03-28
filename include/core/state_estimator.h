@@ -105,6 +105,7 @@ typedef struct state_estimate_t
     double alt_bmp_accel;     ///< z accel estimate using kalman filter (IMU & bmp)
     double alt_altimeter;     // altitude reading from the altimeter
     double alt_estimate;      // altitude estimate from kalman filter
+    double alt_accelometer;    // accelerameter as input to the filter
     ///@}
 
     /** @name Motion Capture data

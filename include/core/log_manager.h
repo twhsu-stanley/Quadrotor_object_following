@@ -43,6 +43,8 @@ typedef struct log_entry_t
     double mag_X;
     double mag_Y;
     double mag_Z;
+    double alti_laser;
+    double alti_accelerometer;
     ///@}
 
     /** @name PNI RM3100 Magnetometer */

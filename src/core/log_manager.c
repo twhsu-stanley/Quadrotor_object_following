@@ -52,7 +52,7 @@ static int __write_header(FILE* log_fd)
     {
         fprintf(log_fd,
             ",v_batt,alt_bmp_raw,bmp_temp,gyro_roll,gyro_pitch,gyro_yaw,accel_X,accel_Y,accel_Z,mag_X, "
-            "mag_Y, mag_Z");
+            "mag_Y, mag_Z,alti_laser,alti_acc");
     }
 
     if (settings.log_state)
@@ -147,9 +147,9 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
 
     if (settings.log_sensors)
     {
-        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F", e.v_batt,
+        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F", e.v_batt,
             e.alt_bmp_raw,e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, e.accel_X, e.accel_Y, e.accel_Z,
-            e.mag_X, e.mag_Y, e.mag_Z);
+            e.mag_X, e.mag_Y, e.mag_Z,e.alti_laser,e.alti_accelerometer);
     }
 
     if (settings.log_state)
@@ -327,6 +327,8 @@ static log_entry_t __construct_new_entry()
     e.mag_X = state_estimate.mag[0];
     e.mag_Y = state_estimate.mag[1];
     e.mag_Z = state_estimate.mag[2];
+    e.alti_laser = state_estimate.alt_altimeter;
+    e.alti_accelerometer = state_estimate.alt_accelometer;
 
     e.roll = state_estimate.roll;
     e.pitch = state_estimate.pitch;

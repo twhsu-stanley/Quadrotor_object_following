@@ -387,6 +387,7 @@ static void __altitude_march(void)
     // is up whereas acceleration in Z points down.
     rc_filter_march(&acc_lp, accel_vec[2] + GRAVITY);
     u.d[0] = acc_lp.newest_output;
+    state_estimate.alt_accelometer =  acc_lp.newest_output;
 
     // Use altimeter for kalman update
     // if (tmp_alti != 0)
