@@ -21,6 +21,7 @@
 #include <setpoint_manager.h>
 #include <settings.h>
 #include <state_estimator.h>
+#include <socket_manager.h>
 
 
 #include <controller.h>
@@ -107,9 +108,7 @@ void setpoint_update_yaw_followme(void)
         if (socket_object_tracking()) {
             // Tracking sub-mode: if an object is detect, then a PID shall be applied to yaw to center
             // on the object
-
-            //setpoint.delta_yaw = state_estimate.visual_bearing;
-            setpoint.yaw += SENTRY_ROTATION_RATE * DT;
+            setpoint.delta_yaw = state_estimate.visual_bearing;
         }
         else
         {

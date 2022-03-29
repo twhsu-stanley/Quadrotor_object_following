@@ -703,15 +703,34 @@ int settings_load_from_file(const char* path)
         printf("Mocap dropout emergency landing ENABLED.\tDropout timeout: %0.1lfms.\tThrottle: %0.3lf\n", 
                 settings.mocap_dropout_timeout_ms, settings.dropout_z_throttle);
     }
+
 #ifdef DEBUG
     fprintf(stderr, "enable_mocap_dropout_emergency_land: %d\n", settings.enable_mocap_dropout_emergency_land);
     fprintf(stderr, "mocap_dropout_timeout_ms: %lf\n", settings.mocap_dropout_timeout_ms);
 #endif   
 
+    // Parsing for the follow-me feature //////////////////////////////////////////////////////
+    PARSE_DOUBLE_MIN_MAX(follow_me_hover_Z, -2, 0)
+	PARSE_BOOL(enable_socket)
+	PARSE_DOUBLE_MIN_MAX(socket_dropout_timeout_ms, 0, 10000)
+
+    // check if parsed successfully 
+    if(settings.follow_me_hover_Z)
+    {
+        printf("follow_me_hover_Z = %.2f\n", settings.follow_me_hover_Z);
+    }
+    if(settings.enable_socket)
+    {
+        printf("enable_socket = %d\n", settings.enable_socket);
+    } 
+    if(settings.socket_dropout_timeout_ms)
+    {
+        printf("socket_dropout_timeout_ms = %.6f", settings.socket_dropout_timeout_ms);
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
     // Hover Throttle
     PARSE_DOUBLE_MIN_MAX(hover_throttle, -1, 0)
-
-    
 
     // FLIGHT MODES
     PARSE_INT_MIN_MAX(num_dsm_modes, 1, 3)

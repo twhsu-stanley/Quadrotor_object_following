@@ -14,7 +14,7 @@
 	"mocap_dropout_timeout_ms": 300.0,
 	"dropout_z_throttle": -0.3,
 
-	"follow_me_hover_Z": -1,
+	"follow_me_hover_Z": -1.0,
 	"enable_socket": 1,
 	"socket_dropout_timeout_ms": 800.0,
 
