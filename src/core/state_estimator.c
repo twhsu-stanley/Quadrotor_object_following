@@ -447,9 +447,10 @@ static void __feedback_select(void)
             state_estimate.yaw = state_estimate.tb_imu[2];
 
             if (socket_object_tracking()) {
-                // TODO: reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket
+                // Reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket
+                // (this is implemented in socket_manager.c), 
                 // otherwise, integrate the gyro data over time   
-                state_estimate.delta_yaw += state_estimate.yaw_dot * DT; 
+                state_estimate.delta_yaw += state_estimate.yaw_dot * DT;
             }
 
             state_estimate.continuous_yaw =
@@ -476,9 +477,7 @@ static void __feedback_select(void)
             state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = state_estimate.alt_velocity; 
 
-
-
-            state_estimate.u = Image_data.u; // Image_data: global variabl defined in main
+            state_estimate.u = Image_data.u; // Image_data: global variabl defined in main.c
             state_estimate.v = Image_data.v;
             state_estimate.visual_range = Image_data.range;
             state_estimate.visual_bearing = Image_data.bearing;

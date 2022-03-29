@@ -166,6 +166,9 @@ void *__socket_manager_func(void *user)
             Image_data.range = info->tempbuf->theta;
 
             info->socket_last_received_time_ns = rc_nanos_since_epoch();
+
+            // Reset the referenced delta_yaw everytime when new socket data are obtained
+            state_estimate.delta_yaw = 0;
             }
         }
         return NULL;

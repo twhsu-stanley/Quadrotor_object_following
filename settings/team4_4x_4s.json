@@ -15,7 +15,7 @@
 	"dropout_z_throttle": -0.3,
 
 	"follow_me_hover_Z": -1.0,
-	"enable_socket": 1,
+	"enable_socket": true,
 	"socket_dropout_timeout_ms": 800.0,
 
     "hover_throttle": -0.33,
