@@ -17,6 +17,7 @@
 #include <rc/pthread.h>
 #include <rc/start_stop.h>
 #include <rc/time.h>
+#include <socket_manager.h>
 
 #include <feedback.h>
 #include <log_manager.h>
