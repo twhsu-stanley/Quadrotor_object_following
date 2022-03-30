@@ -452,14 +452,16 @@ static void __feedback_select(void)
                 // otherwise, integrate the gyro data over time   
                 state_estimate.delta_yaw += state_estimate.yaw_dot * DT;
             }
+            // This need mocap
+            // state_estimate.continuous_yaw =
+            //     atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
+            //         1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
 
-            state_estimate.continuous_yaw =
-                atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
-                    1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
+            state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
             state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
             state_estimate.Y = xbeeMsg.y;
-            state_estimate.Z = state_estimate.alt_estimate;
-            // state_estimate.Z = state_estimate.alt_altimeter;
+            // state_estimate.Z = state_estimate.alt_estimate;  //use the kalman filtered reading
+            state_estimate.Z = state_estimate.alt_altimeter;  // only use the altimeter reading
             // old codes
             // status = VL53L1X_CheckForDataReady(&Device, &tmp);
 			// // rc_usleep(1E2);
@@ -474,7 +476,7 @@ static void __feedback_select(void)
             // tmp = 0;
 
             state_estimate.X_dot = xbee_x_dot;
-            state_estimate.Y_dot = xbee_y_dot;
+            state_estimate.Y_dot = xbee_y_dot;  
             state_estimate.Z_dot = state_estimate.alt_velocity; 
 
             state_estimate.u = Image_data.u; // Image_data: global variabl defined in main.c

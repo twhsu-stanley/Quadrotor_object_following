@@ -148,7 +148,7 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
 
     if (settings.log_sensors)
     {
-        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F", e.v_batt,
+        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%" PRIu64, e.v_batt,
             e.alt_bmp_raw,e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, e.accel_X, e.accel_Y, e.accel_Z,
             e.mag_X, e.mag_Y, e.mag_Z,e.alti_laser,e.alti_accelerometer, e.visual_range, e.visual_bearing, e.socket_last_received_time_ns);
     }
@@ -358,9 +358,9 @@ static log_entry_t __construct_new_entry()
     e.xbee_qx = xbeeMsg.qx;
     e.xbee_qy = xbeeMsg.qy;
     e.xbee_qz = xbeeMsg.qz;
-    // e.xbee_roll = xbeeMsg.roll;
-    // e.xbee_pitch = xbeeMsg.pitch;
-    // e.xbee_yaw = xbeeMsg.yaw;
+    e.xbee_roll = xbeeMsg.roll;
+    e.xbee_pitch = xbeeMsg.pitch;
+    e.xbee_yaw = xbeeMsg.yaw;
 
     e.gps_lon = gps_data.lla.lon;
     e.gps_lat = gps_data.lla.lat;

@@ -42,7 +42,7 @@
 //#define FOLLOWME_HOVER_Z -1 ///< meters.
 #define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.
 #define DESCEND_SPEED 0.1 ///< POSITIVE; meters/sec.
-#define ALLOW_HOVER_Z_ERROR 0.05 ///< meters.
+#define ALLOW_HOVER_Z_ERROR 0.15 ///< meters.
 #define SENTRY_ROTATION_RATE 0.4 ///< rad/s.
 
 setpoint_t setpoint;  // extern variable in setpoint_manager.h
