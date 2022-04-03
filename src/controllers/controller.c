@@ -262,15 +262,15 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_rate_ctrl = 1;
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
-            setpoint.en_XY_ctrl = 1;
+            setpoint.en_XY_ctrl = 0;
             setpoint.en_dist_ctrl = 1;
 
             // 2) Assign Setpoints            
             //setpoint.roll = 0;
             //setpoint.pitch = 0;
 
-            setpoint.X = 0;
-            setpoint.Y = 0;
+            //setpoint.X = 0;
+            //setpoint.Y = 0;
 
             setpoint_update_Z_followme();
             setpoint_update_yaw_followme();
@@ -454,9 +454,12 @@ static void __run_Z_controller()
 
 static void __run_dist_controller()
 {
-    setpoint.dist_u = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
-    setpoint.pitch = setpoint.dist_u;              
-    rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
+    if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
+    {
+        setpoint.dist_u = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
+        setpoint.pitch = setpoint.dist_u;              
+        rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
+    }
 }
 
 static void __run_XY_controller()
