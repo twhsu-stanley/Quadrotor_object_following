@@ -151,6 +151,7 @@ typedef struct settings_t
     rc_filter_t horiz_vel_ctrl_pd;
     rc_filter_t horiz_vel_ctrl_i;
     rc_filter_t horiz_pos_ctrl;
+    rc_filter_t obj_dist_ctrl_pid
     ///@}
 
     /** @name dsm connection */

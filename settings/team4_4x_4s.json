@@ -193,5 +193,12 @@
 	"horiz_pos_ctrl": {
 		"TF_or_PID": "P",
 		"kp": 1
+	},
+
+	"obj_dist_ctrl_pid": {
+		"TF_or_PID": "PID",
+		"kp": 1,
+		"ki": 0.1,
+		"kd": 0.1
 	}
 }

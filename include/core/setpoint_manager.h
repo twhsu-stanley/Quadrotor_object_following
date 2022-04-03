@@ -118,6 +118,12 @@ typedef struct setpoint_t
     double Y;
     ///<@}
 
+    /** @name distance-from-object setpoint */
+    ///< @{
+    int en_dist_ctrl;
+    double dist;
+    ///<@}
+
 } setpoint_t;
 
 extern setpoint_t setpoint;
@@ -157,20 +163,22 @@ int set_new_path(const char* path_file);
  * @brief   Update yaw value based on yaw_dot and user stick
  */
 void setpoint_update_yaw(void);
+void setpoint_update_yaw_followme(void);
 
-
-/**
- * @brief   Update yaw value based on computer vision object detection
- */
-void setpoint_followme_yaw(void);
 /**
  * @brief   Update Z value based on z_dot and user stick
  */
 void setpoint_update_Z(void);
+void setpoint_update_Z_takeoff(void);
+void setpoint_update_Z_followme(void);
+
+/**
+ * @brief   Update the setpoint of the distance between the drone and the object
+ */
+void setpoint_update_dist_followme(void);
 
 /**
  * @brief   Update the x and y position setpoints
- *
  * X and Y position setpoints are updated based on the X_dot and Y_dot
  * values generated from the user input.  Namely, X_dot = X_stick * X_dot_max (similarly for Y_dot)
  */

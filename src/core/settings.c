@@ -855,7 +855,8 @@ int settings_load_from_file(const char* path)
     PARSE_CONTROLLER(horiz_vel_ctrl_pd)
     PARSE_CONTROLLER(horiz_vel_ctrl_i)
     PARSE_CONTROLLER(horiz_pos_ctrl)
-
+    PARSE_CONTROLLER(obj_dist_ctrl_pid)
+    
     json_object_put(jobj);  // free memory
     was_load_successful = 1;
     return 0;
