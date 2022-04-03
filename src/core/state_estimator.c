@@ -453,11 +453,11 @@ static void __feedback_select(void)
                 state_estimate.delta_yaw += state_estimate.yaw_dot * DT;
             }
             // This need mocap
-            // state_estimate.continuous_yaw =
-            //     atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
-            //         1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
+            state_estimate.continuous_yaw =
+                 atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
+                     1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
 
-            state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
+            //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
             state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
             state_estimate.Y = xbeeMsg.y;
             // state_estimate.Z = state_estimate.alt_estimate;  //use the kalman filtered reading
