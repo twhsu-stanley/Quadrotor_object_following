@@ -70,6 +70,9 @@ while True:
             data = data.decode()
             data=data.split('ENDENTRY')
             objectobservation = json.loads(data[0])
+
+            if objectobservation['Class']!= "sports ball":
+                continue
             print(objectobservation)
             position = objectobservation['X']
             position = calc_yawangle(position)

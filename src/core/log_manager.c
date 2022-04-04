@@ -358,9 +358,9 @@ static log_entry_t __construct_new_entry()
     e.xbee_qx = xbeeMsg.qx;
     e.xbee_qy = xbeeMsg.qy;
     e.xbee_qz = xbeeMsg.qz;
-    e.xbee_roll = xbeeMsg.roll;
-    e.xbee_pitch = xbeeMsg.pitch;
-    e.xbee_yaw = xbeeMsg.yaw;
+//    e.xbee_roll = xbeeMsg.roll;
+//    e.xbee_pitch = xbeeMsg.pitch;
+//    e.xbee_yaw = xbeeMsg.yaw;
 
     e.gps_lon = gps_data.lla.lon;
     e.gps_lat = gps_data.lla.lat;
