@@ -12,7 +12,11 @@ import time
 
 
 BBPORT = 8080
+IPHONE_FOV = 54.3
 
+def calc_yawangle(x):
+    delta_yaw = pi*((x - .5) * IPHONE_FOV)/ 180
+    return delta_yaw
 class MyListener:
     def __init__(self):
         self.info = None
@@ -68,9 +72,11 @@ while True:
             objectobservation = json.loads(data[0])
             print(objectobservation)
             position = objectobservation['X']
+            position = calc_yawangle(position)
             position_y = objectobservation['Y']
+            depth = objectobservation['Height']*objectobservation['Width']
             # beaglebonesocket.send(position.encode()+position.encode()+position.encode())
-            depth = random()*10
+            #depth = random()*10
             payload = struct.pack("d", position)+struct.pack("d", position_y)+struct.pack("d", depth)
             # print(position,position_y,depth)
             # print(payload)

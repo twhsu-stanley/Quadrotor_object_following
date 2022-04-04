@@ -14,6 +14,7 @@
 #include <flight_mode.h>
 #include <stdint.h>
 #include <image_receive.h>
+#include <inttypes.h>
 
 typedef struct pose_xyt_t
 {    
