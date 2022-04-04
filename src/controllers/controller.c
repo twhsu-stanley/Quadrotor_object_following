@@ -456,8 +456,6 @@ static void __run_dist_controller()
 {
     if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
     {
-        //setpoint.dist_u = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
-        //setpoint.pitch = setpoint.dist_u;
         setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
         rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
     }

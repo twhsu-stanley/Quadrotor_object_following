@@ -198,7 +198,7 @@
 
 	"obj_dist_ctrl_pid": {
 		"TF_or_PID": "PID",
-		"kp": 1,
+		"kp": 0.1,
 		"ki": 0.1,
 		"kd": 0.1
 	}
