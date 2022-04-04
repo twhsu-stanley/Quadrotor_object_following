@@ -53,7 +53,8 @@ typedef struct settings_t
 
     double follow_me_hover_Z;
     int enable_socket;
-    double socket_dropout_timeout_ms; 
+    double socket_dropout_timeout_ms;
+    double dist_from_obj;
 
     //-0.6 is close to hovering. Make the value closer to zero (less negative) if you want to descend faster. 
     //This parameter will also depend on the weight of the vehicle.
@@ -151,7 +152,7 @@ typedef struct settings_t
     rc_filter_t horiz_vel_ctrl_pd;
     rc_filter_t horiz_vel_ctrl_i;
     rc_filter_t horiz_pos_ctrl;
-    rc_filter_t obj_dist_ctrl_pid
+    rc_filter_t obj_dist_ctrl_pid;
     ///@}
 
     /** @name dsm connection */

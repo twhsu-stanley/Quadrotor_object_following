@@ -171,6 +171,7 @@ void setpoint_update_yaw_followme(void);
 void setpoint_update_Z(void);
 void setpoint_update_Z_takeoff(void);
 void setpoint_update_Z_followme(void);
+void setpoint_update_Z_landing(void);
 
 /**
  * @brief   Update the setpoint of the distance between the drone and the object
