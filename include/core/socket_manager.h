@@ -20,7 +20,16 @@ typedef struct pose_xyt_t
     double x;
     double y;
     double theta;
-}pose_xyt_t;
+} pose_xyt_t;
+
+typedef struct odometry_xyzrpy_t{
+    double x;
+    double y;
+    double z;
+    double roll;
+    double pitch;
+    double yaw;
+} odometry_xyzrpy_t;
 
 // static pthread_t socket_manager_thread;
 typedef struct thread_info
