@@ -479,10 +479,10 @@ static void __feedback_select(void)
             state_estimate.Y_dot = xbee_y_dot;  
             state_estimate.Z_dot = state_estimate.alt_velocity; 
 
-            state_estimate.u = Image_data.u; // Image_data: global variabl defined in main.c
-            state_estimate.v = Image_data.v;
-            state_estimate.visual_range = Image_data.range;
-            state_estimate.visual_bearing = Image_data.bearing;
+            state_estimate.u = object_observation.u; // object_observation: global variabl defined in main.c
+            state_estimate.v = object_observation.v;
+            state_estimate.visual_range = object_observation.range;
+            state_estimate.visual_bearing = object_observation.bearing;
             
             break;
 

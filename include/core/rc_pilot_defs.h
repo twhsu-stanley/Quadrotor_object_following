@@ -48,7 +48,7 @@ typedef enum fail_state_t
 
 // math constants
 #define GRAVITY 9.80665  ///< one G m/s^2
-#define VEH_MASS 0.98    ///< mass in kg
+#define VEH_MASS 1.475    ///< mass in kg
 
 // order of control inputs
 // throttle(Z), roll, pitch, YAW, sideways (X),forward(Y)

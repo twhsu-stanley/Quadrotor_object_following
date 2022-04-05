@@ -4,6 +4,6 @@
 
 #include <image_receive.h>
 
-Image_data_t Image_data; // Defined as extern in image_receive.h
+object_observation_t object_observation; // Defined as extern in image_receive.h
 
-
+visual_odometry_t visual_odometry;// Defined as extern in image_receive.h

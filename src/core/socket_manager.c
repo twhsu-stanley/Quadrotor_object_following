@@ -153,17 +153,17 @@ void *__socket_manager_func(void *user)
             printf("X: %f\tY: %f\tDepth: %f\n", info->tempbuf->x, info->tempbuf->y, info->tempbuf->theta);
             
             // Image data type ///////////////////////////////////////////////////////////////////////////
-            info->image_data_buff = (Image_data_t *)&info->buffer;
-            printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", info->image_data_buff->u, info->image_data_buff->v, info->image_data_buff->range, info->image_data_buff->bearing);
+            info->object_observation_buff = (object_observation_t *)&info->buffer;
+            printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", info->object_observation_buff->u, info->object_observation_buff->v, info->object_observation_buff->range, info->object_observation_buff->bearing);
             //////////////////////////////////////////////////////////////////////////////////////////////
 
             fflush(stdout);
             send(info->new_socket, "hello from server", 17, 0);
 
-            Image_data.bearing = info->tempbuf->theta;
-            Image_data.u = info->tempbuf->x; 
-            Image_data.v = info->tempbuf->y;
-            Image_data.range = info->tempbuf->theta;
+            object_observation.bearing = info->tempbuf->theta;
+            object_observation.u = info->tempbuf->x; 
+            object_observation.v = info->tempbuf->y;
+            object_observation.range = info->tempbuf->theta;
 
             info->socket_last_received_time_ns = rc_nanos_since_epoch();
 

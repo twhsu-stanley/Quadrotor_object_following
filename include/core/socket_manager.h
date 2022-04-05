@@ -28,7 +28,7 @@ typedef struct thread_info
     int num;
     pthread_t socket_manager_thread;
     pose_xyt_t* tempbuf;
-    Image_data_t* image_data_buff; // Image data type
+    object_observation_t* object_observation_buff; // Image data type
     int new_socket;
     int valread;
     char buffer[1024];

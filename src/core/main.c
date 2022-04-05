@@ -532,7 +532,7 @@ int main(int argc, char* argv[])
         FAIL("ERROR: failed to make a PID file\n")
     }
 
-    // make sure everything is disarmed them start the ISR
+    // make sure everything is disarmed then start the ISR
     feedback_disarm();
     printf("waiting for dmp to settle...\n");
     fflush(stdout);
@@ -656,10 +656,10 @@ int main(int argc, char* argv[])
 
 //     printf("Object Location on iphone: %f | %f ", msg->x, msg->y);
     
-//     Image_data.u = msg->x;
-//     Image_data.v = msg->y;
-//     // Image_data.range;
-//     // Image_data.bearing;
+//     object_observation.u = msg->x;
+//     object_observation.v = msg->y;
+//     // object_observation.range;
+//     // object_observation.bearing;
 
 //     // rc_motor_set(1,mot_l_pol * msg->left_motor_pwm);
 //     // rc_motor_set(2,mot_r_pol * msg->right_motor_pwm);
