@@ -73,7 +73,6 @@ bool socket_object_tracking(void)
     {
         obj_tracking = false;
     }
-    // set yaw references to zero
 
     return obj_tracking;
 }

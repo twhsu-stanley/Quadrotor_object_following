@@ -445,15 +445,23 @@ static void __feedback_select(void)
             state_estimate.roll = state_estimate.tb_imu[0];
             state_estimate.pitch = state_estimate.tb_imu[1];
             state_estimate.yaw = state_estimate.tb_imu[2];
-
-            if (socket_object_tracking()) {
+            
+            if (socket_object_tracking()) 
+            {
                 // Reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket (implemented in socket_manager.c)
                 // Otherwise, 
                 // 1) integrate the gyro data over time   
                 state_estimate.delta_yaw += state_estimate.yaw_dot * DT;
                 // 2) or use the visual odometry
-                // state_estimate.delta_yaw = visual_odometry.roll;
+                // state_estimate.delta_yaw = visual_odometry.roll - roll_reference; // need to reset the reference when it gets new data 
+
+                state_estimate.object_tracking = true;
             }
+            else 
+            {
+                state_estimate.object_tracking = false;
+            }
+
             // This need mocap
             state_estimate.continuous_yaw =
                  atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),

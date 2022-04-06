@@ -153,6 +153,7 @@ typedef struct state_estimate_t
 
     /** @name Object observation*/
     ///@{
+    bool object_tracking;
     double visual_bearing;
     double visual_range;
     ///@}
