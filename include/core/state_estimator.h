@@ -151,10 +151,8 @@ typedef struct state_estimate_t
     double bmp_temp;    ///< temperature of barometer
     ///@}
 
-    /** @name Image data in the image frame*/
+    /** @name Object observation*/
     ///@{
-    double u;
-    double v;
     double visual_bearing;
     double visual_range;
     ///@}

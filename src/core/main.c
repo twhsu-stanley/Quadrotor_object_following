@@ -39,7 +39,6 @@
 #include <state_machine.h>
 #include <thrust_map.h>
 #include <xbee_receive.h>
-#include <image_receive.h> // for lcm (image data)
 #include <pni_rm3100.h>
 #include <benchmark.h>
 #include <ntp_read.h>

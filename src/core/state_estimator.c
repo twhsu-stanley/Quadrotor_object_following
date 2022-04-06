@@ -23,7 +23,7 @@
 #include <settings.h>
 #include <state_estimator.h>
 #include <xbee_receive.h>
-#include <image_receive.h>
+#include <socket_manager.h>
 #include <vl53l1x.h>
 
 #define TWO_PI (M_PI * 2.0)
@@ -447,10 +447,12 @@ static void __feedback_select(void)
             state_estimate.yaw = state_estimate.tb_imu[2];
 
             if (socket_object_tracking()) {
-                // Reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket
-                // (this is implemented in socket_manager.c), 
-                // otherwise, integrate the gyro data over time   
+                // Reset state_estimate.delta_yaw = 0 everytime when we get new data from the socket (implemented in socket_manager.c)
+                // Otherwise, 
+                // 1) integrate the gyro data over time   
                 state_estimate.delta_yaw += state_estimate.yaw_dot * DT;
+                // 2) or use the visual odometry
+                //state_estimate.delta_yaw = visual_odometry.roll;
             }
             // This need mocap
             state_estimate.continuous_yaw =
@@ -460,8 +462,10 @@ static void __feedback_select(void)
             //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
             state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
             state_estimate.Y = xbeeMsg.y;
+            state_estimate.Z = xbeeMsg.z;
+
             // state_estimate.Z = state_estimate.alt_estimate;  //use the kalman filtered reading
-            state_estimate.Z = state_estimate.alt_altimeter;  // only use the altimeter reading
+        
             // old codes
             // status = VL53L1X_CheckForDataReady(&Device, &tmp);
 			// // rc_usleep(1E2);
@@ -477,10 +481,8 @@ static void __feedback_select(void)
 
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;  
-            state_estimate.Z_dot = state_estimate.alt_velocity; 
+            state_estimate.Z_dot = xbee_z_dot; 
 
-            state_estimate.u = object_observation.u; // object_observation: global variabl defined in main.c
-            state_estimate.v = object_observation.v;
             state_estimate.visual_range = object_observation.range;
             state_estimate.visual_bearing = object_observation.bearing;
             

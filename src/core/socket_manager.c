@@ -24,13 +24,15 @@
 #include <time.h>
 #include <socket_manager.h>
 #include <rc_pilot_defs.h>
-#include <image_receive.h>
 
 #define PORT 8080
 
 static bool obj_tracking = false;
 static bool initialized = false;
 void *__socket_manager_func(void *user);
+
+object_observation_t object_observation; // Defined as extern in socket_manager.h
+visual_odometry_t visual_odometry;// Defined as extern in socket_manager.h
 
 
 int socketserver_init()
@@ -139,9 +141,9 @@ void *__socket_manager_func(void *user)
         {
             printf("enter the while loop\n");
             fflush(stdout);
-//	printf("%d\t%x",info->new_socket,&info->new_socket);
-    printf("Thread info new socket %d\n",info->new_socket);
-    fflush(stdout);
+            //	printf("%d\t%x",info->new_socket,&info->new_socket);
+            printf("Thread info new socket %d\n",info->new_socket);
+            fflush(stdout);
             info->valread = read(info->new_socket,(void *) &info->buffer, 1024);
             printf("assigning the read valuez\n");
             fflush(stdout);
@@ -149,26 +151,27 @@ void *__socket_manager_func(void *user)
             // fflush(stdout);
             if (info->valread > -1)
             {
-            info->tempbuf = (pose_xyt_t *)&info->buffer;
-            printf("X: %f\tY: %f\tDepth: %f\n", info->tempbuf->x, info->tempbuf->y, info->tempbuf->theta);
-            
-            // Image data type ///////////////////////////////////////////////////////////////////////////
-            info->object_observation_buff = (object_observation_t *)&info->buffer;
-            printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", info->object_observation_buff->u, info->object_observation_buff->v, info->object_observation_buff->range, info->object_observation_buff->bearing);
-            //////////////////////////////////////////////////////////////////////////////////////////////
+                info->temp_buffer = (pose_xyt_t *)&info->buffer;
+                printf("X: %f\tY: %f\tDepth: %f\n", info->temp_buffer->x, info->temp_buffer->y, info->temp_buffer->theta);
+                
+                // object observation data type ///////////////////////////////////////////////////////////////////////////
+                info->object_observation_buffer = (object_observation_t *)&info->buffer;
+                printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", info->object_observation_buff->u, info->object_observation_buff->v, info->object_observation_buff->range, info->object_observation_buff->bearing);
+                //////////////////////////////////////////////////////////////////////////////////////////////
 
-            fflush(stdout);
-            send(info->new_socket, "hello from server", 17, 0);
+                info->temp_buffer = (message_type_t*)&info->buffer;
 
-            object_observation.bearing = info->tempbuf->theta;
-            object_observation.u = info->tempbuf->x; 
-            object_observation.v = info->tempbuf->y;
-            object_observation.range = info->tempbuf->theta;
 
-            info->socket_last_received_time_ns = rc_nanos_since_epoch();
+                fflush(stdout);
+                send(info->new_socket, "hello from server", 17, 0);
 
-            // Reset the referenced delta_yaw everytime when new socket data are obtained
-            state_estimate.delta_yaw = 0;
+                object_observation.bearing = info->tempbuf->theta;
+                object_observation.range = info->tempbuf->theta;
+
+                info->socket_last_received_time_ns = rc_nanos_since_epoch();
+
+                // Reset the referenced delta_yaw everytime when new socket data are obtained
+                state_estimate.delta_yaw = 0;
             }
         }
         return NULL;

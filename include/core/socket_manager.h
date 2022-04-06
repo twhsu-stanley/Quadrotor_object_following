@@ -13,7 +13,6 @@
 
 #include <flight_mode.h>
 #include <stdint.h>
-#include <image_receive.h>
 
 typedef struct pose_xyt_t
 {    
@@ -22,28 +21,46 @@ typedef struct pose_xyt_t
     double theta;
 } pose_xyt_t;
 
-typedef struct odometry_xyzrpy_t{
+typedef struct object_observation_t 
+{
+    uint64_t object_observation_time_ns;
+    double range;
+    double bearing;
+} object_observation_t;
+
+typedef struct visual_odometry_t{
+    uint64_t visual_odometry_time_ns;
     double x;
     double y;
     double z;
     double roll;
     double pitch;
     double yaw;
-} odometry_xyzrpy_t;
+} visual_odometry_t;
+
+typedef struct message_type_t {
+    int msg_type;
+} message_type_t;
 
 // static pthread_t socket_manager_thread;
 typedef struct thread_info
 {
     int num;
     pthread_t socket_manager_thread;
-    pose_xyt_t* tempbuf;
-    object_observation_t* object_observation_buff; // Image data type
+    message_type_t* temp_buffer;
+
+    object_observation_t* object_observation_buffer; 
+    visual_odometry_t* visual_odometry_bufferer;
+    
     int new_socket;
     int valread;
     char buffer[1024];
+
     uint64_t socket_last_received_time_ns;
 } thread_info_t;
 
+extern object_observation_t object_observation;
+extern visual_odometry_t visual_odometry;
 thread_info_t server_threadinfo;
 
 
