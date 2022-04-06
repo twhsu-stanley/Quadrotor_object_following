@@ -133,13 +133,11 @@
 		"TF_or_PID": "P",
 		"kp": 5.0
 	},
-
     
 	"pitch_controller": {
 		"TF_or_PID": "P",
 		"kp": 5.0
 	},
-
 
 	"yaw_controller": {
 		"TF_or_PID": "P",
@@ -157,6 +155,7 @@
 		"kd":0.2,
 		"crossover_freq_rad_per_sec": 62.83
 	},
+
     "altitude_rate_controller_i": {
 		"TF_or_PID": "I",
 		"ki":0,
@@ -169,6 +168,7 @@
         "kd":0.5,
 		"crossover_freq_rad_per_sec": 62.83
 	},
+
     "altitude_controller_i": {
 		"TF_or_PID": "I",
 		"ki": 0.2,
@@ -186,7 +186,6 @@
 		"ki":0.02,
 		"imax":0.05
 	},
-
 
 	"horiz_pos_ctrl": {
 		"TF_or_PID": "P",

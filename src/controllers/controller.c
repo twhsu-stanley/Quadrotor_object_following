@@ -216,7 +216,7 @@ static void __assign_setpoints_and_enable_loops()
             // 2) Assign Setpoints            
             //setpoint.roll = 0;
             //setpoint.pitch = 0;
-            setpoint.yaw = 0; // or = state_estimate.continuous_yaw;
+            setpoint.yaw = state_estimate.continuous_yaw;
 
             setpoint.X = 0;
             setpoint.Y = 0;
@@ -235,7 +235,7 @@ static void __assign_setpoints_and_enable_loops()
             // 2) Assign Setpoints            
             //setpoint.roll = 0;
             //setpoint.pitch = 0;
-            setpoint.yaw = 0; // or = state_estimate.continuous_yaw;
+            setpoint.yaw = state_estimate.continuous_yaw;
             
             setpoint.X = 0;
             setpoint.Y = 0;

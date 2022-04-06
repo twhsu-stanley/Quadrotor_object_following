@@ -109,6 +109,7 @@ void setpoint_update_yaw_followme(void)
             // Tracking sub-mode: if an object is detect, then a PID shall be applied to yaw to center
             // on the object
             setpoint.delta_yaw = state_estimate.visual_bearing;
+            setpoint.yaw = state_estimate.continuous_yaw;
         }
         else
         {

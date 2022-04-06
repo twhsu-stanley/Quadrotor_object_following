@@ -87,15 +87,15 @@ int socketserver_init()
         }
         //  server_threadinfo.buffer = (char **)buffer;
         // server_threadinfo.thread
-printf("Thread info new socket %d\n",server_threadinfo.new_socket);
+        printf("Thread info new socket %d\n",server_threadinfo.new_socket);
         printf("about to make the thread\n");
         fflush(stdout);
         initialized = true;
-//        if (rc_pthread_create(&server_threadinfo.socket_manager_thread, &__socket_manager_func, NULL,
-  //              SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)
+        // if (rc_pthread_create(&server_threadinfo.socket_manager_thread, &__socket_manager_func, NULL,
+        // SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)
         if (rc_pthread_create(&server_threadinfo.socket_manager_thread, &__socket_manager_func, (void*) &server_threadinfo ,
-                SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)    
-    {
+            SCHED_FIFO, OBJECT_DETECTION_HZ) == -1)  
+        {
             fprintf(stderr, "ERROR in start_socket_manager, failed to start thread\n");
             return -1;
         }
@@ -141,7 +141,7 @@ void *__socket_manager_func(void *user)
         {
             printf("enter the while loop\n");
             fflush(stdout);
-            //	printf("%d\t%x",info->new_socket,&info->new_socket);
+            // printf("%d\t%x",info->new_socket,&info->new_socket);
             printf("Thread info new socket %d\n",info->new_socket);
             fflush(stdout);
             info->valread = read(info->new_socket,(void *) &info->buffer, 1024);
