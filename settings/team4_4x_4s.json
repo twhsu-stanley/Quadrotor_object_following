@@ -17,6 +17,7 @@
 	"follow_me_hover_Z": -1.0,
 	"enable_socket": false,
 	"socket_dropout_timeout_ms": 800.0,
+	"dist_from_obj": 1.5,
 
     "hover_throttle": -0.33,
 
@@ -190,5 +191,12 @@
 	"horiz_pos_ctrl": {
 		"TF_or_PID": "P",
 		"kp": 1
+	},
+
+	"obj_dist_ctrl_pid": {
+		"TF_or_PID": "PID",
+		"kp": 0.1,
+		"ki": 0.1,
+		"kd": 0.1
 	}
 }

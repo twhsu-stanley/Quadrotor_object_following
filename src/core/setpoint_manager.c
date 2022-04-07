@@ -39,11 +39,16 @@
 #define MAX_Z_SETPOINT  0   ///< meters.
 #define MIN_Z_SETPOINT -2.0 ///< meters.
 
+#define MIN_DIST_SETPOINT 0.3 ///< meters
+#define MAX_DIST_SETPOINT 2 ///< meters
+
 //#define FOLLOWME_HOVER_Z -1 ///< meters.
 #define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.
 #define DESCEND_SPEED 0.1 ///< POSITIVE; meters/sec.
 #define ALLOW_HOVER_Z_ERROR 0.15 ///< meters.
 #define SENTRY_ROTATION_RATE 0.4 ///< rad/s.
+
+
 
 setpoint_t setpoint;  // extern variable in setpoint_manager.h
 
@@ -123,6 +128,8 @@ void setpoint_update_yaw_followme(void)
         setpoint.yaw = state_estimate.continuous_yaw;
         setpoint.yaw_dot_ff = 0.0;
     }
+
+    return;
 }
 
 void setpoint_update_Z(void)
@@ -198,6 +205,23 @@ void setpoint_update_Z_landing(void)
     
     // Constrain Z setpoint
     rc_saturate_double(&setpoint.Z, settings.follow_me_hover_Z, MAX_Z_SETPOINT);
+    return;
+}
+
+void setpoint_update_dist_followme(void)
+{
+    if (socket_object_tracking()) {
+        // Tracking sub-mode: if an object is detect, then a PID shall be applied to maintain a safe distance from the object
+        setpoint.dist = settings.dist_from_obj; // 
+    }
+    else
+    {
+        // Sentry sub-mode: if no object is detected, do nothing
+        setpoint.dist = state_estimate.visual_range;
+    }
+
+    // Constrain dist setpoint
+    rc_saturate_double(&setpoint.dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);
     return;
 }
 

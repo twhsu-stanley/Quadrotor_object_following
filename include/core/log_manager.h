@@ -47,8 +47,12 @@ typedef struct log_entry_t
     double alti_accelerometer;
     double visual_range;
     double visual_bearing;
+<<<<<<< HEAD
     uint64_t socket_last_received_time_ms;
     bool object_tracking_tf;
+=======
+    uint64_t socket_last_received_time_ns;
+>>>>>>> distance_control
     ///@}
 
     /** @name PNI RM3100 Magnetometer */
