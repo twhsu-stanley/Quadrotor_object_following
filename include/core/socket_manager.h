@@ -13,11 +13,6 @@
 
 #include <flight_mode.h>
 #include <stdint.h>
-<<<<<<< HEAD
-=======
-#include <image_receive.h>
-#include <inttypes.h>
->>>>>>> distance_control
 
 typedef struct pose_xyt_t
 {    
