@@ -468,7 +468,7 @@ static void __feedback_select(void)
                      1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
 
             //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
-            state_estimate.X = xbeeMsg.x;  // TODO: generalize for optitrack and qualisys
+            state_estimate.X = xbeeMsg.x;
             state_estimate.Y = xbeeMsg.y;
             state_estimate.Z = xbeeMsg.z;
 
@@ -492,9 +492,7 @@ static void __feedback_select(void)
             state_estimate.Z_dot = xbee_z_dot;
 
             state_estimate.visual_range = object_observation.range;
-            state_estimate.visual_bearing = object_observation.bearing;
-
-            
+            state_estimate.visual_bearing = object_observation.bearing;            
             
             break;
 

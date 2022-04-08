@@ -60,7 +60,6 @@ typedef struct thread_info
 
     uint64_t socket_last_received_time_ns;
 
-    
     uint64_t obj_obsrv_last_received_time_ns;
     uint64_t visual_od_last_received_time_ns;
 } thread_info_t;
