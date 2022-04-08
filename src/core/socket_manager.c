@@ -194,6 +194,7 @@ void *__socket_manager_func(void *user)
 
                 // Reset the referenced delta_yaw everytime when new socket data are obtained
                 state_estimate.delta_yaw = 0;
+                state_estimate.delta_dist = 0;
             }
         }
         return NULL;

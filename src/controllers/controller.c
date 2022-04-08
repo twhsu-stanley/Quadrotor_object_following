@@ -26,6 +26,7 @@ static rc_filter_t D_roll =          RC_FILTER_INITIALIZER;
 static rc_filter_t D_pitch =         RC_FILTER_INITIALIZER;
 static rc_filter_t D_yaw =           RC_FILTER_INITIALIZER;
 static rc_filter_t D_yaw_visual =    RC_FILTER_INITIALIZER; // for the follow-me feature
+
 static rc_filter_t D_Xdot_pd =       RC_FILTER_INITIALIZER;
 static rc_filter_t D_Xdot_i =        RC_FILTER_INITIALIZER;
 static rc_filter_t D_Ydot_pd =       RC_FILTER_INITIALIZER;
@@ -36,6 +37,7 @@ static rc_filter_t D_X =             RC_FILTER_INITIALIZER;
 static rc_filter_t D_Y =             RC_FILTER_INITIALIZER;
 static rc_filter_t D_Z_pd =          RC_FILTER_INITIALIZER;
 static rc_filter_t D_Z_i =           RC_FILTER_INITIALIZER;
+static rc_filter_t D_dist =          RC_FILTER_INITIALIZER; // for the follow-me feature
 
 static void __rpy_init(void)
 {
@@ -79,6 +81,8 @@ static void __xyz_init(void)
     rc_filter_duplicate(&D_Y, settings.horiz_pos_ctrl);
     rc_filter_duplicate(&D_Z_pd, settings.altitude_controller_pd);
     rc_filter_duplicate(&D_Z_i,  settings.altitude_controller_i);
+
+    rc_filter_duplicate(&D_dist,  settings.obj_dist_ctrl_pid); // for the follow-me feature
 }
 
 static void __zero_out_feedforward_terms()
@@ -107,6 +111,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 0;
             setpoint.en_Z_ctrl = 0;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
             setpoint.roll_throttle = user_input.roll_stick;
@@ -124,6 +129,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 0;
             setpoint.en_Z_ctrl = 0;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
             setpoint.roll_throttle = 0.0;
@@ -141,6 +147,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 0;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
             setpoint.roll = user_input.roll_stick;
@@ -158,6 +165,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 0;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
 
@@ -181,6 +189,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
 
@@ -212,10 +221,9 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 1;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints            
-            //setpoint.roll = 0;
-            //setpoint.pitch = 0;
             setpoint.yaw = state_estimate.continuous_yaw;
 
             setpoint.X = 0;
@@ -231,37 +239,40 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 1;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints            
-            //setpoint.roll = 0;
-            //setpoint.pitch = 0;
             setpoint.yaw = state_estimate.continuous_yaw;
             
             setpoint.X = 0;
             setpoint.Y = 0;
             setpoint_update_Z_landing();
-
             break;
 
         // Follow-me feature: hovering & searching/tracking the object
         case FOLLOW_ME:
-            //mostly follows ALT_HOLD as template
-            // 1) Enable PID Loops based on flight mode
             setpoint.en_6dof = 0; //(settings.dof == 6);
             setpoint.en_rpy_rate_ctrl = 1;
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
-            setpoint.en_XY_ctrl = 1;
 
-            // 2) Assign Setpoints            
-            //setpoint.roll = 0;
-            //setpoint.pitch = 0;
+            if (socket_object_tracking()) {
+                setpoint.en_XY_ctrl = 0;
+                setpoint.en_dist_ctrl = 1;
 
-            setpoint.X = 0;
-            setpoint.Y = 0;
+                setpoint.dist = settings.dist_from_obj
+            }
+            else {
+                setpoint.en_XY_ctrl = 1;
+                setpoint.en_dist_ctrl = 0;
+
+                setpoint.X = state_estimate.X;
+                setpoint.Y = state_estimate.Y;
+            }
 
             setpoint_update_Z_followme();
             setpoint_update_yaw_followme();
+            //setpoint_update_dist_followme();
 
             break;
 
@@ -272,6 +283,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 1;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
             setpoint_update_setpoint_from_waypoint();
@@ -295,6 +307,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 0;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
             setpoint.roll = 0;
@@ -315,6 +328,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 1;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
 
@@ -355,6 +369,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 0;
             setpoint.en_Z_ctrl = 0;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints
             setpoint.roll_dot =  user_input.roll_stick  * MAX_ROLL_RATE;
@@ -370,6 +385,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 1.5) "Disable" the two other z PID loops besides throttle
             rc_filter_enable_saturation(&D_Zdot_pd, 0, 0);
@@ -391,6 +407,7 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
             setpoint.en_XY_ctrl = 0;
+            setpoint.en_dist_ctrl = 0;
 
             // 1.5) "Disable" the position controller
             rc_filter_enable_saturation(&D_Z_pd, 0, 0);
@@ -431,6 +448,18 @@ static void __run_Z_controller()
     // 3) Acceleration -> Throttle
     setpoint.Z_throttle = settings.hover_throttle + setpoint.Z_ddot;
     setpoint.Z_throttle = setpoint.Z_throttle / (cos(state_estimate.roll) * cos(state_estimate.pitch));
+}
+
+static void __run_dist_controller()
+{
+    if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
+    {
+        if (state_estimate.visual_bearing < 0.2)
+        {
+            setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.delta_dist);
+            rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
+        }
+    }
 }
 
 static void __run_XY_controller()
@@ -493,7 +522,6 @@ static void __run_attitude_controller()
                             + setpoint.yaw_dot_ff;
         rc_saturate_double(&setpoint.yaw_dot, -MAX_YAW_RATE, MAX_YAW_RATE);
     }
-
 }
 
 static void __run_attitude_rate_controller()
@@ -595,6 +623,9 @@ static void __run_controller(double* u, double* mot)
     // 2) XY Controller
     if (setpoint.en_XY_ctrl) __run_XY_controller();
 
+    // 2a) Distance Controller for the follow-me feature
+    if (setpoint.en_dist_ctrl) __run_dist_controller();
+
     // 3) Attitude Controller
     if (setpoint.en_rpy_ctrl) __run_attitude_controller();
 
@@ -645,6 +676,7 @@ int controller_reset()
     rc_filter_reset(&D_roll);
     rc_filter_reset(&D_pitch);
     rc_filter_reset(&D_yaw);
+    rc_filter_reset(&D_yaw_visual);
 
     rc_filter_reset(&D_Xdot_pd);
     rc_filter_reset(&D_Xdot_i);
@@ -652,11 +684,12 @@ int controller_reset()
     rc_filter_reset(&D_Ydot_i);
     rc_filter_reset(&D_Zdot_pd);
     rc_filter_reset(&D_Zdot_i);
-
     rc_filter_reset(&D_X);
     rc_filter_reset(&D_Y);
     rc_filter_reset(&D_Z_pd);
     rc_filter_reset(&D_Z_i);
+
+    rc_filter_reset(&D_dist);
 
     // prefill filters with current error (only those with D terms)
     rc_filter_prefill_inputs(&D_roll_rate_pd,  -state_estimate.roll_dot);
