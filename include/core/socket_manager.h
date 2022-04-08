@@ -21,6 +21,11 @@
 //     double theta;
 // } pose_xyt_t;
 
+typedef struct message_type_t 
+{
+    uint8_t msg_type;
+} message_type_t;
+
 typedef struct object_observation_t 
 {
     uint8_t msg_type;
@@ -39,11 +44,6 @@ typedef struct visual_odometry_t
     double pitch;
     double yaw;
 } visual_odometry_t;
-
-typedef struct message_type_t 
-{
-    uint8_t msg_type;
-} message_type_t;
 
 // static pthread_t socket_manager_thread;
 typedef struct thread_info

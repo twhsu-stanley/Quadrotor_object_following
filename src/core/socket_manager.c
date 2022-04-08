@@ -139,27 +139,28 @@ void *__socket_manager_func(void *user)
     //	info->buffer = {0};
     while (rc_get_state() != EXITING)
         {
-            printf("enter the while loop\n");
-            fflush(stdout);
+            //printf("enter the while loop\n");
+            //fflush(stdout);
             // printf("%d\t%x",info->new_socket,&info->new_socket);
-            printf("Thread info new socket %d\n", info->new_socket);
-            fflush(stdout);
+            //printf("Thread info new socket %d\n", info->new_socket);
+            //fflush(stdout);
             info->valread = read(info->new_socket,(void *) &info->buffer, 1024);
-            printf("assigning the read valuez\n");
-            fflush(stdout);
+            //printf("assigning the read valuez\n");
+            //fflush(stdout);
             // printf("%s\n",info->buffer);
             // fflush(stdout);
             if (info->valread > -1)
             {
-                info->msg_type = (message_type_t *)&info->buffer;
+                message_type_t* this_msg_type = (message_type_t *)&info->buffer;
 
-                switch (info->msg_type) {
+                switch (this_msg_type->msg_type) {
                     case 11:
                         // visual odometry data type
                         info->visual_od_buf = (visual_odometry_t *)&info->buffer;
-                        printf("X: %f\tY: %f\tZ: %f\tRoll: %f\tPitch: %f\tYaw: %f\n", 
-                               info->visual_od_buf->x, info->visual_od_buf->y, info->visual_od_buf->z,
-                               info->visual_od_buf->roll, info->visual_od_buf->pitch, info->visual_od_buf->yaw);
+                        //printf("X: %f\tY: %f\tZ: %f\tRoll: %f\tPitch: %f\tYaw: %f\n", 
+                               //info->visual_od_buf->x, info->visual_od_buf->y, info->visual_od_buf->z,
+                               //info->visual_od_buf->roll, info->visual_od_buf->pitch, info->visual_od_buf->yaw);
+
                         // store the data to a global variable
                         visual_odometry.x = info->visual_od_buf->x;
                         visual_odometry.y = info->visual_od_buf->y;
@@ -174,8 +175,9 @@ void *__socket_manager_func(void *user)
                     case 25:
                         // object observation data type
                         info->obj_obsrv_buffer = (object_observation_t *)&info->buffer;
-                        printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
-                               info->obj_obsrv_buffer->range, info->obj_obsrv_buffer->position_y, info->obj_obsrv_buffer->bearing);
+                        //printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
+                               //info->obj_obsrv_buffer->range, info->obj_obsrv_buffer->position_y, info->obj_obsrv_buffer->bearing);
+                        
                         // store the data to a global variable
                         object_observation.range = info->obj_obsrv_buffer->range;
                         object_observation.position_y = info->obj_obsrv_buffer->position_y;
