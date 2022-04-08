@@ -214,11 +214,6 @@ void setpoint_update_dist_followme(void)
         // Tracking sub-mode: if an object is detect, then a PID shall be applied to maintain a safe distance from the object
         setpoint.dist = settings.dist_from_obj; // 
     }
-    else
-    {
-        // Sentry sub-mode: if no object is detected, do nothing
-        setpoint.dist = state_estimate.visual_range;
-    }
 
     // Constrain dist setpoint
     rc_saturate_double(&setpoint.dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);

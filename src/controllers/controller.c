@@ -224,8 +224,6 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints            
-            //setpoint.roll = 0;
-            //setpoint.pitch = 0;
             setpoint.yaw = state_estimate.continuous_yaw;
 
             setpoint.X = 0;
@@ -244,33 +242,33 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_dist_ctrl = 0;
 
             // 2) Assign Setpoints            
-            //setpoint.roll = 0;
-            //setpoint.pitch = 0;
             setpoint.yaw = state_estimate.continuous_yaw;
             
             setpoint.X = 0;
             setpoint.Y = 0;
             setpoint_update_Z_landing();
-
             break;
 
         // Follow-me feature: hovering & searching/tracking the object
         case FOLLOW_ME:
-            //mostly follows ALT_HOLD as template
-            // 1) Enable PID Loops based on flight mode
             setpoint.en_6dof = 0; //(settings.dof == 6);
             setpoint.en_rpy_rate_ctrl = 1;
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
-            setpoint.en_XY_ctrl = 1;
-            setpoint.en_dist_ctrl = 0;
 
-            // 2) Assign Setpoints            
-            //setpoint.roll = 0;
-            //setpoint.pitch = 0;
+            if (socket_object_tracking()) {
+                setpoint.en_XY_ctrl = 0;
+                setpoint.en_dist_ctrl = 1;
 
-            setpoint.X = 0;
-            setpoint.Y = 0;
+                setpoint.dist = settings.dist_from_obj
+            }
+            else {
+                setpoint.en_XY_ctrl = 1;
+                setpoint.en_dist_ctrl = 0;
+
+                setpoint.X = state_estimate.X;
+                setpoint.Y = state_estimate.Y;
+            }
 
             setpoint_update_Z_followme();
             setpoint_update_yaw_followme();
@@ -456,8 +454,11 @@ static void __run_dist_controller()
 {
     if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
     {
-        setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
-        rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
+        if (state_estimate.visual_bearing < 0.3)
+        {
+            setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
+            rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
+        }
     }
 }
 
