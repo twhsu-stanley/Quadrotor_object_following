@@ -82,7 +82,7 @@ typedef struct state_estimate_t
     double pitch_dot;
     double yaw_dot;
     double continuous_yaw;  ///<  keeps increasing/decreasing aboce +-2pi
-    double delta_yaw;
+    
     double X;
     double Y;
     double Z;
@@ -151,11 +151,14 @@ typedef struct state_estimate_t
     double bmp_temp;    ///< temperature of barometer
     ///@}
 
-    /** @name Object observation*/
+    /** @name Object following*/
     ///@{
     bool object_tracking;
     double visual_bearing;
     double visual_range;
+    double delta_yaw;
+    double delta_dist;
+    double dist_ref;
     ///@}
      
 } state_estimate_t;

@@ -259,8 +259,6 @@ static void __assign_setpoints_and_enable_loops()
             if (socket_object_tracking()) {
                 setpoint.en_XY_ctrl = 0;
                 setpoint.en_dist_ctrl = 1;
-
-                setpoint.dist = settings.dist_from_obj
             }
             else {
                 setpoint.en_XY_ctrl = 1;
@@ -456,8 +454,11 @@ static void __run_dist_controller()
     {
         if (state_estimate.visual_bearing < 0.2)
         {
-            setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.delta_dist);
-            rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
+            setpoint.pitch = rc_filter_march(&D_dist, setpoint.delta_dist - state_estimate.delta_dist);
+
+            // Saturate the pitch setpoint with a max value that is specifically for distance control
+            rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT_FOR_DIST, MAX_PITCH_SETPOINT_FOR_DIST);
+
         }
     }
 }

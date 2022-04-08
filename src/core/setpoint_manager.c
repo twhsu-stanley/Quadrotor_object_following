@@ -39,7 +39,7 @@
 #define MAX_Z_SETPOINT  0   ///< meters.
 #define MIN_Z_SETPOINT -2.0 ///< meters.
 
-#define MIN_DIST_SETPOINT 0.3 ///< meters
+#define MIN_DIST_SETPOINT 0.4 ///< meters
 #define MAX_DIST_SETPOINT 2 ///< meters
 
 //#define FOLLOWME_HOVER_Z -1 ///< meters.
@@ -211,11 +211,12 @@ void setpoint_update_Z_landing(void)
 void setpoint_update_dist_followme(void)
 {
     if (socket_object_tracking()) {
-        setpoint.dist = state_estimate.visual_range - settings.desired_dist; // positive: forward; negative: backward
+        //setpoint.dist = state_estimate.visual_range - settings.desired_dist; // positive: should fly forward; negative: backward
+        setpoint.delta_dist = settings.desired_dist - state_estimate.visual_range; // positive: should fly backward; negative: forward
     }
 
     // Constrain dist setpoint
-    rc_saturate_double(&setpoint.dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);
+    rc_saturate_double(&setpoint.delta_dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);
     return;
 }
 

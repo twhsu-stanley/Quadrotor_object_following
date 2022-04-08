@@ -17,7 +17,7 @@
 	"follow_me_hover_Z": -1.0,
 	"enable_socket": false,
 	"socket_dropout_timeout_ms": 800.0,
-	"dist_from_obj": 1.5,
+	"desired_dist": 1.5,
 
     "hover_throttle": -0.33,
 

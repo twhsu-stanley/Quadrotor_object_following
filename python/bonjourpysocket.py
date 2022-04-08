@@ -145,14 +145,11 @@ beaglehost = "127.0.0.1"
 # while True:
 
 
-<<<<<<< HEAD
 
 # start = dt.datetime.now()
 # while True:
 
 
-=======
->>>>>>> incorporate_distance_control
 while True:
 
     # for timing analysis    
@@ -166,10 +163,7 @@ while True:
 
             data_jsondict = parse_iphonemsg(data)
             msg = pack_message4beaglbone(data_jsondict)
-<<<<<<< HEAD
             beaglebonesocket.send(msg)
-=======
->>>>>>> incorporate_distance_control
 
 
     except KeyboardInterrupt:

@@ -121,7 +121,7 @@ typedef struct setpoint_t
     /** @name distance-from-object setpoint */
     ///< @{
     int en_dist_ctrl;
-    double dist;
+    double delta_dist;
     ///<@}
 
 } setpoint_t;

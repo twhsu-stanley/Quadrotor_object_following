@@ -713,7 +713,7 @@ int settings_load_from_file(const char* path)
     PARSE_DOUBLE_MIN_MAX(follow_me_hover_Z, -2, 0)
 	PARSE_BOOL(enable_socket)
 	PARSE_DOUBLE_MIN_MAX(socket_dropout_timeout_ms, 0, 10000)
-    PARSE_DOUBLE_MIN_MAX(dist_from_obj, 0, 2)
+    PARSE_DOUBLE_MIN_MAX(desired_dist, 0.3, 2)
 
     // check if parsed successfully 
     if(settings.follow_me_hover_Z)
@@ -728,9 +728,9 @@ int settings_load_from_file(const char* path)
     {
         printf("socket_dropout_timeout_ms = %.6f", settings.socket_dropout_timeout_ms);
     }
-    if (settings.dist_from_obj)
+    if (settings.desired_dist)
     {
-        printf("dist_from_obj = %.2f", settings.dist_from_obj);
+        printf("desired_dist = %.2f", settings.desired_dist);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -170,6 +170,7 @@ void *__socket_manager_func(void *user)
                         visual_odometry.yaw = info->visual_od_buf->yaw;
 
                         info->visual_od_last_received_time_ns = rc_nanos_since_epoch();
+                        
                         break;
 
                     case 25:
@@ -184,6 +185,11 @@ void *__socket_manager_func(void *user)
                         object_observation.bearing = info->obj_obsrv_buffer->bearing;
 
                         info->obj_obsrv_last_received_time_ns = rc_nanos_since_epoch();
+                        
+                        // Reset the referenced delta_yaw & distance everytime when new object data are obtained
+                        state_estimate.delta_yaw = 0;
+                        state_estimate.dist_ref = visual_odometry.z;
+                        
                         break;
                 }
 
@@ -191,10 +197,6 @@ void *__socket_manager_func(void *user)
                 send(info->new_socket, "hello from server", 17, 0);
 
                 info->socket_last_received_time_ns = rc_nanos_since_epoch();
-
-                // Reset the referenced delta_yaw everytime when new socket data are obtained
-                state_estimate.delta_yaw = 0;
-                state_estimate.delta_dist = 0;
             }
         }
         return NULL;

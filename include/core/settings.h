@@ -54,7 +54,7 @@ typedef struct settings_t
     double follow_me_hover_Z;
     int enable_socket;
     double socket_dropout_timeout_ms;
-    double dist_from_obj;
+    double desired_dist;
 
     //-0.6 is close to hovering. Make the value closer to zero (less negative) if you want to descend faster. 
     //This parameter will also depend on the weight of the vehicle.
