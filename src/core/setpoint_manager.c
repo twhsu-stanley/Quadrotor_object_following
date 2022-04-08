@@ -211,8 +211,7 @@ void setpoint_update_Z_landing(void)
 void setpoint_update_dist_followme(void)
 {
     if (socket_object_tracking()) {
-        // Tracking sub-mode: if an object is detect, then a PID shall be applied to maintain a safe distance from the object
-        setpoint.dist = settings.dist_from_obj; // 
+        setpoint.dist = state_estimate.visual_range - settings.desired_dist; // positive: forward; negative: backward
     }
 
     // Constrain dist setpoint

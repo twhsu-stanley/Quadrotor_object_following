@@ -454,9 +454,9 @@ static void __run_dist_controller()
 {
     if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
     {
-        if (state_estimate.visual_bearing < 0.3)
+        if (state_estimate.visual_bearing < 0.2)
         {
-            setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.visual_range);
+            setpoint.pitch = rc_filter_march(&D_dist, setpoint.dist - state_estimate.delta_dist);
             rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT, MAX_PITCH_SETPOINT);
         }
     }
