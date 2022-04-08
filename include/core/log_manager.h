@@ -48,6 +48,8 @@ typedef struct log_entry_t
     double visual_range;
     double visual_bearing;
     uint64_t socket_last_received_time_ms;
+    uint64_t obj_obsrv_last_received_time_ms;
+    uint64_t visual_od_last_received_time_ms;
     bool object_tracking_tf;
     ///@}
 

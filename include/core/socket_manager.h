@@ -14,22 +14,24 @@
 #include <flight_mode.h>
 #include <stdint.h>
 
-typedef struct pose_xyt_t
-{    
-    double x;
-    double y;
-    double theta;
-} pose_xyt_t;
+// typedef struct pose_xyt_t
+// {    
+//     double x;
+//     double y;
+//     double theta;
+// } pose_xyt_t;
 
 typedef struct object_observation_t 
 {
-    uint64_t object_observation_time_ns;
+    uint8_t msg_type;
     double range;
+    double position_y;
     double bearing;
 } object_observation_t;
 
-typedef struct visual_odometry_t{
-    uint64_t visual_odometry_time_ns;
+typedef struct visual_odometry_t
+{
+    uint8_t msg_type;
     double x;
     double y;
     double z;
@@ -38,8 +40,9 @@ typedef struct visual_odometry_t{
     double yaw;
 } visual_odometry_t;
 
-typedef struct message_type_t {
-    int msg_type;
+typedef struct message_type_t 
+{
+    uint8_t msg_type;
 } message_type_t;
 
 // static pthread_t socket_manager_thread;
@@ -47,16 +50,19 @@ typedef struct thread_info
 {
     int num;
     pthread_t socket_manager_thread;
-    message_type_t* temp_buffer;
 
-    object_observation_t* object_observation_buffer; 
-    visual_odometry_t* visual_odometry_bufferer;
+    object_observation_t* obj_obsrv_buffer; 
+    visual_odometry_t* visual_od_buf;
     
     int new_socket;
     int valread;
     char buffer[1024];
 
     uint64_t socket_last_received_time_ns;
+
+    
+    uint64_t obj_obsrv_last_received_time_ns;
+    uint64_t visual_od_last_received_time_ns;
 } thread_info_t;
 
 extern object_observation_t object_observation;

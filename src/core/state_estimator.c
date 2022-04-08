@@ -493,6 +493,8 @@ static void __feedback_select(void)
 
             state_estimate.visual_range = object_observation.range;
             state_estimate.visual_bearing = object_observation.bearing;
+
+            
             
             break;
 
