@@ -18,6 +18,7 @@
 #include <rc_pilot_defs.h>
 #include <stdint.h>  // for uint64_t
 #include <vl53l1x.h>
+#include <stdbool.h>
 
 /**
  * This is the output from the state estimator. It contains raw sensor values
@@ -159,6 +160,9 @@ typedef struct state_estimate_t
     double delta_yaw;
     double delta_dist;
     double dist_ref;
+    double x_ref;
+    double y_ref;
+    double z_ref;
     ///@}
      
 } state_estimate_t;

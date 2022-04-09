@@ -143,15 +143,17 @@ static int __write_header(FILE* log_fd)
 static int __write_log_entry(FILE* log_fd, log_entry_t e)
 {
     // always print loop index
-    fprintf(log_fd, "%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64, 
-            e.loop_index, e.last_step_ns, e.imu_time_ns, e.imu_time_ns, e.epoch_time_ns);
+    fprintf(log_fd, "%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64,
+            e.loop_index, e.last_step_ns, e.imu_time_ns, e.imu_time_ns, e.epoch_time_ns,e.socket_last_received_time_ms);
 
     if (settings.log_sensors)
     {
-        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d%" PRIu64, e.v_batt,
-            e.alt_bmp_raw,e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, e.accel_X, e.accel_Y, e.accel_Z,
-            e.mag_X, e.mag_Y, e.mag_Z,e.alti_laser,e.alti_accelerometer, e.visual_range, e.visual_bearing, e.socket_last_received_time_ms,
-            e.object_tracking_tf);
+        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d" ,
+                          e.v_batt, e.alt_bmp_raw, e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, 
+                          e.accel_X, e.accel_Y, e.accel_Z, e.mag_X, e.mag_Y, e.mag_Z,
+                          e.alti_laser, e.alti_accelerometer, e.visual_range, e.visual_bearing,
+                          e.visualodo_X, e.visualodo_Y, e.visualodo_Z, e.visualodo_roll, e.visualodo_pitch, e.visualodo_yaw,
+                          e.object_tracking_tf);
     }
 
     if (settings.log_state)
@@ -333,6 +335,12 @@ static log_entry_t __construct_new_entry()
     e.alti_accelerometer = state_estimate.alt_accelometer;
     e.visual_range = state_estimate.visual_range;
     e.visual_bearing = state_estimate.visual_bearing;
+    e.visualodo_X = server_threadinfo.visual_od_buf->x;
+    e.visualodo_Y = server_threadinfo.visual_od_buf->y;
+    e.visualodo_Z = server_threadinfo.visual_od_buf->z;
+    e.visualodo_roll = server_threadinfo.visual_od_buf->roll;
+    e.visualodo_pitch = server_threadinfo.visual_od_buf->pitch;
+    e.visualodo_yaw = server_threadinfo.visual_od_buf->yaw;
     e.socket_last_received_time_ms = server_threadinfo.socket_last_received_time_ns / 1e6;
     e.object_tracking_tf = state_estimate.object_tracking;
 

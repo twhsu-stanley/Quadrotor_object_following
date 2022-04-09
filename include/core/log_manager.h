@@ -47,6 +47,12 @@ typedef struct log_entry_t
     double alti_accelerometer;
     double visual_range;
     double visual_bearing;
+    double visualodo_X;
+    double visualodo_Y;
+    double visualodo_Z;
+    double visualodo_roll;
+    double visualodo_pitch;
+    double visualodo_yaw;
     uint64_t socket_last_received_time_ms;
     uint64_t obj_obsrv_last_received_time_ms;
     uint64_t visual_od_last_received_time_ms;

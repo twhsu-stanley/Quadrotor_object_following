@@ -455,16 +455,31 @@ static void __feedback_select(void)
                 // 2) or use the visual odometry
                 // state_estimate.delta_yaw = visual_odometry.roll - roll_reference; // need to reset the reference when it gets new data 
 
+
                 // Compute the distance between current location and the location where we last get odometry update
-                // 1) Using visual odomety  
-                // Make sure: negative is forward and positive is backward
+                // Using mocap
+                if(settings.followme_feedback_src == 0) {
+                
+                state_estimate.delta_dist = (xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
+                                            (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw)
+               
+            
+                }
+                
+                // Using visual odomety  
+                // Make sure: negative is forward and positive is backward 
+                if(settings.followme_feedback_src == 1) {
                 state_estimate.delta_dist = (visual_odometry.z - state_estimate.z_ref) * cos(visual_odometry.pitch) - 
                                             (visual_odometry.x - state_estimate.x_ref) * sin(visual_odometry.pitch) 
-
-                // 2) Using mocap
-                // state_estimate.delta_dist = (xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
-                //                            (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw)
                 
+                //may want to use visual inertial odo feedback for heading instead of magnetometer for indoor flight
+                //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
+
+                }
+
+
+
+
                 // Set the bool indicator to true
                 state_estimate.object_tracking = true;
             }
@@ -473,30 +488,13 @@ static void __feedback_select(void)
                 state_estimate.object_tracking = false;
             }
 
-            // This need mocap
-            state_estimate.continuous_yaw =
-                 atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
-                     1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));
 
-            //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
+
+            state_estimate.continuous_yaw = atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
+                                            1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));   
             state_estimate.X = xbeeMsg.x;
             state_estimate.Y = xbeeMsg.y;
             state_estimate.Z = xbeeMsg.z;
-
-            // state_estimate.Z = state_estimate.alt_estimate;  //use the kalman filtered reading
-        
-            // old codes
-            // status = VL53L1X_CheckForDataReady(&Device, &tmp);
-			// // rc_usleep(1E2);
-            // if(tmp != 0){
-	
-            //     VL53L1X_ClearInterrupt(&Device);
-            //     VL53L1X_GetDistance(&Device, &distance);
-                
-            //     //state_estimate.Z = -(double)distance /1000; // converted to meter
-            //     state_estimate.Z =state_estimate.alt_bmp;
-            // }
-            // tmp = 0;
 
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;  

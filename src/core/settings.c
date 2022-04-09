@@ -712,6 +712,9 @@ int settings_load_from_file(const char* path)
     // Parsing for the follow-me feature //////////////////////////////////////////////////////
     PARSE_DOUBLE_MIN_MAX(follow_me_hover_Z, -2, 0)
 	PARSE_BOOL(enable_socket)
+    PARSE_BOOL(followme_yawtracking_enbl)
+    PARSE_BOOL(followme_distancetracking_enbl)
+    PARSE_INT_MIN_MAX(followme_feedback_src,0,1)
 	PARSE_DOUBLE_MIN_MAX(socket_dropout_timeout_ms, 0, 10000)
     PARSE_DOUBLE_MIN_MAX(desired_dist, 0.3, 2)
 
@@ -723,7 +726,19 @@ int settings_load_from_file(const char* path)
     if(settings.enable_socket)
     {
         printf("enable_socket = %d\n", settings.enable_socket);
+    }
+    if(settings.followme_yawtracking_enbl)
+    {
+        printf("followmeyaw_tracking_enabled = %d\n", settings.followme_yawtracking_enbl);
     } 
+    if(settings.followme_distancetracking_enbl)
+    {
+        printf("followmedistance_tracking_enabled = %d\n", settings.followme_distancetracking_enbl);
+    }  
+    if(settings.followme_feedback_src)
+    {
+        printf("followme_feedbacksrc = %d\n", settings.followme_feedback_src);
+    }  
     if(settings.socket_dropout_timeout_ms)
     {
         printf("socket_dropout_timeout_ms = %.6f", settings.socket_dropout_timeout_ms);

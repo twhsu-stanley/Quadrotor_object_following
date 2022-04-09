@@ -53,6 +53,9 @@ typedef struct settings_t
 
     double follow_me_hover_Z;
     int enable_socket;
+    int followme_yawtracking_enbl;
+    int followme_distancetracking_enbl;
+    int followme_feedback_src;
     double socket_dropout_timeout_ms;
     double desired_dist;
 
