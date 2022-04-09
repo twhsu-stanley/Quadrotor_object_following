@@ -816,6 +816,7 @@ int settings_load_from_file(const char* path)
     PARSE_BOOL(printf_gps);
     PARSE_BOOL(printf_magnetom);
     PARSE_BOOL(printf_rm3100);
+    PARSE_BOOL(printf_followme);
 
     // LOGGING
     PARSE_BOOL(enable_logging)
