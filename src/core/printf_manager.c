@@ -95,6 +95,10 @@ static int __print_header()
     {
         printf("%s x_xb | y_xb | z_xb | xdot_xb | ydot_xb | zdot_xb | qx_xb | qy_xb | qz_xb | qw_xb | sm_xb |", __next_colour());
     }
+    if (settings.printf_followme)
+    {
+        printf("%s x_VIodo | y_VIodo | z_VIodo | deltaYaw | dist2obj | objlock |", __next_colour());
+    }
     if (settings.printf_gps)
     {
         printf("%sgps_lat|gps_lon|gps_ele|", __next_colour());
@@ -210,6 +214,14 @@ static void* __printf_manager_func(__attribute__((unused)) void* ptr)
                 state_estimate.Z_dot, xbeeMsg.qx, xbeeMsg.qy, xbeeMsg.qz, xbeeMsg.qw,
                 xbeeMsg.sm_event);
         }
+        if (settings.printf_followme)
+        {
+            printf("%s%+6.2f|%+6.2f|%+6.2f|%+6.2f|%+6.2f|%+2d|", __next_colour(),
+                server_threadinfo.visual_od_buf->x,server_threadinfo.visual_od_buf->y,server_threadinfo.visual_od_buf->z,
+                state_estimate.visual_bearing, state_estimate.visual_range, object_tracking_tf,);
+                    
+        }
+
         if (settings.printf_gps)
         {
             printf("%s%+7.2f|%+7.2f|%+7.2f|", __next_colour(), 

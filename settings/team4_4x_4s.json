@@ -58,6 +58,9 @@
 	"printf_gps": false, 
 	"printf_magnetom": false,
 	"printf_rm3100": false,
+	"printf_followme" : true,
+
+
 
     "enable_logging": true,
     "log_only_while_armed": false,

@@ -106,6 +106,7 @@ typedef struct settings_t
     int printf_gps;
     int printf_magnetom;
     int printf_rm3100;
+    int printf_followme;
     ///@}
 
     /** @name log settings */
