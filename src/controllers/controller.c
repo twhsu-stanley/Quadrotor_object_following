@@ -264,13 +264,13 @@ static void __assign_setpoints_and_enable_loops()
                 setpoint.en_XY_ctrl = 1;
                 setpoint.en_dist_ctrl = 0;
 
-                setpoint.X = state_estimate.X;
+                setpoint.X = state_estimate.X; // remain at the current location if it's in the SENTRY mode
                 setpoint.Y = state_estimate.Y;
             }
 
             setpoint_update_Z_followme();
             setpoint_update_yaw_followme();
-            //setpoint_update_dist_followme();
+            setpoint_update_dist_followme();
 
             break;
 

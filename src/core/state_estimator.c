@@ -456,7 +456,14 @@ static void __feedback_select(void)
                 // state_estimate.delta_yaw = visual_odometry.roll - roll_reference; // need to reset the reference when it gets new data 
 
                 // Compute the distance between current location and the location where we last get odometry update
-                state_estimate.delta_dist = 
+                // 1) Using visual odomety  
+                // Make sure: negative is forward and positive is backward
+                state_estimate.delta_dist = (visual_odometry.z - state_estimate.z_ref) * cos(visual_odometry.pitch) - 
+                                            (visual_odometry.x - state_estimate.x_ref) * sin(visual_odometry.pitch) 
+
+                // 2) Using mocap
+                // state_estimate.delta_dist = (xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
+                //                            (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw)
                 
                 // Set the bool indicator to true
                 state_estimate.object_tracking = true;
@@ -497,9 +504,6 @@ static void __feedback_select(void)
 
             state_estimate.visual_range = object_observation.range;
             state_estimate.visual_bearing = object_observation.bearing;
-            
-            // Compute the distance difference since last object_observation data obtained
-            state_estimate.delta_dist = visual_odometry.z - state_estimate.dist_ref; // negative: forward; positive: backward
             
             break;
 
