@@ -47,13 +47,13 @@ static log_entry_t buffer[BUF_LEN];
 static int __write_header(FILE* log_fd)
 {
     // always print loop index
-    fprintf(log_fd, "loop_index,last_step_ns,imu_time_ns,bmp_time_ns,epoch_time_ns");
+    fprintf(log_fd, "loop_index,last_step_ns,imu_time_ns,bmp_time_ns,epoch_time_ns,socket_last_received_time_ms");
 
     if (settings.log_sensors)
     {
         fprintf(log_fd,
             ",v_batt,alt_bmp_raw,bmp_temp,gyro_roll,gyro_pitch,gyro_yaw,accel_X,accel_Y,accel_Z,mag_X, "
-            "mag_Y, mag_Z,alti_laser,alti_acc, visual_range, visual_bearing, socket_last_received_time_ms, object_tracking_tf");
+            "mag_Y, mag_Z,alti_laser,alti_acc, visual_range, visual_bearing, odo_Z, odo_Y,odo_Z,odo_Roll,odo_Pitch, odo_Yaw, object_tracking_tf");
     }
 
     if (settings.log_state)
@@ -335,12 +335,12 @@ static log_entry_t __construct_new_entry()
     e.alti_accelerometer = state_estimate.alt_accelometer;
     e.visual_range = state_estimate.visual_range;
     e.visual_bearing = state_estimate.visual_bearing;
-    e.visualodo_X = server_threadinfo.visual_od_buf->x;
-    e.visualodo_Y = server_threadinfo.visual_od_buf->y;
-    e.visualodo_Z = server_threadinfo.visual_od_buf->z;
-    e.visualodo_roll = server_threadinfo.visual_od_buf->roll;
-    e.visualodo_pitch = server_threadinfo.visual_od_buf->pitch;
-    e.visualodo_yaw = server_threadinfo.visual_od_buf->yaw;
+    e.visualodo_X = visual_odometry.x;
+    e.visualodo_Y = visual_odometr.y;
+    e.visualodo_Z = visual_odometry.z;
+    e.visualodo_roll = visual_odometry.roll;
+    e.visualodo_pitch = visual_odometry.pitch;
+    e.visualodo_yaw = visual_odometry.yaw;
     e.socket_last_received_time_ms = server_threadinfo.socket_last_received_time_ns / 1e6;
     e.object_tracking_tf = state_estimate.object_tracking;
 

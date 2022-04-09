@@ -29,20 +29,20 @@ typedef struct message_type_t
 typedef struct object_observation_t 
 {
     uint8_t msg_type;
-    double range;
-    double position_y;
-    double bearing;
+    volatile double range;
+    volatile double position_y;
+    volatile double bearing;
 } object_observation_t;
 
 typedef struct visual_odometry_t
 {
     uint8_t msg_type;
-    double x;
-    double y;
-    double z;
-    double roll;
-    double pitch;
-    double yaw;
+    volatile double x;
+    volatile double y;
+    volatile double z;
+    volatile double roll;
+    volatile double pitch;
+    volatile double yaw;
 } visual_odometry_t;
 
 // static pthread_t socket_manager_thread;
@@ -58,10 +58,9 @@ typedef struct thread_info
     int valread;
     char buffer[1024];
 
-    uint64_t socket_last_received_time_ns;
-
-    uint64_t obj_obsrv_last_received_time_ns;
-    uint64_t visual_od_last_received_time_ns;
+    volatile uint64_t socket_last_received_time_ns; 
+    volatile uint64_t obj_obsrv_last_received_time_ns;
+    volatile uint64_t visual_od_last_received_time_ns;
 } thread_info_t;
 
 extern object_observation_t object_observation;

@@ -477,9 +477,6 @@ static void __feedback_select(void)
 
                 }
 
-
-
-
                 // Set the bool indicator to true
                 state_estimate.object_tracking = true;
             }
