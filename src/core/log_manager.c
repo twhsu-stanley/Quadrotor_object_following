@@ -336,7 +336,7 @@ static log_entry_t __construct_new_entry()
     e.visual_range = state_estimate.visual_range;
     e.visual_bearing = state_estimate.visual_bearing;
     e.visualodo_X = visual_odometry.x;
-    e.visualodo_Y = visual_odometr.y;
+    e.visualodo_Y = visual_odometry.y;
     e.visualodo_Z = visual_odometry.z;
     e.visualodo_roll = visual_odometry.roll;
     e.visualodo_pitch = visual_odometry.pitch;

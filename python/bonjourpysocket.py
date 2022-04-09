@@ -138,7 +138,7 @@ print('gotti')
 # mysocket.bind((host,port))
 
 beaglehost = "127.0.0.1"
-# beaglebonesocket.connect((beaglehost,BBPORT))
+beaglebonesocket.connect((beaglehost,BBPORT))
 
 
 # start = dt.datetime.now()
