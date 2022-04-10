@@ -67,7 +67,7 @@ def pack_pose_msg(pose_dict):
     if(PRINT_POSE):
         print(f"X: {pose['X']}\tY: {pose['Y']}\tZ: {pose['Z']}\tRoll: {pose['Roll']}\tPitch: {pose['Pitch']}\tYaw: {pose['Yaw']}")
     
-    msgtype = struct.pack("B",MSG_TYPEDICT[pose_dict['Type']])  
+    msgtype = struct.pack("Q",MSG_TYPEDICT[pose_dict['Type']])  
     pose_xytrpy_msg = msgtype + struct.pack("d",pose['X']) + struct.pack("d",pose['Y']) + struct.pack("d",pose['Z'])
     pose_xytrpy_msg += struct.pack("d",pose['Roll']) + struct.pack("d",pose['Pitch']) + struct.pack("d",pose['Yaw'])
     # pose_xytrpy_msg = "dumb"
@@ -80,10 +80,16 @@ def pack_objectobs_msg(objectobservation):
     position_y = objectobservation['Y']
     depth = objectobservation['Height']*objectobservation['Width']
     if(PRINT_OBJOBS):
-        print(f"Class: {objectobservation['Class']} \t Area: {depth}\t Angle: {delta_yaw} \t Depth: {objectobservation['Depth']}")
+        print(f"Class: {objectobservation['Class']} \t Area: {depth}\t Angle: {delta_yaw} \t Depth: {objectobservation['Depth']}\tPosy: {position_y}")
 
-    msgtype = struct.pack("B",MSG_TYPEDICT[objectobservation['Type']])    
+    msgtype = struct.pack("Q",MSG_TYPEDICT[objectobservation['Type']])    
     payload = msgtype + struct.pack("d", delta_yaw)+struct.pack("d", position_y)+struct.pack("d", depth)
+    # payload = struct.pack("d", delta_yaw)+struct.pack("d", position_y)+struct.pack("d", depth)
+    # print(np.frombuffer(payload, dtype=np.uint8))
+    # [ 25, 0, 0, 0, 26,  26, 168, 100, 108, 205, 197, 191, 191,  42,  23,  42, 255,  90, 232,  63 ,178,  70,  47, 220,  29, 137, 203,  63]
+    # print(len(np.frombuffer(payload, dtype=np.uint8)))
+    # Class: car       Area: 0.215121967804    Angle: -0.1703315249908009      Depth: 99.9    Posy: 0.761108
+    # np.array([ 25, 0, 0, 0,0,0,0,0, 26,  26, 168, 100, 108, 205, 197, 191, 191,  42,  23,  42, 255,  90, 232,  63 ,178,  70,  47, 220,  29, 137, 203,  63],dtype=np.uint8).tobytes()
 
     return payload
 
@@ -137,13 +143,9 @@ print('gotti')
 # host = socket.inet_ntoa(listener.info.addresses[0])
 # mysocket.bind((host,port))
 
-beaglehost = "127.0.0.1"
+# beaglehost = "127.0.0.1"
+beaglehost = "192.168.1.42"
 beaglebonesocket.connect((beaglehost,BBPORT))
-
-
-# start = dt.datetime.now()
-# while True:
-
 
 
 # start = dt.datetime.now()

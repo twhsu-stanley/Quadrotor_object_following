@@ -23,12 +23,12 @@
 
 typedef struct message_type_t 
 {
-    uint8_t msg_type;
+    uint64_t msg_type;
 } message_type_t;
 
 typedef struct object_observation_t 
 {
-    uint8_t msg_type;
+    uint64_t msg_type;
     volatile double range;
     volatile double position_y;
     volatile double bearing;
@@ -36,7 +36,7 @@ typedef struct object_observation_t
 
 typedef struct visual_odometry_t
 {
-    uint8_t msg_type;
+    uint64_t msg_type;
     volatile double x;
     volatile double y;
     volatile double z;
