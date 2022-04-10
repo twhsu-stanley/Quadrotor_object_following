@@ -29,9 +29,9 @@ typedef struct __attribute__((packed)) xbee_packet_v1_t
     float qy;       ///< qy of quaternion
     float qz;       ///< qz of quaternion
     float qw;       ///< qw of quaternion
-    float roll;              ///< roll
-    float pitch;             ///< pitch
-    float yaw;               ///< yaw
+    // float roll;              ///< roll
+    // float pitch;             ///< pitch
+    // float yaw;               ///< yaw
     uint8_t trackingValid;  ///< (bool) of whether or not tracking was valid (0 or 1)
     uint16_t sm_event;      ///< event (or input) for state machine
     uint8_t deadByte;       ///< This byte doesn't do anything. It's a place holder to preserve backward compatibility (when 'trackingValid' was a 4-byte value)
