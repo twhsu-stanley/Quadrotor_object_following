@@ -143,8 +143,8 @@ print('gotti')
 # host = socket.inet_ntoa(listener.info.addresses[0])
 # mysocket.bind((host,port))
 
-# beaglehost = "127.0.0.1"
-beaglehost = "192.168.1.42"
+beaglehost = "127.0.0.1"
+# beaglehost = "192.168.1.42"
 beaglebonesocket.connect((beaglehost,BBPORT))
 
 
