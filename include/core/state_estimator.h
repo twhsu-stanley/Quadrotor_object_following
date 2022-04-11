@@ -18,7 +18,20 @@
 #include <rc_pilot_defs.h>
 #include <stdint.h>  // for uint64_t
 #include <vl53l1x.h>
-
+#include <xbee_receive.h>
+#include <stdbool.h>
+#include <rc/adc.h>
+#include <rc/bmp.h>
+#include <rc/led.h>
+#include <rc/math/filter.h>
+#include <rc/math/kalman.h>
+#include <rc/math/matrix.h>
+#include <rc/math/other.h>
+#include <rc/math/quaternion.h>
+#include <rc/math/algebra.h>
+#include <rc/mpu.h>
+#include <rc/start_stop.h>
+#include <rc/time.h>
 /**
  * This is the output from the state estimator. It contains raw sensor values
  * and the outputs of filters. Everything is in NED coordinates defined as:
@@ -90,6 +103,10 @@ typedef struct state_estimate_t
     double Y_dot;
     double Z_dot;
     double Z_ddot; // transformed z accel
+    double X_filter;
+    double Y_filter;
+    double X_dot_filter;
+    double Y_dot_filter;
     ///@}
 
     /** @name filtered data from IMU & barometer
@@ -198,6 +215,7 @@ int state_estimator_jobs_after_feedback(void);
  * @return     0 on success, -1 on failure
  */
 int state_estimator_cleanup(void);
+
 
 #endif /* __STATE_ESTIMATOR__ */
 

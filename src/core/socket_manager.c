@@ -31,9 +31,9 @@ static bool obj_tracking = false;
 static bool initialized = false;
 void *__socket_manager_func(void *user);
 
-object_observation_t object_observation; // Defined as extern in socket_manager.h
-visual_odometry_t visual_odometry;// Defined as extern in socket_manager.h
-
+// Global variables defined as extern in socket_manager.h
+object_observation_t object_observation;
+visual_odometry_t visual_odometry;
 
 int socketserver_init()
 {
@@ -139,34 +139,56 @@ void *__socket_manager_func(void *user)
     //	info->buffer = {0};
     while (rc_get_state() != EXITING)
         {
-            printf("enter the while loop\n");
-            fflush(stdout);
+            //printf("enter the while loop\n");
+            //fflush(stdout);
             // printf("%d\t%x",info->new_socket,&info->new_socket);
-            printf("Thread info new socket %d\n",info->new_socket);
-            fflush(stdout);
+            //printf("Thread info new socket %d\n", info->new_socket);
+            //fflush(stdout);
             info->valread = read(info->new_socket,(void *) &info->buffer, 1024);
-            printf("assigning the read valuez\n");
-            fflush(stdout);
+            //printf("assigning the read valuez\n");
+            //fflush(stdout);
             // printf("%s\n",info->buffer);
             // fflush(stdout);
             if (info->valread > -1)
             {
-                info->temp_buffer = (pose_xyt_t *)&info->buffer;
-                printf("X: %f\tY: %f\tDepth: %f\n", info->temp_buffer->x, info->temp_buffer->y, info->temp_buffer->theta);
-                
-                // object observation data type ///////////////////////////////////////////////////////////////////////////
-                info->object_observation_buffer = (object_observation_t *)&info->buffer;
-                printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", info->object_observation_buff->u, info->object_observation_buff->v, info->object_observation_buff->range, info->object_observation_buff->bearing);
-                //////////////////////////////////////////////////////////////////////////////////////////////
+                message_type_t* this_msg_type = (message_type_t *)&info->buffer;
 
-                info->temp_buffer = (message_type_t*)&info->buffer;
+                switch (this_msg_type->msg_type) {
+                    case 11:
+                        // visual odometry data type
+                        info->visual_od_buf = (visual_odometry_t *)&info->buffer;
+                        //printf("X: %f\tY: %f\tZ: %f\tRoll: %f\tPitch: %f\tYaw: %f\n", 
+                               //info->visual_od_buf->x, info->visual_od_buf->y, info->visual_od_buf->z,
+                               //info->visual_od_buf->roll, info->visual_od_buf->pitch, info->visual_od_buf->yaw);
 
+                        // store the data to a global variable
+                        visual_odometry.x = info->visual_od_buf->x;
+                        visual_odometry.y = info->visual_od_buf->y;
+                        visual_odometry.z = info->visual_od_buf->z;
+                        visual_odometry.roll = info->visual_od_buf->roll;
+                        visual_odometry.pitch = info->visual_od_buf->pitch;
+                        visual_odometry.yaw = info->visual_od_buf->yaw;
+
+                        info->visual_od_last_received_time_ns = rc_nanos_since_epoch();
+                        break;
+
+                    case 25:
+                        // object observation data type
+                        info->obj_obsrv_buffer = (object_observation_t *)&info->buffer;
+                        //printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
+                               //info->obj_obsrv_buffer->range, info->obj_obsrv_buffer->position_y, info->obj_obsrv_buffer->bearing);
+                        
+                        // store the data to a global variable
+                        object_observation.range = info->obj_obsrv_buffer->range;
+                        object_observation.position_y = info->obj_obsrv_buffer->position_y;
+                        object_observation.bearing = info->obj_obsrv_buffer->bearing;
+
+                        info->obj_obsrv_last_received_time_ns = rc_nanos_since_epoch();
+                        break;
+                }
 
                 fflush(stdout);
                 send(info->new_socket, "hello from server", 17, 0);
-
-                object_observation.bearing = info->tempbuf->theta;
-                object_observation.range = info->tempbuf->theta;
 
                 info->socket_last_received_time_ns = rc_nanos_since_epoch();
 
