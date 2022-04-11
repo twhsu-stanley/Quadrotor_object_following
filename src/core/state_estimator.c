@@ -60,6 +60,10 @@ static rc_filter_t batt_lp = RC_FILTER_INITIALIZER;
 static rc_kalman_t alt_kf = RC_KALMAN_INITIALIZER;
 static rc_kalman_t horiz_pos_estimator  = RC_KALMAN_INITIALIZER;
 //static rc_filter_t acc_lp = RC_FILTER_INITIALIZER;
+static rc_filter_t z_velocity_lp = RC_FILTER_INITIALIZER;
+
+static rc_vector_t pos_u   = RC_VECTOR_INITIALIZER;
+static rc_vector_t pos_y   = RC_VECTOR_INITIALIZER;
 
 static void __batt_init(void)
 {
@@ -332,6 +336,9 @@ static int __altitude_init(void)
     // init barometer and read in first data
     if (rc_bmp_read(&bmp_data)) return -1;
 
+    //init lp filter for z velocity
+    rc_filter_first_order_lowpass(&z_velocity_lp, DT, 3*DT);
+
     return 0;
 }
 
@@ -371,6 +378,11 @@ static void __altitude_march(void)
     // rotate accel vector to ground frame (z up)
     rc_quaternion_rotate_vector_array(accel_vec, state_estimate.quat_imu);
 
+    if (alt_kf.step == 0)
+    {
+        rc_vector_zeros(&u, 1);
+        rc_vector_zeros(&y, 1);
+    }
 
    // reverse the z acceleration to point down
     u.d[0] = -accel_vec[2] - GRAVITY;
@@ -419,6 +431,7 @@ static void __altitude_march(void)
     // Calculate alt_velocity
     rc_ringbuf_insert(&z_alti_track, state_estimate.alt_estimate);
     state_estimate.alt_velocity = __diff_function_helper(&z_alti_track, state_estimate.alt_velocity, DT);
+    state_estimate.alt_velocity = rc_filter_march(&z_velocity_lp, state_estimate.alt_velocity);
 
     return;
 }
@@ -512,6 +525,9 @@ static void __filter_cleanup(void)
 {
     rc_kalman_free(&alt_kf);
     //rc_filter_free(&acc_lp);
+    rc_vector_free(&pos_u);
+	rc_vector_free(&pos_y);
+    rc_filter_free(&z_velocity_lp);
 
     // if using x y filter 
     //rc_kalman_free(&horiz_pos_estimator);
@@ -555,7 +571,7 @@ int state_estimator_init(void)
         printf("Failed to allocate z_position_track ringbuf");
         return -1;
     }
-    rc_ringbuf_insert(&z_alti_track, 0.0);
+    //rc_ringbuf_insert(&z_alti_track, 0.0);
 
     state_estimate.initialized = 1;
     return 0;
@@ -610,7 +626,7 @@ int state_estimator_cleanup(void)
 }
 
 
-static int kalman_predict(rc_kalman_t* kf, rc_vector_t u)
+int kalman_predict(rc_kalman_t* kf, rc_vector_t u)
 {
 	/* Performs a Kalman filter time update to get "a priori" estimate. */
 
@@ -665,7 +681,7 @@ static int kalman_predict(rc_kalman_t* kf, rc_vector_t u)
 	return 0;
 }
 
-static int kalman_correct(rc_kalman_t* kf, rc_vector_t y)
+int kalman_correct(rc_kalman_t* kf, rc_vector_t y)
 {
 	/* Performs a Kalman measurement update to get "a posteriori" estimate. */
 
@@ -792,15 +808,15 @@ int initialize_horizontal_position_estimator(void)
 
 
 	// Process Noise Covariance Matrix
-	W.d[2][2] = COVARIANCE_ACCELEROMETER_X;
-	W.d[3][3] = COVARIANCE_ACCELEROMETER_Y;
+	W.d[2][2] = 0.1428;
+	W.d[3][3] = 0.1428;
 	W.d[4][4] = 0.1; // Smaller value makes cov changes more slowly
 	W.d[5][5] = 0.1; // Smaller value makes cov changes more slowly
 
 
 	// Sensor Noise Covariance Matrix
-	V.d[0][0] = COVARIANCE_MOCAP_X;
-	V.d[1][1] = COVARIANCE_MOCAP_Y;
+	V.d[0][0] = 0.1;
+	V.d[1][1] = 0.1;
 
 
 	// Initial Error Covariance Matrix
@@ -838,8 +854,8 @@ static void estimate_horizontal_position(void)
 	// ========== KALMAN FILTER PREDICTION: Get "a priori" estimate ==========
 
 	// Set process measurement "u" to acceleration along x and y axes.
-	pos_u.d[0] = accel_vec_inertial_frame.d[0];
-	pos_u.d[1] = accel_vec_inertial_frame.d[1];
+	pos_u.d[0] = state_estimate.accel_ground_frame[0];
+	pos_u.d[1] = state_estimate.accel_ground_frame[0];
 
 	// Propagate altitude based on dynamic model x(k+1) = A*x(k) + B*u(k)
 	kalman_predict(&horiz_pos_estimator, pos_u);
@@ -855,16 +871,16 @@ static void estimate_horizontal_position(void)
 
 
 	// If a new data from the phone is ready
-	if(settings.xbee_en && xbee_data_ready){
+	// if(settings.xbee_en && xbee_data_ready){
 
 
-		// Set the measurement "y" to the range finder reading.
-		pos_y.d[0] = xbeeMsg.x;
-		pos_y.d[1] = xbeeMsg.y;
+	// 	// Set the measurement "y" to the range finder reading.
+	// 	pos_y.d[0] = xbeeMsg.x;
+	// 	pos_y.d[1] = xbeeMsg.y;
 
-		// Correct the state estimate
-		kalman_correct(&horiz_pos_estimator, pos_y);
-    }
+	// 	// Correct the state estimate
+	// 	kalman_correct(&horiz_pos_estimator, pos_y);
+    // }
 
 
 	// Set the new horizontal position estimate

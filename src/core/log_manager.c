@@ -329,8 +329,8 @@ static log_entry_t __construct_new_entry()
     e.mag_X = state_estimate.mag[0];
     e.mag_Y = state_estimate.mag[1];
     e.mag_Z = state_estimate.mag[2];
-    e.alti_laser = state_estimate.alt_altimeter;
-    e.alti_accelerometer = state_estimate.alt_accelometer;
+    e.alti_laser = state_estimate.alt_estimate;
+    e.alti_accelerometer = state_estimate.alt_velocity;
     e.visual_range = state_estimate.visual_range;
     e.visual_bearing = state_estimate.visual_bearing;
     e.socket_last_received_time_ms = server_threadinfo.socket_last_received_time_ns / 1e6;

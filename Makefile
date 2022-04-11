@@ -36,7 +36,7 @@ CLINKER		:= gcc
 CXXLINKER	:= g++
 WFLAGS		:= -Wall -Wextra # -Werror
 INCLUDEFLAG	:= $(INCLUDESUBD:%=-I%)
-CFLAGS		:= $(INCLUDEFLAG) 
+CFLAGS		:= $(INCLUDEFLAG) -g
 CXXFLAGS	:= $(INCLUDEFLAG) -I/usr/local/include
 OPT_FLAGS	:= -O3
 LDFLAGS		:= -lm -lrt -pthread -ljson-c -lrobotcontrol
