@@ -29,9 +29,9 @@ typedef struct message_type_t
 typedef struct object_observation_t 
 {
     uint64_t msg_type;
-    volatile double range;
-    volatile double position_y;
     volatile double bearing;
+    volatile double position_y;
+    volatile double range;
 } object_observation_t;
 
 typedef struct visual_odometry_t

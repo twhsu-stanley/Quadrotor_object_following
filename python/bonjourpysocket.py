@@ -78,11 +78,15 @@ def pack_objectobs_msg(objectobservation):
     position = objectobservation['X']
     delta_yaw = calc_yawangle(position)
     position_y = objectobservation['Y']
-    depth = objectobservation['Height']*objectobservation['Width']
+    # depth = objectobservation['Height']*objectobservation['Width']
+    objectobservation['Depth'] = input("Dist 2 object:")
+    print(type(objectobservation['Depth']))
+    depth=float(objectobservation['Depth'])
     if(PRINT_OBJOBS):
         print(f"Class: {objectobservation['Class']} \t Area: {depth}\t Angle: {delta_yaw} \t Depth: {objectobservation['Depth']}\tPosy: {position_y}")
 
-    msgtype = struct.pack("Q",MSG_TYPEDICT[objectobservation['Type']])    
+    msgtype = struct.pack("Q",MSG_TYPEDICT[objectobservation['Type']])  
+      
     payload = msgtype + struct.pack("d", delta_yaw)+struct.pack("d", position_y)+struct.pack("d", depth)
     # payload = struct.pack("d", delta_yaw)+struct.pack("d", position_y)+struct.pack("d", depth)
     # print(np.frombuffer(payload, dtype=np.uint8))
@@ -128,9 +132,9 @@ mysocket = socket.socket()
 mysocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 beaglebonesocket = socket.socket()
 beaglebonesocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-port = listener.info.port
-host = socket.inet_ntoa(listener.info.addresses[0])
-mysocket.connect((host,port))
+# port = listener.info.port
+# host = socket.inet_ntoa(listener.info.addresses[0])
+# mysocket.connect((host,port))
 print('gotti')
 
 
@@ -143,13 +147,15 @@ print('gotti')
 # host = socket.inet_ntoa(listener.info.addresses[0])
 # mysocket.bind((host,port))
 
-beaglehost = "127.0.0.1"
+# beaglehost = "127.0.0.1"
 # beaglehost = "192.168.1.42"
+beaglehost = "192.168.1.4"
 beaglebonesocket.connect((beaglehost,BBPORT))
 
 
 # start = dt.datetime.now()
 # while True:
+
 
 
 while True:
@@ -159,13 +165,29 @@ while True:
     #     break
 
     try:
-        data = mysocket.recv(1024)
+        # data = mysocket.recv(1024)
         # data = mysocket.recvfrom(1024)
-        if data:
+        # if data:
 
-            data_jsondict = parse_iphonemsg(data)
-            msg = pack_message4beaglbone(data_jsondict)
-            beaglebonesocket.send(msg)
+        # data_jsondict = parse_iphonemsg(data)
+
+        data_jsondict = {}
+        data_jsondict['X'] = 0.5
+        data_jsondict['Y'] = 0.0
+        data_jsondict['Area'] = 0.0
+        data_jsondict['Type'] = 'Object_Observation'
+        data_jsondict['Class'] = "Fake Observation"
+            # position = objectobservation[]
+            # delta_yaw = calc_yawangle(position)
+            # position_y = objectobservation['Y']
+            # depth = objectobservation['Height']*objectobservation['Width']
+            # if(PRINT_OBJOBS):
+    # print(f"Class: {objectobservation['Class']} \t Area: {depth}\t Angle: {delta_yaw} \t Depth: {objectobservation['Depth']}\tPosy: {position_y}")
+
+    # msgtype = struct.pack("Q",MSG_TYPEDICT[objectobservation['Type']])   
+
+        msg = pack_message4beaglbone(data_jsondict)
+        beaglebonesocket.send(msg)
 
 
     except KeyboardInterrupt:
