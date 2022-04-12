@@ -57,6 +57,8 @@ typedef struct log_entry_t
     uint64_t obj_obsrv_last_received_time_ms;
     uint64_t visual_od_last_received_time_ms;
     bool object_tracking_tf;
+    double setpoint_delta_dist;
+    double state_estimate_delta_dist;
     ///@}
 
     /** @name PNI RM3100 Magnetometer */

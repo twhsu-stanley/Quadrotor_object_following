@@ -39,8 +39,8 @@
 #define MAX_Z_SETPOINT  0   ///< meters.
 #define MIN_Z_SETPOINT -2.0 ///< meters.
 
-#define MIN_DIST_SETPOINT 0.4 ///< meters
-#define MAX_DIST_SETPOINT 2 ///< meters
+#define MIN_DIST_SETPOINT -1.5 ///< meters
+#define MAX_DIST_SETPOINT 1.5 ///< meters
 
 //#define FOLLOWME_HOVER_Z -1 ///< meters.
 #define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.

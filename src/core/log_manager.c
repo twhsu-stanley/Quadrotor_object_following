@@ -52,8 +52,9 @@ static int __write_header(FILE* log_fd)
     if (settings.log_sensors)
     {
         fprintf(log_fd,
-            ",v_batt,alt_bmp_raw,bmp_temp,gyro_roll,gyro_pitch,gyro_yaw,accel_X,accel_Y,accel_Z,mag_X, "
-            "mag_Y, mag_Z,alti_laser,alti_acc, visual_range, visual_bearing, odo_Z, odo_Y,odo_Z,odo_Roll,odo_Pitch, odo_Yaw, object_tracking_tf");
+            ",v_batt,alt_bmp_raw,bmp_temp,gyro_roll,gyro_pitch,gyro_yaw,accel_X,accel_Y,accel_Z,mag_X,"
+            "mag_Y, mag_Z,alti_laser,alti_acc,visual_range,visual_bearing,odo_X,odo_Y,odo_Z,odo_Roll,odo_Pitch,odo_Yaw,"
+            "object_tracking_tf,setpoint_delta_dist,state_estimate_delta_dist");
     }
 
     if (settings.log_state)
@@ -153,7 +154,7 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
                           e.accel_X, e.accel_Y, e.accel_Z, e.mag_X, e.mag_Y, e.mag_Z,
                           e.alti_laser, e.alti_accelerometer, e.visual_range, e.visual_bearing,
                           e.visualodo_X, e.visualodo_Y, e.visualodo_Z, e.visualodo_roll, e.visualodo_pitch, e.visualodo_yaw,
-                          e.object_tracking_tf);
+                          e.object_tracking_tf, e.setpoint_delta_dist,e.state_estimate_delta_dist);
     }
 
     if (settings.log_state)
@@ -343,6 +344,8 @@ static log_entry_t __construct_new_entry()
     e.visualodo_yaw = visual_odometry.yaw;
     e.socket_last_received_time_ms = (rc_nanos_since_epoch() - server_threadinfo.socket_last_received_time_ns) / 1e6;
     e.object_tracking_tf = state_estimate.object_tracking;
+    e.setpoint_delta_dist = setpoint.delta_dist;
+    e.state_estimate_delta_dist = state_estimate.delta_dist;
 
     e.roll = state_estimate.roll;
     e.pitch = state_estimate.pitch;

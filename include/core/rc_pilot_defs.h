@@ -73,7 +73,7 @@ typedef enum fail_state_t
 #define MAX_YAW_RATE 1.5        // rad/s
 #define MAX_ROLL_SETPOINT 0.75   // rad
 #define MAX_PITCH_SETPOINT 0.75  // rad
-#define MAX_PITCH_SETPOINT_FOR_DIST 0.2 //rad
+#define MAX_PITCH_SETPOINT_FOR_DIST 0.1 //rad
 #define MAX_XY_VELOCITY 2.0     // m/s
 #define MAX_Z_VELOCITY  2.0     // m/s
 #define MAX_XY_ACCELERATION 5.0 // m/s^2
