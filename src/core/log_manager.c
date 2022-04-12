@@ -341,7 +341,7 @@ static log_entry_t __construct_new_entry()
     e.visualodo_roll = visual_odometry.roll;
     e.visualodo_pitch = visual_odometry.pitch;
     e.visualodo_yaw = visual_odometry.yaw;
-    e.socket_last_received_time_ms = server_threadinfo.socket_last_received_time_ns / 1e6;
+    e.socket_last_received_time_ms = (rc_nanos_since_epoch() - server_threadinfo.socket_last_received_time_ns) / 1e6;
     e.object_tracking_tf = state_estimate.object_tracking;
 
     e.roll = state_estimate.roll;

@@ -700,7 +700,7 @@ int controller_reset()
     rc_filter_prefill_inputs(&D_Xdot_pd,     -state_estimate.X_dot);
     rc_filter_prefill_inputs(&D_Ydot_pd,     -state_estimate.Y_dot);
     rc_filter_prefill_inputs(&D_Zdot_pd,     -state_estimate.Z_dot);
-
+    rc_filter_prefill_inputs(&D_dist,     -state_estimate.delta_dist);
     return 0;
 }
 
