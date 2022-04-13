@@ -458,9 +458,9 @@ static void __run_dist_controller()
 
             // Saturate the pitch setpoint with a max value that is specifically for distance control
             rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT_FOR_DIST, MAX_PITCH_SETPOINT_FOR_DIST);
-
         }
     }
+
 }
 
 static void __run_XY_controller()

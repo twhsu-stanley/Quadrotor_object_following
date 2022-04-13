@@ -108,7 +108,7 @@ void setpoint_update_yaw_followme(void)
 {
     if (state_estimate.Z < (settings.follow_me_hover_Z + ALLOW_HOVER_Z_ERROR))
     {
-        // The drone has reached its hovering altitude;
+        //The drone has reached its hovering altitude;
         if (socket_object_tracking()) {
             // Tracking sub-mode: if an object is detect, then a PID shall be applied to yaw to center
             // on the object
@@ -121,6 +121,7 @@ void setpoint_update_yaw_followme(void)
             // so that the object detection will search 360 degrees
             setpoint.yaw += SENTRY_ROTATION_RATE * DT;
         }
+
     }
     else {
         // The drone has not yet reached the hovering altitude;

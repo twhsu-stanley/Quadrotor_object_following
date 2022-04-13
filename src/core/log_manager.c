@@ -149,7 +149,7 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
 
     if (settings.log_sensors)
     {
-        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d" ,
+        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d,%.4F,%.4F" ,
                           e.v_batt, e.alt_bmp_raw, e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, 
                           e.accel_X, e.accel_Y, e.accel_Z, e.mag_X, e.mag_Y, e.mag_Z,
                           e.alti_laser, e.alti_accelerometer, e.visual_range, e.visual_bearing,

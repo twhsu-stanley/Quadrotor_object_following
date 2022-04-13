@@ -189,6 +189,7 @@ void *__socket_manager_func(void *user)
                         
                         // Reset the referenced delta_yaw & distance everytime when new object data are obtained
                         state_estimate.delta_yaw = 0;
+                        state_estimate.delta_dist = 0;              
 
                         // If mocap is used for delta_dist feedback
                         if(settings.followme_feedback_src == 0) {
@@ -201,9 +202,7 @@ void *__socket_manager_func(void *user)
                             state_estimate.y_ref = visual_odometry.y;
                             state_estimate.z_ref = visual_odometry.z;
                         }
-
-
-                        
+ 
                         break;
                 }
 
