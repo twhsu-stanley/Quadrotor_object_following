@@ -459,22 +459,18 @@ static void __feedback_select(void)
                 // Compute the distance between current location and the location where we last get odometry update
                 // Using mocap
                 if(settings.followme_feedback_src == 0) {
-                
-                state_estimate.delta_dist = (xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
-                                            (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw);
-               
-            
+                    state_estimate.delta_dist = (xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
+                                                (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw);
                 }
                 
                 // Using visual odomety  
                 // Make sure: negative is forward and positive is backward 
                 if(settings.followme_feedback_src == 1) {
-                state_estimate.delta_dist = (visual_odometry.z - state_estimate.z_ref) * cos(visual_odometry.pitch) - 
-                                            (visual_odometry.x - state_estimate.x_ref) * sin(visual_odometry.pitch) ;
-                
+                    state_estimate.delta_dist = (visual_odometry.z - state_estimate.z_ref) * cos(visual_odometry.pitch) - 
+                                                (visual_odometry.x - state_estimate.x_ref) * sin(visual_odometry.pitch) ;
+    
                 //may want to use visual inertial odo feedback for heading instead of magnetometer for indoor flight
                 //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
-
                 }
 
                 // Set the bool indicator to true
