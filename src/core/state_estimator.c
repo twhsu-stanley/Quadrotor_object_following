@@ -460,7 +460,7 @@ static void __feedback_select(void)
                 // Using mocap
                 if(settings.followme_feedback_src == 0) {
                     state_estimate.delta_dist = -(xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
-                                                (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw);
+                                                 (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw);
 
                 }
                 

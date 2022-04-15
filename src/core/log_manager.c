@@ -54,7 +54,7 @@ static int __write_header(FILE* log_fd)
         fprintf(log_fd,
             ",v_batt,alt_bmp_raw,bmp_temp,gyro_roll,gyro_pitch,gyro_yaw,accel_X,accel_Y,accel_Z,mag_X,"
             "mag_Y, mag_Z,alti_laser,alti_acc,visual_range,visual_bearing,odo_X,odo_Y,odo_Z,odo_Roll,odo_Pitch,odo_Yaw,"
-            "object_tracking_tf,setpoint_delta_dist,state_estimate_delta_dist");
+            "object_tracking_tf,setpoint_delta_dist,state_estimate_delta_dist,setpoint_delta_yaw,state_estimate_delta_yaw");
     }
 
     if (settings.log_state)
@@ -149,12 +149,12 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
 
     if (settings.log_sensors)
     {
-        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d,%.4F,%.4F" ,
+        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d,%.4F,%.4F,%.4F,%.4F" ,
                           e.v_batt, e.alt_bmp_raw, e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, 
                           e.accel_X, e.accel_Y, e.accel_Z, e.mag_X, e.mag_Y, e.mag_Z,
                           e.alti_laser, e.alti_accelerometer, e.visual_range, e.visual_bearing,
                           e.visualodo_X, e.visualodo_Y, e.visualodo_Z, e.visualodo_roll, e.visualodo_pitch, e.visualodo_yaw,
-                          e.object_tracking_tf, e.setpoint_delta_dist,e.state_estimate_delta_dist);
+                          e.object_tracking_tf, e.setpoint_delta_dist, e.state_estimate_delta_dist, e.setpoint_delta_yaw, e.state_estimate_delta_yaw);
     }
 
     if (settings.log_state)
@@ -346,6 +346,8 @@ static log_entry_t __construct_new_entry()
     e.object_tracking_tf = state_estimate.object_tracking;
     e.setpoint_delta_dist = setpoint.delta_dist;
     e.state_estimate_delta_dist = state_estimate.delta_dist;
+    e.setpoint_delta_yaw = setpoint.delta_yaw;
+    e.state_estimate_delta_yaw = state_estimate.delta_yaw;
 
     e.roll = state_estimate.roll;
     e.pitch = state_estimate.pitch;

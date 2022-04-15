@@ -59,6 +59,8 @@ typedef struct log_entry_t
     bool object_tracking_tf;
     double setpoint_delta_dist;
     double state_estimate_delta_dist;
+    double setpoint_delta_yaw;
+    double state_estimate_delta_yaw;
     ///@}
 
     /** @name PNI RM3100 Magnetometer */
