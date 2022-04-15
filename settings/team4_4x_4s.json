@@ -19,6 +19,7 @@
 	"followme_yawtracking_enbl" : true,
 	"followme_distancetracking_enbl" : true,
 	"followme_feedback_src" : 0,
+	"followme_distancecontrol_xy": true,
 	"socket_dropout_timeout_ms": 800.0,
 	"desired_dist": 1.5,
 

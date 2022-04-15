@@ -715,6 +715,7 @@ int settings_load_from_file(const char* path)
     PARSE_BOOL(followme_yawtracking_enbl)
     PARSE_BOOL(followme_distancetracking_enbl)
     PARSE_INT_MIN_MAX(followme_feedback_src,0,1)
+    PARSE_BOOL(followme_distancecontrol_xy)
 	PARSE_DOUBLE_MIN_MAX(socket_dropout_timeout_ms, 0, 10000)
     PARSE_DOUBLE_MIN_MAX(desired_dist, 0.3, 2)
 
@@ -738,7 +739,11 @@ int settings_load_from_file(const char* path)
     if(settings.followme_feedback_src)
     {
         printf("followme_feedbacksrc = %d\n", settings.followme_feedback_src);
-    }  
+    }
+    if (settings.followme_distancecontrol_xy)
+    {
+        printf("followme_distancecontrol_xy = %d\n", settings.followme_distancecontrol_xy);
+    }
     if(settings.socket_dropout_timeout_ms)
     {
         printf("socket_dropout_timeout_ms = %.6f", settings.socket_dropout_timeout_ms);

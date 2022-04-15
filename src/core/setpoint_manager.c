@@ -69,7 +69,7 @@ static void __reset_waypoint_counter();
 bool socket_object_tracking(void)
 {
     bool obj_tracking;
-    double ms_since_socket = (double)(rc_nanos_since_epoch() - server_threadinfo.socket_last_received_time_ns) / 1e6;
+    double ms_since_socket = (double)(rc_nanos_since_epoch() - server_threadinfo.obj_obsrv_last_received_time_ns) / 1e6;
     if (settings.enable_socket && ms_since_socket < settings.socket_dropout_timeout_ms)
     {
         obj_tracking = true;
@@ -211,13 +211,18 @@ void setpoint_update_Z_landing(void)
 
 void setpoint_update_dist_followme(void)
 {
-    if (socket_object_tracking()) {
+    if (socket_object_tracking() && state_estimate.visual_bearing < 0.2) {
         //setpoint.dist = state_estimate.visual_range - settings.desired_dist; // positive: should fly forward; negative: backward
         setpoint.delta_dist = settings.desired_dist - state_estimate.visual_range; // positive: should fly backward; negative: forward
-    }
 
-    // Constrain dist setpoint
-    rc_saturate_double(&setpoint.delta_dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);
+        // Constrain dist setpoint
+        rc_saturate_double(&setpoint.delta_dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);
+
+        if (settings.followme_distancecontrol_xy) {
+            setpoint.X -= setpoint.delta_dist * cos(state_estimate.continuous_yaw);
+            setpoint.Y -= setpoint.delta_dist * sin(state_estimate.continuous_yaw);
+        }
+    }
     return;
 }
 

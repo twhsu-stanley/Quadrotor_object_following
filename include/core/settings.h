@@ -56,6 +56,7 @@ typedef struct settings_t
     int followme_yawtracking_enbl;
     int followme_distancetracking_enbl;
     int followme_feedback_src;
+    int followme_distancecontrol_xy;
     double socket_dropout_timeout_ms;
     double desired_dist;
 

@@ -256,16 +256,26 @@ static void __assign_setpoints_and_enable_loops()
             setpoint.en_rpy_ctrl = 1;
             setpoint.en_Z_ctrl = 1;
 
-            if (socket_object_tracking()) {
-                setpoint.en_XY_ctrl = 0;
-                setpoint.en_dist_ctrl = 1;
+            // Controller configuration for distance controls
+            if (socket_object_tracking() && state_estimate.visual_bearing < 0.2) {
+                // If the dron is tracking and facing towards the object
+                if (settings.followme_distancecontrol_xy) {
+                    // Commanding XY position for distance controls 
+                    setpoint.en_XY_ctrl = 1;
+                    setpoint.en_dist_ctrl = 0;
+                }
+                else {
+                    // Commanding pitch for distance controls 
+                    setpoint.en_XY_ctrl = 0;
+                    setpoint.en_dist_ctrl = 1;
+                }
             }
             else {
                 setpoint.en_XY_ctrl = 1;
                 setpoint.en_dist_ctrl = 0;
 
-                setpoint.X = state_estimate.X; // remain at the current location if it's in the SENTRY mode
-                setpoint.Y = state_estimate.Y;
+                setpoint.X = state_estimate.x_ref; // remain at the location where we last received the socket data
+                setpoint.Y = state_estimate.y_ref;
             }
 
             setpoint_update_Z_followme();
@@ -450,17 +460,13 @@ static void __run_Z_controller()
 
 static void __run_dist_controller()
 {
-    if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking())
+    if (user_input.flight_mode == FOLLOW_ME && socket_object_tracking() && state_estimate.visual_bearing < 0.2)
     {
-        if (state_estimate.visual_bearing < 0.2)
-        {
-            setpoint.pitch = rc_filter_march(&D_dist, setpoint.delta_dist - state_estimate.delta_dist);
+        setpoint.pitch = rc_filter_march(&D_dist, setpoint.delta_dist - state_estimate.delta_dist);
 
-            // Saturate the pitch setpoint with a max value that is specifically for distance control
-            rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT_FOR_DIST, MAX_PITCH_SETPOINT_FOR_DIST);
-        }
+        // Saturate the pitch setpoint with a max value that is specifically for distance control
+        rc_saturate_double(&setpoint.pitch, -MAX_PITCH_SETPOINT_FOR_DIST, MAX_PITCH_SETPOINT_FOR_DIST);
     }
-
 }
 
 static void __run_XY_controller()
