@@ -267,7 +267,8 @@ static void __assign_setpoints_and_enable_loops()
                 else {
                     // Commanding pitch for distance controls 
                     setpoint.en_XY_ctrl = 0;
-                    setpoint.en_dist_ctrl = 1;
+                    //setpoint.en_dist_ctrl = 1;
+                    setpoint.en_dist_ctrl = (int) settings.followme_distancetracking_enbl;
                 }
             }
             else {

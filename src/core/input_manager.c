@@ -26,7 +26,7 @@ static pthread_t input_manager_thread;
 static arm_state_t kill_switch = DISARMED;  // raw kill switch on the radio
 
 static bool enabled_emergency_land = false;
-static bool obj_tracking = false;
+//static bool obj_tracking = false;
 
 double deadzone(double in, double zone)
 {

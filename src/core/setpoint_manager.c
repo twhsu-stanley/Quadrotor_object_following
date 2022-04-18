@@ -32,10 +32,10 @@
 
 
 #define XYZ_MAX_ERROR 0.5   ///< meters.
-#define MAX_X_SETPOINT  2.0 ///< meters.
-#define MIN_X_SETPOINT -2.0 ///< meters.
-#define MAX_Y_SETPOINT  1 ///< meters.
-#define MIN_Y_SETPOINT -1 ///< meters.
+#define MAX_X_SETPOINT  5.0 ///< meters.
+#define MIN_X_SETPOINT -5.0 ///< meters.
+#define MAX_Y_SETPOINT  5.0 ///< meters.
+#define MIN_Y_SETPOINT -5.0 ///< meters.
 #define MAX_Z_SETPOINT  0   ///< meters.
 #define MIN_Z_SETPOINT -2.0 ///< meters.
 
@@ -45,8 +45,8 @@
 //#define FOLLOWME_HOVER_Z -1 ///< meters.
 #define ASCEND_SPEED -0.1 ///< NEGATIVE; meters/sec.
 #define DESCEND_SPEED 0.1 ///< POSITIVE; meters/sec.
-#define ALLOW_HOVER_Z_ERROR 0.15 ///< meters.
-#define SENTRY_ROTATION_RATE 0.4 ///< rad/s.
+#define ALLOW_HOVER_Z_ERROR 0.5 ///< meters.
+#define SENTRY_ROTATION_RATE 0.2 ///< rad/s.
 
 
 
@@ -120,6 +120,7 @@ void setpoint_update_yaw_followme(void)
             // Sentry sub-mode: if no object is detected, a constant slow rotation will be applied
             // so that the object detection will search 360 degrees
             setpoint.yaw += SENTRY_ROTATION_RATE * DT;
+            setpoint.yaw = atan2(sin(setpoint.yaw), cos(setpoint.yaw));
         }
 
     }
@@ -219,9 +220,19 @@ void setpoint_update_dist_followme(void)
         rc_saturate_double(&setpoint.delta_dist, MIN_DIST_SETPOINT, MAX_DIST_SETPOINT);
 
         if (settings.followme_distancecontrol_xy) {
-            setpoint.X -= setpoint.delta_dist * cos(state_estimate.continuous_yaw);
-            setpoint.Y -= setpoint.delta_dist * sin(state_estimate.continuous_yaw);
+            if (settings.followme_distancetracking_enbl) {
+                setpoint.X = state_estimate.x_ref - setpoint.delta_dist * cos(state_estimate.continuous_yaw);
+                setpoint.Y = state_estimate.y_ref - setpoint.delta_dist * sin(state_estimate.continuous_yaw);
+                // Lastly, Constrain X & Y setpoints
+                rc_saturate_double(&setpoint.X, MIN_X_SETPOINT, MAX_X_SETPOINT);
+                rc_saturate_double(&setpoint.Y, MIN_Y_SETPOINT, MAX_Y_SETPOINT);
+            }
+            else {
+                setpoint.X = 0;
+                setpoint.Y = 0;
+            }
         }
+
     }
     return;
 }

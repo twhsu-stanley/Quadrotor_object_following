@@ -29,20 +29,20 @@ typedef struct message_type_t
 typedef struct object_observation_t 
 {
     uint64_t msg_type;
-    volatile double bearing;
-    volatile double position_y;
-    volatile double range;
+    double bearing;
+    double position_y;
+    double range;
 } object_observation_t;
 
 typedef struct visual_odometry_t
 {
     uint64_t msg_type;
-    volatile double x;
-    volatile double y;
-    volatile double z;
-    volatile double roll;
-    volatile double pitch;
-    volatile double yaw;
+    double x;
+    double y;
+    double z;
+    double roll;
+    double pitch;
+    double yaw;
 } visual_odometry_t;
 
 // static pthread_t socket_manager_thread;

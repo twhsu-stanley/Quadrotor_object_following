@@ -67,7 +67,7 @@ def pack_pose_msg(pose_dict):
     if(PRINT_POSE):
         print(f"X: {pose['X']}\tY: {pose['Y']}\tZ: {pose['Z']}\tRoll: {pose['Roll']}\tPitch: {pose['Pitch']}\tYaw: {pose['Yaw']}")
     
-    msgtype = struct.pack("B",MSG_TYPEDICT[pose_dict['Type']])  
+    msgtype = struct.pack("Q",MSG_TYPEDICT[pose_dict['Type']])  
     pose_xytrpy_msg = msgtype + struct.pack("d",pose['X']) + struct.pack("d",pose['Y']) + struct.pack("d",pose['Z'])
     pose_xytrpy_msg += struct.pack("d",pose['Roll']) + struct.pack("d",pose['Pitch']) + struct.pack("d",pose['Yaw'])
     # pose_xytrpy_msg = "dumb"
@@ -76,13 +76,13 @@ def pack_pose_msg(pose_dict):
 def pack_objectobs_msg(objectobservation):
 
     position = objectobservation['X']
-    delta_yaw = -calc_yawangle(position)
+    delta_yaw = calc_yawangle(position)
     position_y = objectobservation['Y']
-    depth = objectobservation['Height']*objectobservation['Width']
+    depth = 0.2189 * (objectobservation['Height']*objectobservation['Width']) ** (-0.5)
     if(PRINT_OBJOBS):
         print(f"Class: {objectobservation['Class']} \t Area: {depth}\t Angle: {delta_yaw} \t Depth: {objectobservation['Depth']}\tWidth: {objectobservation['Width']}\tHeight: {objectobservation['Height']}")
 
-    msgtype = struct.pack("B",MSG_TYPEDICT[objectobservation['Type']])    
+    msgtype = struct.pack("Q",MSG_TYPEDICT[objectobservation['Type']])    
     payload = msgtype + struct.pack("d", delta_yaw)+struct.pack("d", position_y)+struct.pack("d", depth)
 
     return payload

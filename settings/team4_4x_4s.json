@@ -17,7 +17,7 @@
 	"follow_me_hover_Z": -1.0,
 	"enable_socket": true,
 	"followme_yawtracking_enbl" : true,
-	"followme_distancetracking_enbl" : true,
+	"followme_distancetracking_enbl" : false,
 	"followme_feedback_src" : 0,
 	"followme_distancecontrol_xy": true,
 	"socket_dropout_timeout_ms": 800.0,
