@@ -473,8 +473,8 @@ static void __feedback_select(void)
                 //may want to use visual inertial odo feedback for heading instead of magnetometer for indoor flight
                 //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
                 }
-
-                state_estimate.visual_range = object_observation.range;
+		
+		state_estimate.visual_range = object_observation.range;
                 state_estimate.visual_bearing = object_observation.bearing;
 
                 // Set the bool indicator to true
@@ -496,7 +496,7 @@ static void __feedback_select(void)
             state_estimate.X_dot = xbee_x_dot;
             state_estimate.Y_dot = xbee_y_dot;  
             state_estimate.Z_dot = xbee_z_dot;
-            
+
             break;
 
         default:

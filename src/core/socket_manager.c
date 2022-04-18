@@ -140,8 +140,8 @@ void *__socket_manager_func(void *user)
     //	info->buffer = {0};
     while (rc_get_state() != EXITING)
         {
-            printf("enter the while loop\n");
-            //fflush(stdout);
+  //          printf("enter the while loop\n");
+    //        fflush(stdout);
             // printf("%d\t%x",info->new_socket,&info->new_socket);
             //printf("Thread info new socket %d\n", info->new_socket);
             //fflush(stdout);
@@ -153,7 +153,8 @@ void *__socket_manager_func(void *user)
             if (info->valread > -1)
             {
                 message_type_t* this_msg_type = (message_type_t *)&info->buffer;
-
+//		printf("Data received!");
+//		fflush(stdout);
                 switch (this_msg_type->msg_type) {
                     case 11:
                         // visual odometry data type
@@ -177,24 +178,23 @@ void *__socket_manager_func(void *user)
                     case 25:
                         // object observation data type
                         info->obj_obsrv_buffer = (object_observation_t *)&info->buffer;
-                        printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
-                               info->obj_obsrv_buffer->range, info->obj_obsrv_buffer->position_y, info->obj_obsrv_buffer->bearing);
+//                        printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
+        //                       info->obj_obsrv_buffer->range, info->obj_obsrv_buffer->position_y, info->obj_obsrv_buffer->bearing);
                         
                         // store the data to a global variable
-                        object_observation.bearing = info->obj_obsrv_buffer->bearing;
-                        object_observation.position_y = info->obj_obsrv_buffer->position_y;
                         object_observation.range = info->obj_obsrv_buffer->range;
-                        
+                        object_observation.position_y = info->obj_obsrv_buffer->position_y;
+                        object_observation.bearing = info->obj_obsrv_buffer->bearing;
 
-                        printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
-                               object_observation.range, object_observation.position_y, object_observation.bearing);
-                        fflush(stdout);
+  //                      printf("u: %f\tv: %f\trange: %f\tbearing: %f\n", 
+      //                         object_observation.range, object_observation.position_y, object_observation.bearing);
+    //                    fflush(stdout);
 
                         info->obj_obsrv_last_received_time_ns = rc_nanos_since_epoch();
                         
                         // Reset the referenced delta_yaw & distance everytime when new object data are obtained
                         state_estimate.delta_yaw = 0;
-                        state_estimate.delta_dist = 0;            
+                        state_estimate.delta_dist = 0;              
 
                         // If mocap is used for delta_dist feedback
                         if(settings.followme_feedback_src == 0) {

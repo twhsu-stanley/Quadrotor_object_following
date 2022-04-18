@@ -17,7 +17,7 @@
 	"follow_me_hover_Z": -1.0,
 	"enable_socket": true,
 	"followme_yawtracking_enbl" : true,
-	"followme_distancetracking_enbl" : false,
+	"followme_distancetracking_enbl" : true,
 	"followme_feedback_src" : 0,
 	"followme_distancecontrol_xy": true,
 	"socket_dropout_timeout_ms": 800.0,
@@ -25,7 +25,7 @@
 
     "hover_throttle": -0.37,
 
-	"num_dsm_modes": 3,	
+	"num_dsm_modes": 3,
 	"flight_mode_1": "TAKE_OFF",
 	"flight_mode_2": "FOLLOW_ME",
 	"flight_mode_3": "LAND",
