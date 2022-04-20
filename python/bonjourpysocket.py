@@ -1,5 +1,7 @@
 from cmath import pi
-from math import atan2
+from math import atan2, cos, sin
+
+from numpy import arctan2
 from zeroconf import ServiceBrowser, Zeroconf
 import socket
 import sys
@@ -67,9 +69,17 @@ def pack_pose_msg(pose_dict):
     if(PRINT_POSE):
         print(f"X: {pose['X']}\tY: {pose['Y']}\tZ: {pose['Z']}\tRoll: {pose['Roll']}\tPitch: {pose['Pitch']}\tYaw: {pose['Yaw']}")
     
+    drone_X = -pose['Z']
+    drone_Y = pose['X']
+    drone_Z = -pose['Y']
+    
+    drone_Roll = -atan2(sin(pose['Yaw'] + pi), cos(pose['Yaw'] + pi))
+    drone_Pitch = pose['Roll']
+    drone_Yaw = -pose['Pitch']
+
     msgtype = struct.pack("Q",MSG_TYPEDICT[pose_dict['Type']])  
-    pose_xytrpy_msg = msgtype + struct.pack("d",pose['X']) + struct.pack("d",pose['Y']) + struct.pack("d",pose['Z'])
-    pose_xytrpy_msg += struct.pack("d",pose['Roll']) + struct.pack("d",pose['Pitch']) + struct.pack("d",pose['Yaw'])
+    pose_xytrpy_msg = msgtype + struct.pack("d",drone_X) + struct.pack("d",drone_Y) + struct.pack("d",drone_Z)
+    pose_xytrpy_msg += struct.pack("d",drone_Roll) + struct.pack("d",drone_Pitch) + struct.pack("d",drone_Yaw)
     # pose_xytrpy_msg = "dumb"
     return pose_xytrpy_msg
 

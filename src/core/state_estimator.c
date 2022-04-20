@@ -461,7 +461,6 @@ static void __feedback_select(void)
                 if(settings.followme_feedback_src == 0) {
                     state_estimate.delta_dist = -(xbeeMsg.x - state_estimate.x_ref) * cos(state_estimate.continuous_yaw) - 
                                                  (xbeeMsg.y - state_estimate.y_ref) * sin(state_estimate.continuous_yaw);
-
                 }
                 
                 // Using visual odomety  
@@ -474,7 +473,7 @@ static void __feedback_select(void)
                 //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
                 }
 		
-		state_estimate.visual_range = object_observation.range;
+		        state_estimate.visual_range = object_observation.range;
                 state_estimate.visual_bearing = object_observation.bearing;
 
                 // Set the bool indicator to true
@@ -485,8 +484,6 @@ static void __feedback_select(void)
                 state_estimate.object_tracking = false;
             }
 
-
-
             state_estimate.continuous_yaw = atan2(2 * (xbeeMsg.qw * xbeeMsg.qz + xbeeMsg.qx * xbeeMsg.qy),
                                             1 - 2 * (pow(xbeeMsg.qy, 2) + pow(xbeeMsg.qz, 2)));   
             state_estimate.X = xbeeMsg.x;
@@ -494,7 +491,7 @@ static void __feedback_select(void)
             state_estimate.Z = xbeeMsg.z;
 
             state_estimate.X_dot = xbee_x_dot;
-            state_estimate.Y_dot = xbee_y_dot;  
+            state_estimate.Y_dot = xbee_y_dot;
             state_estimate.Z_dot = xbee_z_dot;
 
             break;
