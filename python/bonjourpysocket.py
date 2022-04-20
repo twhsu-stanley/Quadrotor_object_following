@@ -1,6 +1,7 @@
 from cmath import pi
 from math import atan2, cos, sin
 
+#from numpy import arctan2
 from zeroconf import ServiceBrowser, Zeroconf
 import socket
 import sys
@@ -85,7 +86,7 @@ def pack_pose_msg(pose_dict):
 def pack_objectobs_msg(objectobservation):
 
     position = objectobservation['X']
-    delta_yaw = -calc_yawangle(position)
+    delta_yaw = calc_yawangle(position)
     position_y = objectobservation['Y']
     depth = 0.2189 * (objectobservation['Height']*objectobservation['Width']) ** (-0.5)
     if(PRINT_OBJOBS):

@@ -14,7 +14,7 @@
 	"mocap_dropout_timeout_ms": 300.0,
 	"dropout_z_throttle": -0.3,
 
-	"follow_me_hover_Z": -1.0,
+	"follow_me_hover_Z": -0.7,
 	"enable_socket": true,
 	"followme_yawtracking_enbl" : true,
 	"followme_distancetracking_enbl" : true,
@@ -23,7 +23,7 @@
 	"socket_dropout_timeout_ms": 800.0,
 	"desired_dist": 1.5,
 
-    "hover_throttle": -0.37,
+        "hover_throttle": -0.37,
 
 	"num_dsm_modes": 3,
 	"flight_mode_1": "TAKE_OFF",

@@ -62,7 +62,7 @@ typedef struct thread_info
     volatile uint64_t obj_obsrv_last_received_time_ns;
     volatile uint64_t visual_od_last_received_time_ns;
 
-    uint64_t new_visual_odo;
+    int new_visual_odo;
 } thread_info_t;
 
 extern object_observation_t object_observation;
