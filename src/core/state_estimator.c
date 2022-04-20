@@ -65,6 +65,11 @@ static rc_filter_t z_velocity_lp = RC_FILTER_INITIALIZER;
 static rc_vector_t pos_u   = RC_VECTOR_INITIALIZER;
 static rc_vector_t pos_y   = RC_VECTOR_INITIALIZER;
 
+// for z_velocity
+uint64_t lastime = 0;
+uint64_t thistime = 0;
+float z_dt; 
+
 static void __batt_init(void)
 {
     // init the battery low pass filter
@@ -129,6 +134,8 @@ static void __alti_init(void)
 	uint8_t addr = VL53L1X_DEFAULT_DEVICE_ADDRESS;
 	uint8_t i2cbus = 1;
 	uint16_t rtn;
+    uint16_t timingbudget = 50; //in ms
+    uint16_t intermeaurement = 75; //in ms
 
     status = VL53L1X_InitDriver(&Device, i2cbus, addr);
 	if(status!=0){
@@ -137,13 +144,16 @@ static void __alti_init(void)
 
     VL53L1X_SensorInit(&Device);
 
+    VL53L1X_SetTimingBudgetInMs(&Device, timingbudget);
+    VL53L1X_SetInterMeasurementInMs(&Device, intermeaurement);
+
     VL53L1X_GetDistanceMode(&Device,&rtn);
 
     printf("Altimeter Distance Mode: %d\n", rtn);
 
     VL53L1X_GetInterMeasurementInMs(&Device,&rtn);
 	printf("Measurement Period: %dms\n", rtn);
-	uint16_t rate = rtn;
+	//uint16_t rate = rtn;
 
 	VL53L1X_GetTimingBudgetInMs(&Device,&rtn);
 	printf("Timing Budget: %dms\n", rtn);
@@ -429,9 +439,14 @@ static void __altitude_march(void)
     // state_estimate.alt_bmp_accel = alt_kf.x_est.d[2];
 
     // Calculate alt_velocity
+    thistime = rc_nanos_since_epoch();
+    z_dt = (float) (thistime - lastime);
+    z_dt = z_dt / (pow(10,9));
+
     rc_ringbuf_insert(&z_alti_track, state_estimate.alt_estimate);
-    state_estimate.alt_velocity = __diff_function_helper(&z_alti_track, state_estimate.alt_velocity, DT);
-    state_estimate.alt_velocity = rc_filter_march(&z_velocity_lp, state_estimate.alt_velocity);
+    state_estimate.alt_velocity = __diff_function_helper(&z_alti_track, state_estimate.alt_velocity, z_dt);
+    //state_estimate.alt_velocity = rc_filter_march(&z_velocity_lp, state_estimate.alt_velocity);
+    lastime = thistime;
 
     return;
 }

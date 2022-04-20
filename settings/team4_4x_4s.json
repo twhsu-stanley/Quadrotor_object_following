@@ -49,7 +49,7 @@
 	"printf_u": false,
 	"printf_motors": false,
 	"printf_mode": true,
-	"printf_xbee": true, 
+	"printf_xbee": false, 
 	"printf_tracking": true, 
 	"printf_gps": false, 
 	"printf_magnetom": false,

@@ -148,7 +148,7 @@ static int __write_log_entry(FILE* log_fd, log_entry_t e)
 
     if (settings.log_sensors)
     {
-        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%d%" PRIu64, e.v_batt,
+        fprintf(log_fd, ",%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%.4F,%" PRIu64, e.v_batt,
             e.alt_bmp_raw,e.bmp_temp, e.gyro_roll, e.gyro_pitch, e.gyro_yaw, e.accel_X, e.accel_Y, e.accel_Z,
             e.mag_X, e.mag_Y, e.mag_Z,e.alti_laser,e.alti_accelerometer, e.visual_range, e.visual_bearing, e.socket_last_received_time_ms,
             e.object_tracking_tf);
@@ -318,7 +318,7 @@ static log_entry_t __construct_new_entry()
     e.epoch_time_ns = rc_nanos_since_epoch();
 
     e.v_batt = state_estimate.v_batt_lp;
-    e.alt_bmp_raw = state_estimate.alt_bmp_raw;
+    e.alt_bmp_raw = xbee_x_dot;
     e.bmp_temp = state_estimate.bmp_temp;
     e.gyro_roll = state_estimate.gyro[0];
     e.gyro_pitch = state_estimate.gyro[1];
