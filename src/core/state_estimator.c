@@ -518,6 +518,8 @@ static void __feedback_select(void)
                     state_estimate.Z = visual_odometry.z;
 
                     dt = (double)(server_threadinfo.visual_od_last_received_time_ns - time_prev) / 1e9;
+                    printf("%.4f\n", dt);
+                    fflush(stdout);
                     state_estimate.X_dot = (1.0-VISUAL_ODO_LPF) * (state_estimate.X - X_prev)/dt + VISUAL_ODO_LPF*(X_dot_prev);
                     state_estimate.Y_dot = (1.0-VISUAL_ODO_LPF) * (state_estimate.Y - Y_prev)/dt + VISUAL_ODO_LPF*(Y_dot_prev);
                     state_estimate.Z_dot = (1.0-VISUAL_ODO_LPF) * (state_estimate.Z - Z_prev)/dt + VISUAL_ODO_LPF*(Z_dot_prev);
@@ -530,7 +532,7 @@ static void __feedback_select(void)
                     Z_prev = state_estimate.Z;
                     Z_dot_prev = state_estimate.Z_dot;
                 }
-                server_threadinfo.new_visual_odo == 0;
+                server_threadinfo.new_visual_odo = 0;
             }
             
             break;

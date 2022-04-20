@@ -1,7 +1,6 @@
 from cmath import pi
 from math import atan2, cos, sin
 
-from numpy import arctan2
 from zeroconf import ServiceBrowser, Zeroconf
 import socket
 import sys
