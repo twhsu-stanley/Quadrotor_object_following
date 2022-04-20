@@ -467,8 +467,8 @@ static void __feedback_select(void)
                 // Using visual odomety  
                 // Make sure: negative is forward and positive is backward 
                 if(settings.followme_feedback_src == 1) {
-                    state_estimate.delta_dist = (visual_odometry.z - state_estimate.z_ref) * cos(visual_odometry.pitch) - 
-                                                (visual_odometry.x - state_estimate.x_ref) * sin(visual_odometry.pitch) ;
+                    state_estimate.delta_dist = -(visual_odometry.x - state_estimate.x_ref) * cos(visual_odometry.yaw) - 
+                                                 (visual_odometry.y - state_estimate.y_ref) * sin(visual_odometry.yaw);
     
                 //may want to use visual inertial odo feedback for heading instead of magnetometer for indoor flight
                 //state_estimate.continuous_yaw = state_estimate.mag_heading_continuous;
