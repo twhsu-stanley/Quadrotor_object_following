@@ -86,7 +86,7 @@ def pack_pose_msg(pose_dict):
 def pack_objectobs_msg(objectobservation):
 
     position = objectobservation['X']
-    delta_yaw = calc_yawangle(position)
+    delta_yaw = -calc_yawangle(position)
     position_y = objectobservation['Y']
     depth = 0.2189 * (objectobservation['Height']*objectobservation['Width']) ** (-0.5)
     if(PRINT_OBJOBS):
@@ -167,8 +167,9 @@ while True:
         if data:
 
             data_jsondict = parse_iphonemsg(data)
-            if data_jsondict['Class'] != 'sports ball':
-                continue
+            if (data_jsondict["Type"] == "Object_Observation"):
+                if (data_jsondict['Class'] != 'sports ball'):
+                    continue
             msg = pack_message4beaglbone(data_jsondict)
             beaglebonesocket.send(msg)
 
