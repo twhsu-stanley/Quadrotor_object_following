@@ -59,12 +59,12 @@ static rc_filter_t acc_lp = RC_FILTER_INITIALIZER;
 
 static uint64_t time_prev;
 static double dt = DT;
-static double X_prev;
-static double Y_prev;
-static double Z_prev;
-static double X_dot_prev;
-static double Y_dot_prev;
-static double Z_dot_prev;
+static double X_prev = 0;
+static double Y_prev = 0;
+static double Z_prev = 0;
+static double X_dot_prev = 0;
+static double Y_dot_prev = 0;
+static double Z_dot_prev = 0;
 
 static void __batt_init(void)
 {
@@ -510,24 +510,27 @@ static void __feedback_select(void)
             }
             else if (settings.followme_feedback_src == 1)
             {
-                // Use visual odometry as feedback
-                state_estimate.continuous_yaw = visual_odometry.yaw;   
-                state_estimate.X = visual_odometry.x;
-                state_estimate.Y = visual_odometry.y;
-                state_estimate.Z = visual_odometry.z;
+                if (server_threadinfo.new_visual_odo == 1) {
+                    // Use visual odometry as feedback
+                    state_estimate.continuous_yaw = visual_odometry.yaw;   
+                    state_estimate.X = visual_odometry.x;
+                    state_estimate.Y = visual_odometry.y;
+                    state_estimate.Z = visual_odometry.z;
 
-                dt = (double)(server_threadinfo.visual_od_last_received_time_ns - time_prev) / 1e9;
-                state_estimate.X_dot = (1-VISUAL_ODO_LPF) * (state_estimate.X - X_prev)/dt + VISUAL_ODO_LPF*(X_dot_prev));
-                state_estimate.Y_dot = (1-VISUAL_ODO_LPF) * (state_estimate.Y - Y_prev)/dt + VISUAL_ODO_LPF*(Y_dot_prev));
-                state_estimate.Z_dot = (1-VISUAL_ODO_LPF) * (state_estimate.Z - Z_prev)/dt + VISUAL_ODO_LPF*(Z_dot_prev));
-                
-                time_prev = server_threadinfo.visual_od_last_received_time_ns;
-                X_prev = state_estimate.X;
-                X_dot_prev = state_estimate.X_dot;
-                Y_prev = state_estimate.Y;
-                Y_dot_prev = state_estimate.Y_dot;
-                Z_prev = state_estimate.Z;
-                Z_dot_prev = state_estimate.Z_dot;
+                    dt = (double)(server_threadinfo.visual_od_last_received_time_ns - time_prev) / 1e9;
+                    state_estimate.X_dot = (1.0-VISUAL_ODO_LPF) * (state_estimate.X - X_prev)/dt + VISUAL_ODO_LPF*(X_dot_prev);
+                    state_estimate.Y_dot = (1.0-VISUAL_ODO_LPF) * (state_estimate.Y - Y_prev)/dt + VISUAL_ODO_LPF*(Y_dot_prev);
+                    state_estimate.Z_dot = (1.0-VISUAL_ODO_LPF) * (state_estimate.Z - Z_prev)/dt + VISUAL_ODO_LPF*(Z_dot_prev);
+                    
+                    time_prev = server_threadinfo.visual_od_last_received_time_ns;
+                    X_prev = state_estimate.X;
+                    X_dot_prev = state_estimate.X_dot;
+                    Y_prev = state_estimate.Y;
+                    Y_dot_prev = state_estimate.Y_dot;
+                    Z_prev = state_estimate.Z;
+                    Z_dot_prev = state_estimate.Z_dot;
+                }
+                server_threadinfo.new_visual_odo == 0;
             }
             
             break;

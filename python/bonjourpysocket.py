@@ -173,7 +173,6 @@ while True:
             msg = pack_message4beaglbone(data_jsondict)
             beaglebonesocket.send(msg)
 
-
     except KeyboardInterrupt:
         print('user exit requested')
         exit()

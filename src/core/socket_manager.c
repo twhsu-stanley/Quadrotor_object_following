@@ -172,7 +172,7 @@ void *__socket_manager_func(void *user)
                         visual_odometry.yaw = info->visual_od_buf->yaw;
 
                         info->visual_od_last_received_time_ns = rc_nanos_since_epoch();
-                        
+                        info->new_visual_odo = 1;
                         break;
 
                     case 25:

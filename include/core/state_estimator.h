@@ -91,6 +91,7 @@ typedef struct state_estimate_t
     double Y_dot;
     double Z_dot;
     double Z_ddot; // transformed z accel
+    
     ///@}
 
     /** @name filtered data from IMU & barometer
